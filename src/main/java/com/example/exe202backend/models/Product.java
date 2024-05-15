@@ -1,5 +1,6 @@
 package com.example.exe202backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,23 +18,29 @@ public class Product extends BaseModel{
     private String coverImage;
     private double price;
     private String status;
+    private int quantity;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private ProductCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<ProductSubImage> productSubImages;
 
     @OneToOne(mappedBy = "product")
+    @JsonIgnore
     private Accessory accessory;
 
     @OneToOne(mappedBy = "product")
+    @JsonIgnore
     private ProductMaterial productMaterial;
 
     @OneToOne(mappedBy = "product")
+    @JsonIgnore
     private CartItem cartItem;
 
     @OneToOne(mappedBy = "product")
+    @JsonIgnore
     private OrderItem orderItem;
 }
