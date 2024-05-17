@@ -28,12 +28,12 @@ public class Product extends BaseModel{
     @JsonIgnore
     private List<ProductSubImage> productSubImages;
 
-    @OneToOne(mappedBy = "product")
-    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "accessory_id")
     private Accessory accessory;
 
-    @OneToOne(mappedBy = "product")
-    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "productMaterial_id")
     private ProductMaterial productMaterial;
 
     @OneToOne(mappedBy = "product")
