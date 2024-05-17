@@ -1,10 +1,10 @@
 package com.example.exe202backend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +20,7 @@ public class ProductMaterial extends BaseModel{
     private String image;
     private double price;
 
-    @OneToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @OneToMany(mappedBy = "productMaterial", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Product> products;
 }
