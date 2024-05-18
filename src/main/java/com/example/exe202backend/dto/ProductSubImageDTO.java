@@ -10,4 +10,5 @@ import lombok.Setter;
 public class ProductSubImageDTO {
     private String url;
     private boolean status;
+    private long productId;
 }

@@ -45,5 +45,5 @@ public class BaseModel {
     private LocalDate createDate;
 
     @Column
-    private boolean status;
+    private Boolean status;
 }

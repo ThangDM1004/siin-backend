@@ -17,7 +17,6 @@ import lombok.experimental.SuperBuilder;
 public class Payment extends BaseModel{
     private String typePayment;
     private double total;
-    private String status;
 
     @OneToOne
     @JoinColumn(name = "order_detail_id")

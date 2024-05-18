@@ -44,27 +44,28 @@ values ('Gold Infinity', null, 110000, 50, true, 3),
        ('Charm II', null, 99000, 50, true, 4);
 
 -- Cập nhật bảng product_sub_image (không có status)
-insert into product_sub_image(url, product_id)
-values ('picture_1.png', 1),
-       ('picture_2.png', 1),
-       ('picture_3.png', 1),
-       ('picture_4.png', 1),
-       ('picture_1.png', 2),
-       ('picture_2.png', 2),
-       ('picture_3.png', 2),
-       ('picture_4.png', 2),
-       ('picture_1.png', 3),
-       ('picture_2.png', 3),
-       ('picture_3.png', 3),
-       ('picture_4.png', 3),
-       ('picture_1.png', 4),
-       ('picture_1.png', 5),
-       ('picture_1.png', 6),
-       ('picture_1.png', 7),
-       ('picture_1.png', 8),
-       ('picture_1.png', 9),
-       ('picture_1.png', 10),
-       ('picture_1.png', 11);
+INSERT INTO product_sub_image(url, product_id, status)
+VALUES
+    ('picture_1.png', 1, true),
+    ('picture_2.png', 1, true),
+    ('picture_3.png', 1, true),
+    ('picture_4.png', 1, true),
+    ('picture_1.png', 2, true),
+    ('picture_2.png', 2, true),
+    ('picture_3.png', 2, true),
+    ('picture_4.png', 2, true),
+    ('picture_1.png', 3, true),
+    ('picture_2.png', 3, true),
+    ('picture_3.png', 3, true),
+    ('picture_4.png', 3, true),
+    ('picture_1.png', 4, true),
+    ('picture_1.png', 5, true),
+    ('picture_1.png', 6, true),
+    ('picture_1.png', 7, true),
+    ('picture_1.png', 8, true),
+    ('picture_1.png', 9, true),
+    ('picture_1.png', 10, true),
+    ('picture_1.png', 11, true);
 
 -- Cập nhật bảng user_model
 insert into user_model(full_name, email, password, phone, avatar, dob, status)
