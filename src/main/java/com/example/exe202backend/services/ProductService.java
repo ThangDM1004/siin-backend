@@ -39,7 +39,7 @@ public class ProductService {
     }
     public ResponseEntity<ResponseObject> getById(long id){
         Product product = productRepository.findById(id).orElseThrow(()->
-                new RuntimeException("Accessory not found"));
+                new RuntimeException("Product not found"));
         return ResponseEntity.ok(new ResponseObject("get success",productMapper.toDto(product)));
     }
 
@@ -50,11 +50,11 @@ public class ProductService {
             productRepository.save(product.get());
             return ResponseEntity.ok(new ResponseObject("delete success",productMapper.toDto(product.get())));
         }
-        return ResponseEntity.badRequest().body(new ResponseObject("Accessory not found",null));
+        return ResponseEntity.badRequest().body(new ResponseObject("Product not found",null));
     }
     public ResponseEntity<ResponseObject> update(Long id,ProductDTO productDTO){
         Product existingProduct = productRepository.findById(id).orElseThrow(()
-                -> new RuntimeException("Accessory not found"));
+                -> new RuntimeException("Product not found"));
         productMapper.updateProductFromDto(productDTO,existingProduct);
         productRepository.save(existingProduct);
         return ResponseEntity.ok(new ResponseObject("update success",productDTO));
