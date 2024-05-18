@@ -21,8 +21,8 @@ public class AccessoryController {
     public ResponseEntity<ResponseObject> getAllAccessory(@PathVariable int currentPage
             , @RequestParam(defaultValue = "5") int pageSize
             , @RequestParam(defaultValue = "name") String field) {
-        Page<Accessory> accessories = accessoryService.getAll(currentPage, pageSize, field);
-        var pageList = PageList.<Accessory>builder()
+        Page<AccessoryDTO> accessories = accessoryService.getAll(currentPage, pageSize, field);
+        var pageList = PageList.<AccessoryDTO>builder()
                 .totalPage(accessories.getTotalPages())
                 .currentPage(currentPage)
                 .listResult(accessories.getContent())

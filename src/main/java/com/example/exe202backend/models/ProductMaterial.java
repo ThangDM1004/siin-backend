@@ -3,6 +3,7 @@ package com.example.exe202backend.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table
-@Builder
+@SuperBuilder
 public class ProductMaterial extends BaseModel{
     private String colorName;
     private String size;

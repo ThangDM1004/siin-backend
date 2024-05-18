@@ -2,6 +2,7 @@ package com.example.exe202backend.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table
-@Builder
+@SuperBuilder
 public class Cart extends BaseModel{
     private double total;
 

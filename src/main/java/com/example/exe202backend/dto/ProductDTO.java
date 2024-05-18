@@ -7,10 +7,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class AccessoryDTO {
+public class ProductDTO {
     private String name;
-    private int quantity;
-    private String image;
+    private String coverImage;
     private double price;
-    private boolean status;
+    private String status;
+    private int quantity;
+    private long categoryId;
+    private long accessoryId;
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table
-@Builder
+@SuperBuilder
 public class UserModel extends BaseModel{
     private String email;
     private String password;
@@ -23,7 +24,6 @@ public class UserModel extends BaseModel{
     private String phone;
     private String avatar;
     private LocalDate dob;
-    private boolean status;
 
     @OneToMany(mappedBy = "userModel", cascade = CascadeType.ALL)
     private List<UserAddress> addresses;
