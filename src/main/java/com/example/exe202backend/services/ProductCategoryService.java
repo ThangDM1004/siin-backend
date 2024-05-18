@@ -12,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ProductCategoryService {
     @Autowired
@@ -30,5 +32,29 @@ public class ProductCategoryService {
                 PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.ASC, field)));
 
         return productCategoryPage.map(productCategoryMapper::toDto);
+    }
+
+    public ResponseEntity<ResponseObject> getById(long id){
+        ProductCategory productCategory = productCategoryRepository.findById(id).orElseThrow(()->
+                new RuntimeException("Accessory not found"));
+        return ResponseEntity.ok(new ResponseObject("get success",productCategoryMapper.toDto(productCategory)));
+    }
+
+    public ResponseEntity<ResponseObject> delete(long id){
+        Optional<ProductCategory> productCategory = productCategoryRepository.findById(id);
+        if(productCategory.isPresent()){
+            productCategory.get().setStatus(false);
+            productCategoryRepository.save(productCategory.get());
+            return ResponseEntity.ok(new ResponseObject("delete success",productCategoryMapper.toDto(productCategory.get())));
+        }
+        return ResponseEntity.badRequest().body(new ResponseObject("Accessory not found",null));
+    }
+
+    public ResponseEntity<ResponseObject> update(Long id, ProductCategoryDTO productCategoryDTO){
+        ProductCategory existingproductCategory = productCategoryRepository.findById(id).orElseThrow(()->
+                new RuntimeException("Accessory not found"));
+        productCategoryMapper.updateProductCategoryFromDto(productCategoryDTO,existingproductCategory);
+        productCategoryRepository.save(existingproductCategory);
+        return ResponseEntity.ok(new ResponseObject("update success",productCategoryDTO));
     }
 }

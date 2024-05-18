@@ -2,7 +2,6 @@ package com.example.exe202backend.controllers;
 
 import com.example.exe202backend.dto.PageList;
 import com.example.exe202backend.dto.ProductMaterialDTO;
-import com.example.exe202backend.models.ProductMaterial;
 import com.example.exe202backend.response.ResponseObject;
 import com.example.exe202backend.services.ProductMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
