@@ -5,6 +5,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table
-@Builder
+@SuperBuilder
 public class ProductSubImage extends BaseModel{
     private String url;
 

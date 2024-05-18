@@ -2,10 +2,8 @@ package com.example.exe202backend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -17,8 +15,10 @@ import java.time.LocalDate;
 @MappedSuperclass
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@SuperBuilder
 @EntityListeners(AuditingEntityListener.class)
 public class BaseModel {
     @Id
@@ -43,6 +43,7 @@ public class BaseModel {
     @Column
     @CreatedDate
     private LocalDate createDate;
+
     @Column
-    private boolean status = true;
+    private boolean status;
 }

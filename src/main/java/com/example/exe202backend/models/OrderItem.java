@@ -1,10 +1,9 @@
 package com.example.exe202backend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -12,16 +11,13 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table
-@Builder
+@SuperBuilder
 public class OrderItem extends BaseModel{
     private int quantity;
     private double price;
 
-    @OneToOne
-    @JoinColumn(name = "cart_item_id")
-    private CartItem cartItem;
-
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
+    @JsonIgnore
     private Product product;
 }

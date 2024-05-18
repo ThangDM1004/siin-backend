@@ -5,6 +5,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -12,7 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table
-@Builder
+@SuperBuilder
 public class Payment extends BaseModel{
     private String typePayment;
     private double total;

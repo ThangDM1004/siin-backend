@@ -2,6 +2,7 @@ package com.example.exe202backend.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
@@ -9,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Table
-@Builder
+@SuperBuilder
 public class OrderDetail extends BaseModel{
     private double total;
     private String orderStatus;

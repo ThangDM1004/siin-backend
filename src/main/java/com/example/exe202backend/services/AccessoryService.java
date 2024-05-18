@@ -26,17 +26,19 @@ public class AccessoryService {
     public ResponseEntity<ResponseObject> create(AccessoryDTO accessoryDto) {
         Accessory accessory = accessoryMapper.toEntity(accessoryDto);
         accessoryRepository.save(accessory);
-        return ResponseEntity.ok(new ResponseObject("create success",accessory));
+        return ResponseEntity.ok(new ResponseObject("create success",accessoryDto));
     }
 
-    public Page<Accessory>  getAll(int currentPage, int pageSize, String field){
-        return accessoryRepository.findAll(
+    public Page<AccessoryDTO>  getAll(int currentPage, int pageSize, String field){
+        Page<Accessory> accessories = accessoryRepository.findAll(
                 PageRequest.of(currentPage-1,pageSize, Sort.by(Sort.Direction.ASC,field)));
+        return accessories.map(accessoryMapper::toDto);
     }
 
     public ResponseEntity<ResponseObject> getById(long id){
-        Optional<Accessory> accessory = accessoryRepository.findById(id);
-        return ResponseEntity.ok(new ResponseObject("get success",accessory));
+        Accessory accessory = accessoryRepository.findById(id).orElseThrow(()->
+                new RuntimeException("Accessory not found"));
+        return ResponseEntity.ok(new ResponseObject("get success",accessoryMapper.toDto(accessory)));
     }
 
     public ResponseEntity<ResponseObject> delete(long id){
@@ -44,17 +46,17 @@ public class AccessoryService {
         if(accessory.isPresent()){
             accessory.get().setStatus(false);
             accessoryRepository.save(accessory.get());
-            return ResponseEntity.ok(new ResponseObject("delete success",accessory.get()));
+            return ResponseEntity.ok(new ResponseObject("delete success",accessoryMapper.toDto(accessory.get())));
         }
-        return ResponseEntity.badRequest().body(new ResponseObject("delete fail",null));
+        return ResponseEntity.badRequest().body(new ResponseObject("Accessory not found",null));
     }
 
     public ResponseEntity<ResponseObject> update(Long id,AccessoryDTO accessoryDto){
         Accessory existingAccessory = accessoryRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Accessory not found"));
         accessoryMapper.updateAccessoryFromDto(accessoryDto,existingAccessory);
-        Accessory updatedAccessory = accessoryRepository.save(existingAccessory);
-        return ResponseEntity.ok(new ResponseObject("update success",updatedAccessory));
+        accessoryRepository.save(existingAccessory);
+        return ResponseEntity.ok(new ResponseObject("update success",accessoryDto));
     }
 
 }

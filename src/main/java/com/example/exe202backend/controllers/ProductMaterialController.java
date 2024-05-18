@@ -18,9 +18,9 @@ public class ProductMaterialController {
     @GetMapping(value = "/get-all/{currentPage}")
     public ResponseEntity<ResponseObject> getAllAccessory(@PathVariable int currentPage
             , @RequestParam(defaultValue = "5") int pageSize
-            , @RequestParam(defaultValue = "name") String field) {
-        Page<ProductMaterial> productMaterials = productMaterialService.getAll(currentPage, pageSize, field);
-        var pageList = PageList.<ProductMaterial>builder()
+            , @RequestParam(defaultValue = "id") String field) {
+        Page<ProductMaterialDTO> productMaterials = productMaterialService.getAll(currentPage, pageSize, field);
+        var pageList = PageList.<ProductMaterialDTO>builder()
                 .totalPage(productMaterials.getTotalPages())
                 .currentPage(currentPage)
                 .listResult(productMaterials.getContent())

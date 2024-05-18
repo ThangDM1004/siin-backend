@@ -24,16 +24,18 @@ public class ProductMaterialService {
     public ResponseEntity<ResponseObject> create(ProductMaterialDTO productMaterialDTO){
         ProductMaterial productMaterial = productMaterialMapper.toEntity(productMaterialDTO);
         productMaterialRepository.save(productMaterial);
-        return ResponseEntity.ok(new ResponseObject("create success", productMaterial));
+        return ResponseEntity.ok(new ResponseObject("create success", productMaterialDTO));
     }
-    public Page<ProductMaterial> getAll(int currentPage, int pageSize, String field){
-        return productMaterialRepository.findAll(
+    public Page<ProductMaterialDTO> getAll(int currentPage, int pageSize, String field){
+        Page<ProductMaterial> productMaterials = productMaterialRepository.findAll(
                 PageRequest.of(currentPage-1,pageSize, Sort.by(Sort.Direction.ASC,field)));
+        return productMaterials.map(productMaterialMapper::toDto);
     }
 
     public ResponseEntity<ResponseObject> getById(long id){
-        Optional<ProductMaterial> productMaterial = productMaterialRepository.findById(id);
-        return ResponseEntity.ok(new ResponseObject("get success",productMaterial));
+        ProductMaterial productMaterial = productMaterialRepository.findById(id).orElseThrow(()
+                -> new RuntimeException("Product material not found"));
+        return ResponseEntity.ok(new ResponseObject("get success",productMaterialMapper.toDto(productMaterial)));
     }
 
     public ResponseEntity<ResponseObject> delete(long id){
@@ -41,16 +43,17 @@ public class ProductMaterialService {
         if(productMaterial.isPresent()){
             productMaterial.get().setStatus(false);
             productMaterialRepository.save(productMaterial.get());
-            return ResponseEntity.ok(new ResponseObject("delete success",productMaterial.get()));
+            return ResponseEntity.ok(new ResponseObject("delete success",
+                    productMaterialMapper.toDto(productMaterial.get())));
         }
         return ResponseEntity.badRequest().body(new ResponseObject("delete fail",null));
     }
 
     public ResponseEntity<ResponseObject> update(Long id, ProductMaterialDTO productMaterialDTO){
         ProductMaterial existingProductMaterial = productMaterialRepository.findById(id).orElseThrow(()
-                -> new RuntimeException("Accessory not found"));
+                -> new RuntimeException("Product material not found"));
         productMaterialMapper.updateProductMaterialFromDto(productMaterialDTO,existingProductMaterial);
-        ProductMaterial updatedProductMaterial = productMaterialRepository.save(existingProductMaterial);
-        return ResponseEntity.ok(new ResponseObject("update success",updatedProductMaterial));
+        productMaterialRepository.save(existingProductMaterial);
+        return ResponseEntity.ok(new ResponseObject("update success",productMaterialDTO));
     }
 }

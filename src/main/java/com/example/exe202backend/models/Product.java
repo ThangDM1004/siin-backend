@@ -3,6 +3,7 @@ package com.example.exe202backend.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table
-@Builder
+@SuperBuilder
 public class Product extends BaseModel{
     private String name;
     private String coverImage;
@@ -36,11 +37,11 @@ public class Product extends BaseModel{
     @JoinColumn(name = "productMaterial_id")
     private ProductMaterial productMaterial;
 
-    @OneToOne(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private CartItem cartItem;
+    private List<CartItem> cartItems;
 
-    @OneToOne(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private OrderItem orderItem;
+    private List<OrderItem>  orderItems;
 }
