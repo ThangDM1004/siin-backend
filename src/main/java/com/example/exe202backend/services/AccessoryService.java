@@ -42,10 +42,11 @@ public class AccessoryService {
     public ResponseEntity<ResponseObject> delete(long id){
         Optional<Accessory> accessory = accessoryRepository.findById(id);
         if(accessory.isPresent()){
-            accessoryRepository.delete(accessory.get());
-            return ResponseEntity.ok(new ResponseObject("get success",accessory.get()));
+            accessory.get().setStatus(false);
+            accessoryRepository.save(accessory.get());
+            return ResponseEntity.ok(new ResponseObject("delete success",accessory.get()));
         }
-        return ResponseEntity.badRequest().body(new ResponseObject("get success",null));
+        return ResponseEntity.badRequest().body(new ResponseObject("delete fail",null));
     }
 
     public ResponseEntity<ResponseObject> update(Long id,AccessoryDTO accessoryDto){
