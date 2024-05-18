@@ -11,8 +11,9 @@ public class ProductDTO {
     private String name;
     private String coverImage;
     private double price;
-    private String status;
+    private boolean status;
     private int quantity;
     private long categoryId;
     private long accessoryId;
+    private long materialId;
 }
