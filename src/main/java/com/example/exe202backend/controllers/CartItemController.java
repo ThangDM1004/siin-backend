@@ -1,26 +1,26 @@
 package com.example.exe202backend.controllers;
 
-import com.example.exe202backend.dto.AccessoryDTO;
+import com.example.exe202backend.dto.CartItemDTO;
 import com.example.exe202backend.dto.PageList;
 import com.example.exe202backend.response.ResponseObject;
-import com.example.exe202backend.services.AccessoryService;
+import com.example.exe202backend.services.CartItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/accessory")
-public class AccessoryController {
+@RequestMapping("/api/v1/cart-item")
+public class CartItemController {
     @Autowired
-    private AccessoryService accessoryService;
+    private CartItemService cartItemService;
 
     @GetMapping(value = "/get-all/{currentPage}")
     public ResponseEntity<ResponseObject> getAllAccessory(@PathVariable int currentPage
             , @RequestParam(defaultValue = "5") int pageSize
-            , @RequestParam(defaultValue = "name") String field) {
-        Page<AccessoryDTO> accessories = accessoryService.getAll(currentPage, pageSize, field);
-        var pageList = PageList.<AccessoryDTO>builder()
+            , @RequestParam(defaultValue = "id") String field) {
+        Page<CartItemDTO> accessories = cartItemService.getAll(currentPage, pageSize, field);
+        var pageList = PageList.<CartItemDTO>builder()
                 .totalPage(accessories.getTotalPages())
                 .currentPage(currentPage)
                 .listResult(accessories.getContent())
@@ -29,19 +29,18 @@ public class AccessoryController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getAccessoryById(@PathVariable long id) {
-        return accessoryService.getById(id);
+        return cartItemService.getById(id);
     }
     @PostMapping
-    public ResponseEntity<ResponseObject> createAccessory(@RequestBody AccessoryDTO accessory) {
-        return accessoryService.create(accessory);
+    public ResponseEntity<ResponseObject> createAccessory(@RequestBody CartItemDTO cartItemDTO) {
+        return cartItemService.create(cartItemDTO);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateAccessory(@PathVariable long id,@RequestBody AccessoryDTO accessory) {
-        return accessoryService.update(id,accessory);
+    public ResponseEntity<ResponseObject> updateAccessory(@PathVariable long id,@RequestBody CartItemDTO cartItemDTO) {
+        return cartItemService.update(id,cartItemDTO);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseObject> deleteAccessory(@PathVariable long id) {
-        return accessoryService.delete(id);
+        return cartItemService.delete(id);
     }
 }
-
