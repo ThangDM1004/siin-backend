@@ -18,7 +18,6 @@ public class Product extends BaseModel{
     private String name;
     private String coverImage;
     private double price;
-    private String status;
     private int quantity;
 
     @ManyToOne
