@@ -10,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/product")
 public class ProductController {
@@ -20,7 +18,7 @@ public class ProductController {
     private ProductService productService;
 
     @GetMapping(value = "/get-all/{currentPage}")
-    public ResponseEntity<ResponseObject> getAllAccessory(@PathVariable int currentPage
+    public ResponseEntity<ResponseObject> getAll(@PathVariable int currentPage
             , @RequestParam(defaultValue = "5") int pageSize
             , @RequestParam(defaultValue = "name") String field) {
         Page<ProductDTO> accessories = productService.getAll(currentPage, pageSize, field);
@@ -32,19 +30,19 @@ public class ProductController {
         return ResponseEntity.ok(new ResponseObject("get success", pageList));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseObject> getAccessoryById(@PathVariable long id) {
+    public ResponseEntity<ResponseObject> getById(@PathVariable long id) {
         return productService.getById(id);
     }
     @PostMapping
-    public ResponseEntity<ResponseObject> createAccessory(@RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ResponseObject> create(@RequestBody ProductDTO productDTO) {
         return productService.create(productDTO);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateAccessory(@PathVariable long id,@RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestBody ProductDTO productDTO) {
         return productService.update(id,productDTO);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteAccessory(@PathVariable long id) {
+    public ResponseEntity<ResponseObject> delete(@PathVariable long id) {
         return productService.delete(id);
     }
 }

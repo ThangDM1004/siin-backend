@@ -15,7 +15,7 @@ public class ProductMaterialController {
     @Autowired
     private ProductMaterialService productMaterialService;
     @GetMapping(value = "/get-all/{currentPage}")
-    public ResponseEntity<ResponseObject> getAllAccessory(@PathVariable int currentPage
+    public ResponseEntity<ResponseObject> getAll(@PathVariable int currentPage
             , @RequestParam(defaultValue = "5") int pageSize
             , @RequestParam(defaultValue = "id") String field) {
         Page<ProductMaterialDTO> productMaterials = productMaterialService.getAll(currentPage, pageSize, field);
@@ -27,19 +27,19 @@ public class ProductMaterialController {
         return ResponseEntity.ok(new ResponseObject("get success", pageList));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseObject> getAccessoryById(@PathVariable long id) {
+    public ResponseEntity<ResponseObject> getById(@PathVariable long id) {
         return productMaterialService.getById(id);
     }
     @PostMapping
-    public ResponseEntity<ResponseObject> createAccessory(@RequestBody ProductMaterialDTO productMaterialDTO) {
+    public ResponseEntity<ResponseObject> create(@RequestBody ProductMaterialDTO productMaterialDTO) {
         return productMaterialService.create(productMaterialDTO);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateAccessory(@PathVariable long id,@RequestBody ProductMaterialDTO productMaterialDTO) {
+    public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestBody ProductMaterialDTO productMaterialDTO) {
         return productMaterialService.update(id,productMaterialDTO);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteAccessory(@PathVariable long id) {
+    public ResponseEntity<ResponseObject> delete(@PathVariable long id) {
         return productMaterialService.delete(id);
     }
 }
