@@ -16,7 +16,7 @@ public class CartController {
     private CartService cartService;
 
     @GetMapping(value = "/get-all/{currentPage}")
-    public ResponseEntity<ResponseObject> getAllAccessory(@PathVariable int currentPage
+    public ResponseEntity<ResponseObject> getALl(@PathVariable int currentPage
             , @RequestParam(defaultValue = "5") int pageSize
             , @RequestParam(defaultValue = "id") String field) {
         Page<CartDTO> accessories = cartService.getAll(currentPage, pageSize, field);
@@ -28,19 +28,19 @@ public class CartController {
         return ResponseEntity.ok(new ResponseObject("get success", pageList));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseObject> getAccessoryById(@PathVariable long id) {
+    public ResponseEntity<ResponseObject> getById(@PathVariable long id) {
         return cartService.getById(id);
     }
     @PostMapping
-    public ResponseEntity<ResponseObject> createAccessory(@RequestBody CartDTO cartDTO) {
+    public ResponseEntity<ResponseObject> create(@RequestBody CartDTO cartDTO) {
         return cartService.create(cartDTO);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateAccessory(@PathVariable long id,@RequestBody CartDTO cartDTO) {
+    public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestBody CartDTO cartDTO) {
         return cartService.update(id,cartDTO);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteAccessory(@PathVariable long id) {
+    public ResponseEntity<ResponseObject> delete(@PathVariable long id) {
         return cartService.delete(id);
     }
 }

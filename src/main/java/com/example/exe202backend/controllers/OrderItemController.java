@@ -1,6 +1,5 @@
 package com.example.exe202backend.controllers;
 
-import com.example.exe202backend.dto.CartItemDTO;
 import com.example.exe202backend.dto.OrderItemDTO;
 import com.example.exe202backend.dto.PageList;
 import com.example.exe202backend.response.ResponseObject;
@@ -17,7 +16,7 @@ public class OrderItemController {
     private OrderItemService orderItemService;
 
     @GetMapping(value = "/get-all/{currentPage}")
-    public ResponseEntity<ResponseObject> getAllAccessory(@PathVariable int currentPage
+    public ResponseEntity<ResponseObject> getAll(@PathVariable int currentPage
             , @RequestParam(defaultValue = "5") int pageSize
             , @RequestParam(defaultValue = "id") String field) {
         Page<OrderItemDTO> orderItemDTOS = orderItemService.getAll(currentPage, pageSize, field);
@@ -29,19 +28,19 @@ public class OrderItemController {
         return ResponseEntity.ok(new ResponseObject("get success", pageList));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseObject> getAccessoryById(@PathVariable long id) {
+    public ResponseEntity<ResponseObject> getById(@PathVariable long id) {
         return orderItemService.getById(id);
     }
     @PostMapping
-    public ResponseEntity<ResponseObject> createAccessory(@RequestBody OrderItemDTO orderItemDTO) {
+    public ResponseEntity<ResponseObject> create(@RequestBody OrderItemDTO orderItemDTO) {
         return orderItemService.create(orderItemDTO);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseObject> updateAccessory(@PathVariable long id,@RequestBody OrderItemDTO orderItemDTO) {
+    public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestBody OrderItemDTO orderItemDTO) {
         return orderItemService.update(id,orderItemDTO);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> deleteAccessory(@PathVariable long id) {
+    public ResponseEntity<ResponseObject> delete(@PathVariable long id) {
         return orderItemService.delete(id);
     }
 }
