@@ -20,4 +20,9 @@ public class OrderItem extends BaseModel{
     @JoinColumn(name = "product_id")
     @JsonIgnore
     private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_detail_id")
+    @JsonIgnore
+    private OrderDetail orderDetail;
 }
