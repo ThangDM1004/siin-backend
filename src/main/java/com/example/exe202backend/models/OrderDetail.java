@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,4 +24,7 @@ public class OrderDetail extends BaseModel{
 
     @OneToOne(mappedBy = "orderDetail")
     private Payment payment;
+
+    @OneToMany(mappedBy = "orderDetail", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems;
 }
