@@ -11,12 +11,15 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface UserAddressMapper {
     @Mapping(target = "userId", source = "userModel.id")
+    @Mapping(target = "id", source = "id")
     UserAddressDTO toDto(UserAddress userAddress);
 
     @Mapping(target = "userModel", source = "userId", qualifiedByName = "userModelFromId")
+    @Mapping(target = "id", source = "id")
     UserAddress toEntity(UserAddressDTO userAddressDTO);
 
     @Mapping(target = "userModel", source = "userId", qualifiedByName = "userModelFromId")
+    @Mapping(target = "id", source = "id")
     void updateUserAddressFromDto(UserAddressDTO userAddressDTO, @MappingTarget UserAddress userAddress);
 
     @Named("userModelFromId")

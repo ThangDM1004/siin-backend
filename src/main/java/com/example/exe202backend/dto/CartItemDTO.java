@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class CartItemDTO {
+    private long id;
     private int quantity;
     private long productId;
     private long cartId;

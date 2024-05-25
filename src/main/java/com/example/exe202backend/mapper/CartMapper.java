@@ -11,14 +11,17 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface CartMapper {
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "userId", source = "userModel.id")
     CartDTO toDto(Cart cart);
 
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "userModel", source = "userId", qualifiedByName = "userModelFromId")
     Cart toEntity(CartDTO cartDTO);
 
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "userModel", source = "userId", qualifiedByName = "userModelFromId")
     void updateCartFromDto(CartDTO cartDTO, @MappingTarget Cart cart);
 

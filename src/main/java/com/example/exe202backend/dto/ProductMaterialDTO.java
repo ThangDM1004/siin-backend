@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ProductMaterialDTO {
+    private long id;
     private String colorName;
     private String size;
     private int quantity;

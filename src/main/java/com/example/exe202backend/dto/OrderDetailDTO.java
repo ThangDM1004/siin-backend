@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class OrderDetailDTO {
+    private long id;
     private double total;
     private String orderStatus;
     private boolean status;
