@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class AccessoryDTO {
+    private long id;
     private String name;
     private int quantity;
     private String image;

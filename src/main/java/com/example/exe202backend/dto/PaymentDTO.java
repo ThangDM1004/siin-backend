@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class PaymentDTO {
+    private long id;
     private boolean status;
     private String typePayment;
     private double total;

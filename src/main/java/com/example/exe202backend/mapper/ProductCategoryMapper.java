@@ -9,10 +9,13 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface ProductCategoryMapper {
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     ProductCategoryDTO toDto(ProductCategory productCategory);
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     ProductCategory toEntity(ProductCategoryDTO productCategoryDTO);
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     void updateProductCategoryFromDto(ProductCategoryDTO productCategoryDTO,
                                       @MappingTarget ProductCategory productCategory);
 }

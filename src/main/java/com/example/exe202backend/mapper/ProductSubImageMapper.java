@@ -11,12 +11,15 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface ProductSubImageMapper {
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "productId", source = "product.id")
     ProductSubImageDTO toDto(ProductSubImage productSubImage);
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "product", source = "productId", qualifiedByName = "productFromId")
     ProductSubImage toEntity(ProductSubImageDTO productSubImageDTO);
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "product", source = "productId", qualifiedByName = "productFromId")
     void updateProductSubImageFromDto(ProductSubImageDTO productSubImageDTO, @MappingTarget ProductSubImage productSubImage);
 

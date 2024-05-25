@@ -9,11 +9,14 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface AccessoryMapper {
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     AccessoryDTO toDto(Accessory accessory);
 
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     Accessory toEntity(AccessoryDTO accessoryDto);
 
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     void updateAccessoryFromDto(AccessoryDTO accessoryDto, @MappingTarget Accessory accessory);
 }

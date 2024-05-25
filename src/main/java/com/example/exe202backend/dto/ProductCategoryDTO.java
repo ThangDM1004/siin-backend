@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ProductCategoryDTO {
+    private long id;
     private String name;
     private boolean status;
 }

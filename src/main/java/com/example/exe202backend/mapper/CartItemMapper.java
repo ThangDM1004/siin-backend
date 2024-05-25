@@ -12,16 +12,19 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "spring")
 public interface CartItemMapper {
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "productId", source = "product.id")
     @Mapping(target = "cartId", source = "cart.id")
     CartItemDTO toDto(CartItem cartItem);
 
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "product", source = "productId", qualifiedByName = "productFromId")
     @Mapping(target = "cart", source = "cartId", qualifiedByName = "cartFromId")
     CartItem toEntity(CartItemDTO cartItemDTO);
 
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "product", source = "productId", qualifiedByName = "productFromId")
     @Mapping(target = "cart", source = "cartId", qualifiedByName = "cartFromId")
     void updateCartItemFromDto(CartItemDTO cartItemDTO, @MappingTarget CartItem cartItem);

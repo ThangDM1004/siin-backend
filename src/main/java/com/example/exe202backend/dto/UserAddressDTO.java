@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class UserAddressDTO {
+    private long id;
     private String province;
     private String district;
     private String ward;

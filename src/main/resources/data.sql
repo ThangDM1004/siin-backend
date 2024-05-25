@@ -30,18 +30,17 @@ values ('Gift', true),
        ('DIY', true);
 
 -- Cập nhật bảng product
-insert into product(name, cover_image, price, quantity, status, category_id)
-values ('Gold Infinity', null, 110000, 50, true, 3),
-       ('Remar Love', null, 80000, 50, true, 3),
-       ('TOUS Mana', null, 100000, 50, true, 3),
-       ('Chỉ đỏ may mắn 50cm', null, 10000, 50, true, 4),
-       ('Charm bạc may mắn', null, 50000, 50, true, 4),
-       ('Hạt chuỗi xanh lục', null, 221000, 50, true, 4),
-       ('Hạt chuỗi tím', null, 211000, 50, true, 4),
-       ('Hạt chuỗi nâu', null, 300000, 50, true, 4),
-       ('Chỉ xanh 1m', null, 20000, 50, true, 4),
-       ('Chỉ hồng 1m', null, 20000, 50, true, 4),
-       ('Charm II', null, 99000, 50, true, 4);
+insert into product(name, cover_image, price, quantity, status, category_id, accessory_id, product_material_id)
+values ('Gold Infinity', null, 110000, 50, true, 3, 1, 1),
+       ('Remar Love', null, 80000, 50, true, 3, 2, 2),
+       ('TOUS Mana', null, 100000, 50, true, 3, 3, 3),
+       ('Charm bạc may mắn', null, 50000, 50, true, 4, 1, 1),
+       ('Hạt chuỗi xanh lục', null, 221000, 50, true, 4, 2, 2),
+       ('Hạt chuỗi tím', null, 211000, 50, true, 4, 3, 3),
+       ('Hạt chuỗi nâu', null, 300000, 50, true, 4, 1, 4),
+       ('Chỉ xanh 1m', null, 20000, 50, true, 4, 2, 5),
+       ('Chỉ hồng 1m', null, 20000, 50, true, 4, 3, 6),
+       ('Charm II', null, 99000, 50, true, 4, 1, 1);
 
 -- Cập nhật bảng product_sub_image (không có status)
 INSERT INTO product_sub_image(url, product_id, status)
@@ -65,7 +64,7 @@ VALUES
     ('picture_1.png', 8, true),
     ('picture_1.png', 9, true),
     ('picture_1.png', 10, true),
-    ('picture_1.png', 11, true);
+    ('picture_1.png', 10, true);
 
 -- Cập nhật bảng user_model
 insert into user_model(full_name, email, password, phone, avatar, dob, status)

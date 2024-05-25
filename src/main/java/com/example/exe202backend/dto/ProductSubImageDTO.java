@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ProductSubImageDTO {
+    private long id;
     private String url;
     private boolean status;
     private long productId;
