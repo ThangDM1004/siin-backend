@@ -21,6 +21,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
                 )
         ),
         servers = {
+                @Server(url = "https://exe201-backend.up.railway.app/", description = "Railway Deployment Server URL"),
                 @Server(url = "http://localhost:8080/", description = "Default Server URL")
         }
 )
