@@ -18,6 +18,9 @@ public class ProductMaterialController {
     public ResponseEntity<ResponseObject> getAll(@PathVariable int currentPage
             , @RequestParam(defaultValue = "5") int pageSize
             , @RequestParam(defaultValue = "id") String field) {
+        if(currentPage < 1 || pageSize < 1 || currentPage > pageSize){
+            return ResponseEntity.ok(new ResponseObject("get success", productMaterialService.get()));
+        }
         Page<ProductMaterialDTO> productMaterials = productMaterialService.getAll(currentPage, pageSize, field);
         var pageList = PageList.<ProductMaterialDTO>builder()
                 .totalPage(productMaterials.getTotalPages())

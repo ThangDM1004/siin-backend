@@ -19,6 +19,9 @@ public class UserAddressController {
     public ResponseEntity<ResponseObject> getALl(@PathVariable int currentPage
             , @RequestParam(defaultValue = "5") int pageSize
             , @RequestParam(defaultValue = "id") String field) {
+        if(currentPage < 1 || pageSize < 1 || currentPage > pageSize){
+            return ResponseEntity.ok(new ResponseObject("get success", userAddressService.get()));
+        }
         Page<UserAddressDTO> all = userAddressService.getAll(currentPage, pageSize, field);
         var pageList = PageList.<UserAddressDTO>builder()
                 .totalPage(all.getTotalPages())

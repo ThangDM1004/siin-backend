@@ -12,7 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductSubImageService {
@@ -20,6 +22,10 @@ public class ProductSubImageService {
     private ProductSubImageRepository productSubImageRepository;
     @Autowired
     private ProductSubImageMapper productSubImageMapper;
+
+    public List<ProductSubImageDTO> get(){
+        return productSubImageRepository.findAll().stream().map(productSubImageMapper::toDto).collect(Collectors.toList());
+    }
 
     public ResponseEntity<ResponseObject> create(ProductSubImageDTO productSubImageDTO) {
         ProductSubImage productSubImage = productSubImageMapper.toEntity(productSubImageDTO);

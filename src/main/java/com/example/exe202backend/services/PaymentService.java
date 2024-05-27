@@ -12,7 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PaymentService {
@@ -20,6 +22,10 @@ public class PaymentService {
     private PaymentRepository paymentRepository;
     @Autowired
     private PaymentMapper paymentMapper;
+
+    public List<PaymentDTO> get(){
+        return paymentRepository.findAll().stream().map(paymentMapper::toDto).collect(Collectors.toList());
+    }
 
     public ResponseEntity<ResponseObject> create(PaymentDTO dto) {
         Payment payment = paymentMapper.toEntity(dto);

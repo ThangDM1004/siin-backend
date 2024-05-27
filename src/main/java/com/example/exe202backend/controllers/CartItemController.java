@@ -19,6 +19,9 @@ public class CartItemController {
     public ResponseEntity<ResponseObject> getAll(@PathVariable int currentPage
             , @RequestParam(defaultValue = "5") int pageSize
             , @RequestParam(defaultValue = "id") String field) {
+        if(currentPage < 1 || pageSize < 1 || currentPage > pageSize){
+            return ResponseEntity.ok(new ResponseObject("get success", cartItemService.get()));
+        }
         Page<CartItemDTO> accessories = cartItemService.getAll(currentPage, pageSize, field);
         var pageList = PageList.<CartItemDTO>builder()
                 .totalPage(accessories.getTotalPages())
