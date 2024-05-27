@@ -12,7 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderItemService {
@@ -20,6 +22,10 @@ public class OrderItemService {
     private OrderItemRepository orderItemRepository;
     @Autowired
     private OrderItemMapper orderItemMapper;
+
+    public List<OrderItemDTO> get(){
+        return orderItemRepository.findAll().stream().map(orderItemMapper::toDto).collect(Collectors.toList());
+    }
 
     public ResponseEntity<ResponseObject> create(OrderItemDTO orderItemDTO) {
         OrderItem orderItem = orderItemMapper.toEntity(orderItemDTO);

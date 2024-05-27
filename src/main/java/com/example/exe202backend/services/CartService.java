@@ -12,7 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CartService {
@@ -20,6 +22,10 @@ public class CartService {
     private CartRepository cartRepository;
     @Autowired
     private CartMapper cartMapper;
+
+    public List<CartDTO> get(){
+        return cartRepository.findAll().stream().map(cartMapper::toDto).collect(Collectors.toList());
+    }
 
     public ResponseEntity<ResponseObject> create(CartDTO cartDTO) {
         Cart cart = cartMapper.toEntity(cartDTO);

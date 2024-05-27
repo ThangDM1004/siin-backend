@@ -12,7 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserAddressService {
@@ -20,6 +22,10 @@ public class UserAddressService {
     private UserAddressRepository userAddressRepository;
     @Autowired
     private UserAddressMapper userAddressMapper;
+
+    public List<UserAddressDTO> get(){
+        return userAddressRepository.findAll().stream().map(userAddressMapper::toDto).collect(Collectors.toList());
+    }
 
     public ResponseEntity<ResponseObject> create(UserAddressDTO dto) {
         UserAddress address = userAddressMapper.toEntity(dto);

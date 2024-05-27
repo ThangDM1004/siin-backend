@@ -8,12 +8,15 @@ import com.example.exe202backend.repositories.AccessoryRepository;
 import com.example.exe202backend.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AccessoryService {
@@ -22,6 +25,10 @@ public class AccessoryService {
     private AccessoryRepository accessoryRepository;
     @Autowired
     private AccessoryMapper accessoryMapper;
+
+    public List<AccessoryDTO> get(){
+        return accessoryRepository.findAll().stream().map(accessoryMapper::toDto).collect(Collectors.toList());
+    }
 
     public ResponseEntity<ResponseObject> create(AccessoryDTO accessoryDto) {
         Accessory accessory = accessoryMapper.toEntity(accessoryDto);

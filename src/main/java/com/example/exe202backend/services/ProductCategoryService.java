@@ -12,7 +12,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductCategoryService {
@@ -20,6 +22,10 @@ public class ProductCategoryService {
     private ProductCategoryRepository productCategoryRepository;
     @Autowired
     private ProductCategoryMapper productCategoryMapper;
+
+    public List<ProductCategoryDTO> get(){
+        return productCategoryRepository.findAll().stream().map(productCategoryMapper::toDto).collect(Collectors.toList());
+    }
 
     public ResponseEntity<ResponseObject> create(ProductCategoryDTO productCategoryDTO) {
         ProductCategory productCategory = productCategoryMapper.toEntity(productCategoryDTO);
