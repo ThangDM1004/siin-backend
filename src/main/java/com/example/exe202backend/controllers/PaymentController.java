@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/payment")
+@CrossOrigin(origins = "*")
 public class PaymentController {
     @Autowired
     private PaymentService paymentService;

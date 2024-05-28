@@ -1,12 +1,12 @@
 package com.example.exe202backend.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CartItemDTO {
     private long id;
     private int quantity;

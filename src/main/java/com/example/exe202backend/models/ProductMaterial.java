@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table
+@Table(name = "product_material", uniqueConstraints = {@UniqueConstraint(columnNames = {"colorName", "size"})})
 @SuperBuilder
 public class ProductMaterial extends BaseModel{
     private String colorName;

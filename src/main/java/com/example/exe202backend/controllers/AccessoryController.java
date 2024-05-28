@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/accessory")
+@CrossOrigin(origins = "*")
 public class AccessoryController {
     @Autowired
     private AccessoryService accessoryService;

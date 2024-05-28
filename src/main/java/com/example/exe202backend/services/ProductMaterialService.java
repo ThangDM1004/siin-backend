@@ -62,4 +62,17 @@ public class ProductMaterialService {
         productMaterialRepository.save(existingProductMaterial);
         return ResponseEntity.ok(new ResponseObject("update success",productMaterialDTO));
     }
+
+    public Long getMaterialIdBySizeAndColorName(String size, String colorName) {
+        List<ProductMaterial> list = productMaterialRepository.findAll();
+        List<ProductMaterial> filteredList = list.stream()
+                .filter(productMaterial -> productMaterial.getColorName().equalsIgnoreCase(colorName)
+                        && productMaterial.getSize().equalsIgnoreCase(size))
+                .toList();
+        if (filteredList.isEmpty()) {
+            return null;
+        }
+        return filteredList.get(0).getId();
+    }
+
 }

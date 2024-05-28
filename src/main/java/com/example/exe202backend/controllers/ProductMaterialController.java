@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/product-material")
+@CrossOrigin(origins = "*")
 public class ProductMaterialController {
     @Autowired
     private ProductMaterialService productMaterialService;

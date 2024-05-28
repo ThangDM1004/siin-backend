@@ -12,17 +12,17 @@ import org.mapstruct.Named;
 public interface CartMapper {
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "userId", source = "userModel.id")
+    @Mapping(target = "userId", source = "user.id")
     CartDTO toDto(Cart cart);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "userModel", source = "userId", qualifiedByName = "userModelFromId")
+    @Mapping(target = "user", source = "userId", qualifiedByName = "userModelFromId")
     Cart toEntity(CartDTO cartDTO);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "userModel", source = "userId", qualifiedByName = "userModelFromId")
+    @Mapping(target = "user", source = "userId", qualifiedByName = "userModelFromId")
     void updateCartFromDto(CartDTO cartDTO, @MappingTarget Cart cart);
 
     @Named("userModelFromId")

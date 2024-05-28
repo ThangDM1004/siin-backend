@@ -23,6 +23,8 @@ public class ProductService {
     private ProductRepository productRepository;
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private ProductMaterialService productMaterialService;
 
     public List<ProductDTO> get(){
         return productRepository.findAll().stream().map(productMapper::toDto).collect(Collectors.toList());
@@ -59,5 +61,20 @@ public class ProductService {
         productMapper.updateProductFromDto(productDTO,existingProduct);
         productRepository.save(existingProduct);
         return ResponseEntity.ok(new ResponseObject("update success",productDTO));
+    }
+
+    public Product isExist(long accessoryId, String size, String colorName){
+        Long materialId = productMaterialService.getMaterialIdBySizeAndColorName(size,colorName);
+        if(materialId == null){ return null;}
+        List<Product> allProducts = productRepository.findAll();
+
+        List<Product> filteredProducts = allProducts.stream()
+                .filter(product -> product.getAccessory() != null && product.getAccessory().getId() == accessoryId
+                        && product.getProductMaterial() != null && product.getProductMaterial().getId() == materialId)
+                .toList();
+        if (!filteredProducts.isEmpty()) {
+            return filteredProducts.get(0);
+        }
+        return null;
     }
 }
