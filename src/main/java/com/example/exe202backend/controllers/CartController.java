@@ -42,26 +42,7 @@ public class CartController {
     public ResponseEntity<ResponseObject> create(@RequestBody CartDTO cartDTO) {
         return cartService.create(cartDTO);
     }
-    @PostMapping("/add-to-cart")
-    public ResponseEntity<ResponseObject> addToCart(
-            @RequestParam long accessoryId,
-            @RequestParam String size,
-            @RequestParam String colorName,
-            @RequestParam int quantity,
-            @RequestParam String sessionId,
-            @RequestParam LocalDateTime expirationTime) {
 
-        ResponseEntity<ResponseObject> response;
-
-        try {
-            ResponseEntity<ResponseObject> responseEntity = cartService.addToCart(accessoryId, size, colorName, quantity, sessionId, expirationTime);
-            response = ResponseEntity.status(responseEntity.getStatusCode()).body(responseEntity.getBody());
-        } catch (Exception e) {
-            response = ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResponseObject("Internal Server Error", null));
-        }
-
-        return response;
-    }
     @PutMapping("/{id}")
     public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestBody CartDTO cartDTO) {
         return cartService.update(id,cartDTO);
