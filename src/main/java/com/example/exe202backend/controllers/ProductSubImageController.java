@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/product-sub-image")
+@CrossOrigin(origins = "*")
 public class ProductSubImageController {
     @Autowired
     private ProductSubImageService productSubImageService;

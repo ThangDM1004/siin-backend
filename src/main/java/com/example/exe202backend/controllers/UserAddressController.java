@@ -1,6 +1,5 @@
 package com.example.exe202backend.controllers;
 
-import com.example.exe202backend.dto.CartDTO;
 import com.example.exe202backend.dto.PageList;
 import com.example.exe202backend.dto.UserAddressDTO;
 import com.example.exe202backend.response.ResponseObject;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user-address")
+@CrossOrigin(origins = "*")
 public class UserAddressController {
     @Autowired
     private UserAddressService userAddressService;

@@ -1,9 +1,6 @@
 package com.example.exe202backend.models;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -28,8 +25,8 @@ public class UserModel extends BaseModel{
     @OneToMany(mappedBy = "userModel", cascade = CascadeType.ALL)
     private List<UserAddress> addresses;
 
-    @OneToMany(mappedBy = "userModel", cascade = CascadeType.ALL)
-    private List<Cart> carts;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Cart cart;
 
     @OneToMany(mappedBy = "userModel", cascade = CascadeType.ALL)
     private List<OrderDetail> orderDetails;

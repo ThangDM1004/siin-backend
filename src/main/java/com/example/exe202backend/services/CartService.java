@@ -2,8 +2,8 @@ package com.example.exe202backend.services;
 
 import com.example.exe202backend.dto.CartDTO;
 import com.example.exe202backend.mapper.CartMapper;
-import com.example.exe202backend.models.Cart;
-import com.example.exe202backend.repositories.CartRepository;
+import com.example.exe202backend.models.*;
+import com.example.exe202backend.repositories.*;
 import com.example.exe202backend.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +23,16 @@ public class CartService {
     private CartRepository cartRepository;
     @Autowired
     private CartMapper cartMapper;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private AccessoryRepository accessoryRepository;
+    @Autowired
+    private ProductMaterialService productMaterialService;
+    @Autowired
+    private ProductMaterialRepository productMaterialRepository;
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     public List<CartDTO> get(){
         return cartRepository.findAll().stream().map(cartMapper::toDto).collect(Collectors.toList());
@@ -58,5 +69,49 @@ public class CartService {
         cartMapper.updateCartFromDto(cartDTO,existingCart);
         cartRepository.save(existingCart);
         return ResponseEntity.ok(new ResponseObject("update success",cartDTO));
+    }
+    public ResponseEntity<ResponseObject> addToCart(long accessoryId, String size, String colorName
+            , int quantity, String sessionId, LocalDateTime expirationTime) {
+        Product product = productService.isExist(accessoryId,size,colorName);
+
+        if(product == null) {
+            Accessory accessory = accessoryRepository.findById(accessoryId).get();
+            ProductMaterial material = productMaterialRepository.findById(
+                    productMaterialService.getMaterialIdBySizeAndColorName(size,colorName)).get();
+            product = Product.builder()
+                    .name(accessory.getName()+" "+size + " "+ colorName)
+                    .price(accessory.getPrice()+material.getPrice())
+                    .accessory(accessory)
+                    .productMaterial(material)
+                    .build();
+        }
+
+        Cart cart = cartRepository.findBySessionId(sessionId)
+                .orElseGet(() -> createCartWithExpirationTime(sessionId, expirationTime));
+
+        CartItem cartItem = new CartItem();
+        cartItem.setProduct(product);
+        cartItem.setQuantity(quantity);
+        cartItem.setCart(cart);
+
+        cart.getCartItems().add(cartItem);
+
+        cartRepository.save(cart);
+        return ResponseEntity.ok(new ResponseObject("add success",cartMapper.toDto(cart)));
+    }
+    public void cleanUpExpiredCarts() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Cart> expiredCarts = cartRepository.findByExpirationTimeBefore(now);
+        for (Cart cart : expiredCarts) {
+            cartItemRepository.deleteAll(cart.getCartItems());
+        }
+        cartRepository.deleteAll(expiredCarts);
+    }
+
+    private Cart createCartWithExpirationTime(String sessionId, LocalDateTime expirationTime) {
+        Cart cart = new Cart();
+        cart.setSessionId(sessionId);
+        cart.setExpirationTime(expirationTime);
+        return cartRepository.save(cart);
     }
 }
