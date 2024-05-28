@@ -17,7 +17,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
                 termsOfService = "SIIN",
                 license = @License(
                         name = "licence",
-                        url = "whalehouse"
+                        url = "siin"
                 )
         ),
         servers = {
