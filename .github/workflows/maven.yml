@@ -51,4 +51,4 @@ jobs:
             docker stop backend-app || true
             docker rm backend-app || true
             docker pull hieu15402/exe201
-            docker run -d -p 8080:8080 --name backend-app hieu15402/exe201
+            docker run -d -p 80:80 --name backend-app hieu15402/exe201
