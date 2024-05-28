@@ -62,4 +62,12 @@ public class CartService {
         }
         return ResponseEntity.badRequest().body(new ResponseObject("Cart not found",null));
     }
+
+    public ResponseEntity<ResponseObject> update(Long id,CartDTO cartDTO){
+        Cart existingCart = cartRepository.findById(id).orElseThrow(()
+                -> new RuntimeException("Cart not found"));
+        cartMapper.updateCartFromDto(cartDTO,existingCart);
+        cartRepository.save(existingCart);
+        return ResponseEntity.ok(new ResponseObject("update success",cartDTO));
+    }
 }
