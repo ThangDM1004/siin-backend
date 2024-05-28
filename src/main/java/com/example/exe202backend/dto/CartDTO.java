@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 public class CartDTO {
     private long id;
     private double total;
-    private LocalDateTime expiredTime;
     private boolean status;
     private long userId;
 }
