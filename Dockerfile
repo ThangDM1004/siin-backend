@@ -1,5 +1,5 @@
-FROM openjdk:17
+FROM openjdk:17-jdk-alpine
 WORKDIR /app
-COPY /target/exe201.jar exe201.jar
-EXPOSE 8080
+COPY target/exe201.jar /app
+EXPOSE 80
 CMD ["java", "-jar", "exe201.jar"]
