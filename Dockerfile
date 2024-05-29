@@ -1,10 +1,12 @@
-FROM openjdk:17-jdk-alpine
-
+# Stage 1: Build Spring Boot application
+FROM maven:3.8.3-openjdk-17-slim AS build
 WORKDIR /app
+COPY . .
+RUN mvn clean package
 
-# Sao chép các file jar vào thư mục /app/libs
-COPY target/exe201.jar /app/
-COPY libs/payos.jar /app/libs/
-
-# CMD để chạy ứng dụng Spring Boot
-CMD ["java", "-cp", "/app/exe201.jar:/app/libs/payos.jar", "org.springframework.boot.loader.JarLauncher"]
+# Stage 2: Create final Docker image
+FROM openjdk:17-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/exe201.jar /app/
+EXPOSE 8080
+CMD ["java", "-jar", "exe201.jar"]
