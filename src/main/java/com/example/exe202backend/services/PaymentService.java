@@ -6,6 +6,7 @@ import com.example.exe202backend.models.OrderDetail;
 import com.example.exe202backend.models.Payment;
 import com.example.exe202backend.repositories.OrderDetailRepository;
 import com.example.exe202backend.repositories.PaymentRepository;
+import com.example.exe202backend.request.MailRequest;
 import com.example.exe202backend.response.ResponseObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
