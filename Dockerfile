@@ -3,4 +3,4 @@ WORKDIR /app
 COPY target/exe201.jar /app
 COPY libs/payos.jar /app/libs/payos.jar
 EXPOSE 8080
-CMD ["java", "-cp", "/app/exe201.jar:/app/libs/payos.jar", "org.springframework.boot.loader.JarLauncher"]
+CMD ["java", "-Dloader.path=/app/libs", "-jar", "exe201.jar"]
