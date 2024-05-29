@@ -1,14 +1,11 @@
 package com.example.exe202backend.services;
 
-import com.example.exe202backend.dto.OrderDetailDTO;
 import com.example.exe202backend.dto.PaymentDTO;
 import com.example.exe202backend.mapper.PaymentMapper;
 import com.example.exe202backend.models.OrderDetail;
 import com.example.exe202backend.models.Payment;
 import com.example.exe202backend.repositories.OrderDetailRepository;
 import com.example.exe202backend.repositories.PaymentRepository;
-import com.example.exe202backend.request.MailRequest;
-import com.example.exe202backend.request.PaymentLinkRequest;
 import com.example.exe202backend.response.ResponseObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
