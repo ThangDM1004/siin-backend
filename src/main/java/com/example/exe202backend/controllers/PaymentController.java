@@ -3,6 +3,7 @@ package com.example.exe202backend.controllers;
 import com.example.exe202backend.dto.OrderDetailDTO;
 import com.example.exe202backend.dto.PageList;
 import com.example.exe202backend.dto.PaymentDTO;
+import com.example.exe202backend.request.MailRequest;
 import com.example.exe202backend.request.PaymentLinkRequest;
 import com.example.exe202backend.response.ResponseObject;
 import com.example.exe202backend.services.PaymentService;
@@ -69,5 +70,9 @@ public class PaymentController {
     public ModelAndView successPayment(@PathVariable long paymentId) {
         paymentService.paymentSuccess(paymentId);
         return new ModelAndView("success");
+    }
+    @PostMapping("/send-mail")
+    public ResponseEntity<ResponseObject> sendMail(@RequestBody MailRequest mailRequest){
+        return paymentService.sendMail(mailRequest);
     }
 }

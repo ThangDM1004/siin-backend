@@ -21,10 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +32,8 @@ public class PaymentService {
     private PaymentMapper paymentMapper;
     @Autowired
     private OrderDetailRepository orderDetailRepository;
+    @Autowired
+    private MailService mailService;
 
     private final PayOS payOS;
 
@@ -124,6 +123,13 @@ public class PaymentService {
         Optional<Payment> payment = paymentRepository.findById(paymentId);
         payment.get().setStatus(true);
         paymentRepository.save(payment.get());
+    }
+
+    public ResponseEntity<ResponseObject> sendMail(MailRequest mailRequest){
+        Map<String,Object> model = new HashMap<>();
+        model.put("price",10000);
+        model.put("name", "Lãnh chúa Thắng");
+        return mailService.sendMail(mailRequest,model);
     }
 
 }
