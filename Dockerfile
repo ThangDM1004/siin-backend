@@ -18,4 +18,4 @@ RUN echo "Checking if payos.jar exists in /app/libs:" && ls -l /app/libs/payos.j
 EXPOSE 8080
 
 # Command to run the application
-CMD ["java", "-Dloader.path=/app/libs", "-Dloader.main=com.example.exe202backend.Exe202BackendApplication", "-jar", "/app/exe201.jar"]
+ENTRYPOINT ["java", "-Dloader.path=/app/libs", "-Dloader.main=com.example.exe202backend.Exe202BackendApplication", "-jar", "/app/exe201.jar"]
