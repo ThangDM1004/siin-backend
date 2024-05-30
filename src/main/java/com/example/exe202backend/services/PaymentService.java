@@ -11,9 +11,6 @@ import com.example.exe202backend.response.ResponseObject;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.lib.payos.PayOS;
-import com.lib.payos.type.ItemData;
-import com.lib.payos.type.PaymentData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,13 +32,6 @@ public class PaymentService {
     private OrderDetailRepository orderDetailRepository;
     @Autowired
     private MailService mailService;
-
-    private final PayOS payOS;
-
-    public PaymentService(PayOS payOS) {
-        super();
-        this.payOS = payOS;
-    }
 
     public List<PaymentDTO> get() {
         return paymentRepository.findAll().stream().map(paymentMapper::toDto).collect(Collectors.toList());
@@ -81,43 +71,6 @@ public class PaymentService {
         paymentMapper.updatePaymentFromDto(dto, existingPayment);
         paymentRepository.save(existingPayment);
         return ResponseEntity.ok(new ResponseObject("update success", dto));
-    }
-
-    public ResponseEntity<ResponseObject> createLink(Long orderId) {
-        ObjectMapper om = new ObjectMapper();
-        Optional<OrderDetail> dto = orderDetailRepository.findById(orderId);
-        if(dto.isPresent()){
-            try {
-                final String productName = "Đơn hàng" + dto.get().getId();
-                final String description = "Thanh toán đơn hàng " + dto.get().getId();
-                final String returnUrl = "http://localhost:8080/api/v1/payment/success-payment?id=" + dto.get().getPayment().getId();
-                final String cancelUrl = "http://localhost:8080/api/v1/payment/cancel-payment";
-                final int price = (int) dto.get().getTotal();
-
-                String currentTimeString = String.valueOf(String.valueOf(new Date().getTime()));
-                int orderCode = Integer.parseInt(currentTimeString.substring(currentTimeString.length() - 6));
-
-                ItemData item = new ItemData("TestAPI", 1, 10000);
-                List<ItemData> items = new ArrayList<>();
-                items.add(item);
-                PaymentData paymentData = new PaymentData(orderCode, price, description, items, cancelUrl, returnUrl);
-
-                JsonNode data = payOS.createPaymentLink(paymentData);
-
-                ObjectNode response = om.createObjectNode();
-                return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(
-                        "Create link payment success",
-                        data
-                ));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject(
-               "Not found order",
-               null
-            ));
-        }
     }
 
     public void paymentSuccess(long paymentId) {
