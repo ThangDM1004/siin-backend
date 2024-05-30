@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,5 +59,16 @@ public class ProductSubImageService {
         productSubImageMapper.updateProductSubImageFromDto(productSubImageDTO,productSubImage);
         productSubImageRepository.save(productSubImage);
         return ResponseEntity.ok(new ResponseObject("update success",productSubImageDTO));
+    }
+
+    public ResponseEntity<ResponseObject> getByProductId(Long productId){
+        ArrayList<ProductSubImage> list = productSubImageRepository.findProductSubImageByProduct_Id(productId);
+
+        if(list.isEmpty()){
+            return ResponseEntity.ok(new ResponseObject("Product don't have image",""));
+        }else{
+            List<ProductSubImageDTO> _list = list.stream().map(productSubImageMapper::toDto).toList();
+            return ResponseEntity.ok(new ResponseObject("Get list image success",_list));
+        }
     }
 }
