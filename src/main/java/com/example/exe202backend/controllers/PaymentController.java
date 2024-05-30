@@ -56,11 +56,6 @@ public class PaymentController {
         return paymentService.delete(id);
     }
 
-    @PostMapping("/create-link")
-    public ResponseEntity<ResponseObject> createLink(@RequestParam Long orderId) {
-        return paymentService.createLink(orderId);
-    }
-
     @GetMapping("/cancel-payment")
     public ModelAndView cancelPayment() {
         return new ModelAndView("cancel");
