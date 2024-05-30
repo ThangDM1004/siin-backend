@@ -46,4 +46,9 @@ public class ProductSubImageController {
     public ResponseEntity<ResponseObject> delete(@PathVariable long id) {
         return productSubImageService.delete(id);
     }
+    @GetMapping("/productId")
+    public ResponseEntity<ResponseObject> getByProductId(@RequestParam long productId) {
+       return productSubImageService.getByProductId(productId);
+    }
+
 }
