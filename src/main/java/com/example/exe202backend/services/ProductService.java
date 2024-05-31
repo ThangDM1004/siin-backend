@@ -3,6 +3,9 @@ package com.example.exe202backend.services;
 import com.example.exe202backend.dto.ProductDTO;
 import com.example.exe202backend.mapper.ProductMapper;
 import com.example.exe202backend.models.Product;
+import com.example.exe202backend.repositories.AccessoryRepository;
+import com.example.exe202backend.repositories.ProductCategoryRepository;
+import com.example.exe202backend.repositories.ProductMaterialRepository;
 import com.example.exe202backend.repositories.ProductRepository;
 import com.example.exe202backend.response.ResponseObject;
 import com.google.auth.Credentials;
@@ -42,6 +45,12 @@ public class ProductService {
     private ProductMapper productMapper;
     @Autowired
     private ProductMaterialService productMaterialService;
+    @Autowired
+    private ProductCategoryRepository productCategoryRepository;
+    @Autowired
+    private AccessoryRepository accessoryRepository;
+    @Autowired
+    private ProductMaterialRepository productMaterialRepository;
 
     public List<ProductDTO> get(){
         return productRepository.findAll().stream().map(productMapper::toDto).collect(Collectors.toList());
@@ -76,6 +85,9 @@ public class ProductService {
         Product existingProduct = productRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Product not found"));
         productMapper.updateProductFromDto(productDTO,existingProduct);
+        existingProduct.setProductMaterial(productMaterialRepository.findById(productDTO.getMaterialId()).get());
+        existingProduct.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).get());
+        existingProduct.setAccessory(accessoryRepository.findById(productDTO.getAccessoryId()).get());
         productRepository.save(existingProduct);
         return ResponseEntity.ok(new ResponseObject("update success",productDTO));
     }
