@@ -44,9 +44,9 @@ public class ProductSubImageService {
     @Autowired
     private ProductRepository productRepository;
 
-//    public List<ProductSubImageDTO> get() {
-//        return productSubImageRepository.findAll().stream().map(productSubImageMapper::toDto).collect(Collectors.toList());
-//    }
+    public List<ProductSubImageDTO> get() {
+        return productSubImageRepository.findAll().stream().map(productSubImageMapper::toDto).collect(Collectors.toList());
+    }
 
     public ResponseEntity<ResponseObject> create(ProductSubImageDTO productSubImageDTO) {
         ProductSubImage productSubImage = productSubImageMapper.toEntity(productSubImageDTO);
