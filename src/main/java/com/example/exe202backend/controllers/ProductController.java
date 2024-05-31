@@ -64,4 +64,8 @@ public class ProductController {
                                                           @PathVariable Long productId ) throws IOException, URISyntaxException {
         return productService.updateCoverImage(multipartFile, productId);
     }
+    @DeleteMapping("/delete-image/{productId}")
+    public ResponseEntity<ResponseObject> uploadImage(@PathVariable Long productId ) throws IOException, URISyntaxException {
+        return productService.deleteCoverImage(productId);
+    }
 }

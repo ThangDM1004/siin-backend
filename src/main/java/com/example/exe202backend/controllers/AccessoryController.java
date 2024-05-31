@@ -61,5 +61,10 @@ public class AccessoryController {
     public ResponseEntity<ResponseObject> updateImage(@PathVariable long accessoryId, @RequestParam("file") MultipartFile file) throws IOException, URISyntaxException {
         return accessoryService.updateImage(file,accessoryId);
     }
+
+    @DeleteMapping("/delete-image/{accessoryId}")
+    public ResponseEntity<ResponseObject> updateImage(@PathVariable long accessoryId) throws IOException, URISyntaxException {
+        return accessoryService.deleteImage(accessoryId);
+    }
 }
 

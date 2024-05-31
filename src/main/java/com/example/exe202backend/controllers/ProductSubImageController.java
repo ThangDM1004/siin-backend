@@ -47,12 +47,12 @@ public class ProductSubImageController {
     public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestParam("file") MultipartFile multipartFile) throws IOException, URISyntaxException {
         return productSubImageService.updateImage(multipartFile,id);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> delete(@PathVariable long id) {
-        return productSubImageService.delete(id);
-    }
     @GetMapping("/productId")
     public ResponseEntity<ResponseObject> getByProductId(@RequestParam long productId) {
        return productSubImageService.getByProductId(productId);
+    }
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<ResponseObject> deleteImage(@RequestParam long productId) throws IOException, URISyntaxException {
+        return productSubImageService.deleteImage(productId);
     }
 }
