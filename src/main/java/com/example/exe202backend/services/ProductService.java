@@ -85,9 +85,6 @@ public class ProductService {
         Product existingProduct = productRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Product not found"));
         productMapper.updateProductFromDto(productDTO,existingProduct);
-        existingProduct.setProductMaterial(productMaterialRepository.findById(productDTO.getMaterialId()).get());
-        existingProduct.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).get());
-        existingProduct.setAccessory(accessoryRepository.findById(productDTO.getAccessoryId()).get());
         productRepository.save(existingProduct);
         return ResponseEntity.ok(new ResponseObject("update success",productDTO));
     }
