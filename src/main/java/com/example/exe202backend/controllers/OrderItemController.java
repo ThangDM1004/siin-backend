@@ -35,6 +35,10 @@ public class OrderItemController {
     public ResponseEntity<ResponseObject> getById(@PathVariable long id) {
         return orderItemService.getById(id);
     }
+    @GetMapping("/get-by-order-detail/{orderDetailId}")
+    public ResponseEntity<ResponseObject> getByOrderDetailId(@PathVariable long orderDetailId) {
+        return orderItemService.getOrderItemsByOrderDetailId(orderDetailId);
+    }
     @PostMapping
     public ResponseEntity<ResponseObject> create(@RequestBody OrderItemDTO orderItemDTO) {
         return orderItemService.create(orderItemDTO);

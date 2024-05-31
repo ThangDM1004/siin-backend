@@ -2,6 +2,7 @@ package com.example.exe202backend.services;
 
 import com.example.exe202backend.dto.CartItemDTO;
 import com.example.exe202backend.mapper.CartItemMapper;
+import com.example.exe202backend.models.Cart;
 import com.example.exe202backend.models.CartItem;
 import com.example.exe202backend.repositories.CartItemRepository;
 import com.example.exe202backend.response.ResponseObject;
@@ -22,7 +23,9 @@ public class CartItemService {
     private CartItemRepository cartItemRepository;
     @Autowired
     private CartItemMapper cartItemMapper;
-    
+    @Autowired
+    private CartService cartService;
+
     public List<CartItemDTO> get(){
         return cartItemRepository.findAll().stream().map(cartItemMapper::toDto).collect(Collectors.toList());
     }
@@ -59,5 +62,15 @@ public class CartItemService {
         cartItemMapper.updateCartItemFromDto(cartItemDTO,cartItem);
         cartItemRepository.save(cartItem);
         return ResponseEntity.ok(new ResponseObject("update success",cartItemDTO));
+    }
+    public ResponseEntity<ResponseObject> getCartItemsByUserId(Long userId) {
+        Cart cart = cartService.getCartByUserId(userId);
+        if(cart == null){
+            return ResponseEntity.ok(new ResponseObject("Cart not found",null));
+        }
+        List<CartItemDTO> cartItems = cartItemRepository.findByCartId(cart.getId())
+                .stream().map(cartItemMapper::toDto).toList();
+        if(cartItems.isEmpty()){return ResponseEntity.ok(new ResponseObject("Not found",cartItems));}
+        return ResponseEntity.ok(new ResponseObject("get success",cartItems));
     }
 }

@@ -12,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,16 +22,6 @@ public class CartService {
     private CartRepository cartRepository;
     @Autowired
     private CartMapper cartMapper;
-    @Autowired
-    private ProductService productService;
-    @Autowired
-    private AccessoryRepository accessoryRepository;
-    @Autowired
-    private ProductMaterialService productMaterialService;
-    @Autowired
-    private ProductMaterialRepository productMaterialRepository;
-    @Autowired
-    private CartItemRepository cartItemRepository;
 
     public List<CartDTO> get(){
         return cartRepository.findAll().stream().map(cartMapper::toDto).collect(Collectors.toList());
@@ -69,5 +58,8 @@ public class CartService {
         cartMapper.updateCartFromDto(cartDTO,existingCart);
         cartRepository.save(existingCart);
         return ResponseEntity.ok(new ResponseObject("update success",cartDTO));
+    }
+    public Cart getCartByUserId(Long userId) {
+        return cartRepository.findByUserId(userId);
     }
 }
