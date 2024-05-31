@@ -26,9 +26,6 @@ public interface ProductMapper {
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "category", source = "categoryId", qualifiedByName = "mapToCategory")
-    @Mapping(target = "accessory", source = "accessoryId", qualifiedByName = "mapToAccessory")
-    @Mapping(target = "productMaterial", source = "materialId", qualifiedByName = "mapToProductMaterial")
     Product toEntity(ProductDTO productDTO);
 
     @Named("mapToCategory")
