@@ -61,4 +61,14 @@ public class OrderItemService {
         orderItemRepository.save(orderItem);
         return ResponseEntity.ok(new ResponseObject("update success",orderItemDTO));
     }
+    public ResponseEntity<ResponseObject> getOrderItemsByOrderDetailId(Long orderDetailId) {
+        List<OrderItem> orderItems = orderItemRepository.findByOrderDetailId(orderDetailId);
+        if(orderItems.isEmpty()){
+            return ResponseEntity.ok(new ResponseObject("Order Item not found",null));
+        }
+        return ResponseEntity.ok(new ResponseObject("Order Item not found",orderItems
+                .stream()
+                .map(orderItemMapper::toDto)
+                .toList()));
+    }
 }

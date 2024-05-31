@@ -31,6 +31,10 @@ public class CartItemController {
                 .build();
         return ResponseEntity.ok(new ResponseObject("get success", pageList));
     }
+    @GetMapping(value = "/get-by-user/{userId}")
+    public ResponseEntity<ResponseObject> getByUser(@PathVariable  Long userId) {
+        return cartItemService.getCartItemsByUserId(userId);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getById(@PathVariable long id) {
         return cartItemService.getById(id);
