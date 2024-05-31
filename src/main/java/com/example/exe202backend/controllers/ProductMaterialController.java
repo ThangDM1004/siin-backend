@@ -60,4 +60,9 @@ public class ProductMaterialController {
     public ResponseEntity<ResponseObject> updateImage(@PathVariable long productMaterialId, @RequestParam("file") MultipartFile file) throws IOException, URISyntaxException {
         return productMaterialService.updateImage(file,productMaterialId);
     }
+
+    @DeleteMapping("/delete-image/{productMaterialId}")
+    public ResponseEntity<ResponseObject> deleteImage(@PathVariable long productMaterialId) throws IOException, URISyntaxException {
+        return productMaterialService.deleteImage(productMaterialId);
+    }
 }

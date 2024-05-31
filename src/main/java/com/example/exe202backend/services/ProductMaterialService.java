@@ -122,6 +122,17 @@ public class ProductMaterialService {
         }
         return ResponseEntity.ok(new ResponseObject("Product Material is not exist",""));
     }
+    public ResponseEntity<ResponseObject> deleteImage(Long id) throws IOException, URISyntaxException {
+        Optional<ProductMaterial> productMaterial = productMaterialRepository.findById(id);
+        if (productMaterial.isPresent()) {
+            this.deleteImage(productMaterial.get().getImage());
+                String imageUrl = "";
+                productMaterial.get().setImage(imageUrl);
+                productMaterialRepository.save(productMaterial.get());
+                return ResponseEntity.ok(new ResponseObject("Delete successful",productMaterialMapper.toDto(productMaterial.get())));
+        }
+        return ResponseEntity.ok(new ResponseObject("Product Material is not exist",""));
+    }
 
     private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
         File tempFile = new File(fileName);
@@ -160,7 +171,7 @@ public class ProductMaterialService {
         }
     }
 
-    public void deleteImage(String filePath) throws IOException, URISyntaxException {
+    private void deleteImage(String filePath) throws IOException, URISyntaxException {
         String fileName = getFileNameFromFirebaseStorageUrl(filePath);
         BlobId blobId = BlobId.of("siin-image.appspot.com", fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build(); // Không cần set content type "media" ở đây

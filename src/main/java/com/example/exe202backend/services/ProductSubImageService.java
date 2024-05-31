@@ -44,51 +44,54 @@ public class ProductSubImageService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<ProductSubImageDTO> get(){
+    public List<ProductSubImageDTO> get() {
         return productSubImageRepository.findAll().stream().map(productSubImageMapper::toDto).collect(Collectors.toList());
     }
 
     public ResponseEntity<ResponseObject> create(ProductSubImageDTO productSubImageDTO) {
         ProductSubImage productSubImage = productSubImageMapper.toEntity(productSubImageDTO);
         productSubImageRepository.save(productSubImage);
-        return ResponseEntity.ok(new ResponseObject("create success",productSubImageDTO));
+        return ResponseEntity.ok(new ResponseObject("create success", productSubImageDTO));
     }
-    public Page<ProductSubImageDTO> getAll(int currentPage, int pageSize, String field){
+
+    public Page<ProductSubImageDTO> getAll(int currentPage, int pageSize, String field) {
         Page<ProductSubImage> productSubImages = productSubImageRepository.findAll(
-                PageRequest.of(currentPage-1,pageSize, Sort.by(Sort.Direction.ASC,field)));
+                PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.ASC, field)));
         return productSubImages.map(productSubImageMapper::toDto);
     }
-    public ResponseEntity<ResponseObject> getById(long id){
-        ProductSubImage productSubImage = productSubImageRepository.findById(id).orElseThrow(()->
+
+    public ResponseEntity<ResponseObject> getById(long id) {
+        ProductSubImage productSubImage = productSubImageRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Product Sub Image not found"));
-        return ResponseEntity.ok(new ResponseObject("get success",productSubImageMapper.toDto(productSubImage)));
+        return ResponseEntity.ok(new ResponseObject("get success", productSubImageMapper.toDto(productSubImage)));
     }
 
-    public ResponseEntity<ResponseObject> delete(long id){
+    public ResponseEntity<ResponseObject> delete(long id) {
         Optional<ProductSubImage> productSubImage = productSubImageRepository.findById(id);
-        if(productSubImage.isPresent()){
+        if (productSubImage.isPresent()) {
             productSubImage.get().setStatus(false);
             productSubImageRepository.save(productSubImage.get());
-            return ResponseEntity.ok(new ResponseObject("delete success",productSubImageMapper.toDto(productSubImage.get())));
+            return ResponseEntity.ok(new ResponseObject("delete success", productSubImageMapper.toDto(productSubImage.get())));
         }
-        return ResponseEntity.badRequest().body(new ResponseObject("Product not found",null));
-    }
-    public ResponseEntity<ResponseObject> update(Long id,ProductSubImageDTO productSubImageDTO){
-        ProductSubImage productSubImage = productSubImageRepository.findById(id).orElseThrow(()->
-                new RuntimeException("Product Sub Image not found"));
-        productSubImageMapper.updateProductSubImageFromDto(productSubImageDTO,productSubImage);
-        productSubImageRepository.save(productSubImage);
-        return ResponseEntity.ok(new ResponseObject("update success",productSubImageDTO));
+        return ResponseEntity.badRequest().body(new ResponseObject("Product not found", null));
     }
 
-    public ResponseEntity<ResponseObject> getByProductId(Long productId){
+    public ResponseEntity<ResponseObject> update(Long id, ProductSubImageDTO productSubImageDTO) {
+        ProductSubImage productSubImage = productSubImageRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Product Sub Image not found"));
+        productSubImageMapper.updateProductSubImageFromDto(productSubImageDTO, productSubImage);
+        productSubImageRepository.save(productSubImage);
+        return ResponseEntity.ok(new ResponseObject("update success", productSubImageDTO));
+    }
+
+    public ResponseEntity<ResponseObject> getByProductId(Long productId) {
         ArrayList<ProductSubImage> list = productSubImageRepository.findProductSubImageByProduct_Id(productId);
 
-        if(list.isEmpty()){
-            return ResponseEntity.ok(new ResponseObject("Product don't have image",""));
-        }else{
+        if (list.isEmpty()) {
+            return ResponseEntity.ok(new ResponseObject("Product don't have image", ""));
+        } else {
             List<ProductSubImageDTO> _list = list.stream().map(productSubImageMapper::toDto).toList();
-            return ResponseEntity.ok(new ResponseObject("Get list image success",_list));
+            return ResponseEntity.ok(new ResponseObject("Get list image success", _list));
         }
     }
 
@@ -106,13 +109,14 @@ public class ProductSubImageService {
                     productSubImageRepository.save(productSubImage);
                     list.add(productSubImageMapper.toDto(productSubImage));
                 }
-                return ResponseEntity.ok(new ResponseObject("Create successful",list));
+                return ResponseEntity.ok(new ResponseObject("Create successful", list));
             } else {
-                return ResponseEntity.ok(new ResponseObject("Image is null",""));
+                return ResponseEntity.ok(new ResponseObject("Image is null", ""));
             }
         }
-        return ResponseEntity.ok(new ResponseObject("Product is not exist",""));
+        return ResponseEntity.ok(new ResponseObject("Product is not exist", ""));
     }
+
     public ResponseEntity<ResponseObject> updateImage(MultipartFile multipartFile, Long id) throws IOException, URISyntaxException {
         Optional<ProductSubImage> productSubImage = productSubImageRepository.findById(id);
         if (productSubImage.isPresent()) {
@@ -121,13 +125,26 @@ public class ProductSubImageService {
                 String imageUrl = this.upload(multipartFile);
                 productSubImage.get().setUrl(imageUrl);
                 productSubImageRepository.save(productSubImage.get());
-                return ResponseEntity.ok(new ResponseObject("Update image successful",productSubImageMapper.toDto(productSubImage.get())));
+                return ResponseEntity.ok(new ResponseObject("Update image successful", productSubImageMapper.toDto(productSubImage.get())));
             } else {
-                return ResponseEntity.ok(new ResponseObject("Image is null",""));
+                return ResponseEntity.ok(new ResponseObject("Image is null", ""));
             }
         }
-        return ResponseEntity.ok(new ResponseObject("Product image is not exist",""));
+        return ResponseEntity.ok(new ResponseObject("Product image is not exist", ""));
     }
+
+    public ResponseEntity<ResponseObject> deleteImage(Long id) throws IOException, URISyntaxException {
+        Optional<ProductSubImage> productSubImage = productSubImageRepository.findById(id);
+        if (productSubImage.isPresent()) {
+            this.deleteImage(productSubImage.get().getUrl());
+            String imageUrl = null;
+            productSubImage.get().setUrl(imageUrl);
+            productSubImageRepository.save(productSubImage.get());
+            return ResponseEntity.ok(new ResponseObject("Delete image successful", productSubImageMapper.toDto(productSubImage.get())));
+        }
+        return ResponseEntity.ok(new ResponseObject("Product image is not exist", ""));
+    }
+
     private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
         File tempFile = new File(fileName);
         try (FileOutputStream fos = new FileOutputStream(tempFile)) {
@@ -146,6 +163,7 @@ public class ProductSubImageService {
         String DOWNLOAD_URL = "https://firebasestorage.googleapis.com/v0/b/siin-image.appspot.com/o/%s?alt=media";
         return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
     }
+
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf("."));
     }
@@ -165,7 +183,7 @@ public class ProductSubImageService {
         }
     }
 
-    public void deleteImage(String filePath) throws IOException, URISyntaxException {
+    private void deleteImage(String filePath) throws IOException, URISyntaxException {
         String fileName = getFileNameFromFirebaseStorageUrl(filePath);
         BlobId blobId = BlobId.of("siin-image.appspot.com", fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build(); // Không cần set content type "media" ở đây
@@ -178,6 +196,7 @@ public class ProductSubImageService {
         storage.delete(blobIds);
 
     }
+
     public static String getFileNameFromFirebaseStorageUrl(String url) throws URISyntaxException {
         String[] segments = url.split("/");
         String lastSegment = segments[segments.length - 1];
