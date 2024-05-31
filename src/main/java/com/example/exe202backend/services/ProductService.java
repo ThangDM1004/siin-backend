@@ -58,6 +58,9 @@ public class ProductService {
 
     public ResponseEntity<ResponseObject> create(ProductDTO productDTO) {
         Product product = productMapper.toEntity(productDTO);
+        product.setProductMaterial(productMaterialRepository.findById(productDTO.getMaterialId()).orElse(null));
+        product.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).orElse(null));
+        product.setAccessory(accessoryRepository.findById(productDTO.getAccessoryId()).orElse(null));
         productRepository.save(product);
         return ResponseEntity.ok(new ResponseObject("create success", productDTO));
     }
@@ -87,7 +90,7 @@ public class ProductService {
     public ResponseEntity<ResponseObject> update(Long id, ProductDTO productDTO) {
         Product existingProduct = productRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Product not found"));
-        productMapper.updateProductFromDto(productDTO, existingProduct);
+        productMapper.updateProductFromDto(productDTO,existingProduct);
         existingProduct.setProductMaterial(productMaterialRepository.findById(productDTO.getMaterialId()).get());
         existingProduct.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).get());
         existingProduct.setAccessory(accessoryRepository.findById(productDTO.getAccessoryId()).get());

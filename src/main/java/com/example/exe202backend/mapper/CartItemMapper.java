@@ -19,26 +19,13 @@ public interface CartItemMapper {
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "product", source = "productId", qualifiedByName = "productFromId")
-    @Mapping(target = "cart", source = "cartId", qualifiedByName = "cartFromId")
+    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "cart", ignore = true)
     CartItem toEntity(CartItemDTO cartItemDTO);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "product", source = "productId", qualifiedByName = "productFromId")
-    @Mapping(target = "cart", source = "cartId", qualifiedByName = "cartFromId")
+    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "cart", ignore = true)
     void updateCartItemFromDto(CartItemDTO cartItemDTO, @MappingTarget CartItem cartItem);
-
-    @Named("productFromId")
-    default Product productFromId(long id) {
-        Product product = new Product();
-        product.setId(id);
-        return product;
-    }
-    @Named("cartFromId")
-    default Cart cartFromId(long id) {
-        Cart cart = new Cart();
-        cart.setId(id);
-        return cart;
-    }
 }

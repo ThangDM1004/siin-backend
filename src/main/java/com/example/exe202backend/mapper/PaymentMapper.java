@@ -16,17 +16,10 @@ public interface PaymentMapper {
     PaymentDTO toDto(Payment payment);
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "orderDetail", source = "orderDetailId", qualifiedByName = "orderDetailFromId")
+    @Mapping(target = "orderDetail", ignore = true)
     Payment toEntity(PaymentDTO paymentDTO);
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "orderDetail", source = "orderDetailId", qualifiedByName = "orderDetailFromId")
+    @Mapping(target = "orderDetail", ignore = true)
     void updatePaymentFromDto(PaymentDTO paymentDTO, @MappingTarget Payment payment);
-
-    @Named("orderDetailFromId")
-    default OrderDetail orderDetailFromId(long id) {
-        OrderDetail orderDetail = new OrderDetail();
-        orderDetail.setId(id);
-        return orderDetail;
-    }
 }

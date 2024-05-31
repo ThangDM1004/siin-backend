@@ -18,19 +18,11 @@ public interface OrderDetailMapper {
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "userModel", source = "userId", qualifiedByName = "userModelFromId")
+    @Mapping(target = "userModel", ignore = true)
     OrderDetail toEntity(OrderDetailDTO orderDetailDTO);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "userModel", source = "userId", qualifiedByName = "userModelFromId")
+    @Mapping(target = "userModel", ignore = true)
     void updateOrderDetailFromDto(OrderDetailDTO orderDetailDTO, @MappingTarget OrderDetail orderDetail);
-
-    @Named("userModelFromId")
-    default UserModel userModelFromId(long id) {
-        UserModel userModel = new UserModel();
-        userModel.setId(id);
-        return userModel;
-    }
-
 }

@@ -16,17 +16,10 @@ public interface ProductSubImageMapper {
     ProductSubImageDTO toDto(ProductSubImage productSubImage);
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "product", source = "productId", qualifiedByName = "productFromId")
+    @Mapping(target = "product", ignore = true)
     ProductSubImage toEntity(ProductSubImageDTO productSubImageDTO);
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "product", source = "productId", qualifiedByName = "productFromId")
+    @Mapping(target = "product", ignore = true)
     void updateProductSubImageFromDto(ProductSubImageDTO productSubImageDTO, @MappingTarget ProductSubImage productSubImage);
-
-    @Named("productFromId")
-    default Product productFromId(long id) {
-        Product product = new Product();
-        product.setId(id);
-        return product;
-    }
 }

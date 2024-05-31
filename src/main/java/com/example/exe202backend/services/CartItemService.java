@@ -5,6 +5,8 @@ import com.example.exe202backend.mapper.CartItemMapper;
 import com.example.exe202backend.models.Cart;
 import com.example.exe202backend.models.CartItem;
 import com.example.exe202backend.repositories.CartItemRepository;
+import com.example.exe202backend.repositories.CartRepository;
+import com.example.exe202backend.repositories.ProductRepository;
 import com.example.exe202backend.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,12 +27,18 @@ public class CartItemService {
     private CartItemMapper cartItemMapper;
     @Autowired
     private CartService cartService;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private CartRepository cartRepository;
 
     public List<CartItemDTO> get(){
         return cartItemRepository.findAll().stream().map(cartItemMapper::toDto).collect(Collectors.toList());
     }
     public ResponseEntity<ResponseObject> create(CartItemDTO cartItemDTO) {
         CartItem cartItem = cartItemMapper.toEntity(cartItemDTO);
+        cartItem.setProduct(productRepository.findById(cartItemDTO.getProductId()).orElse(null));
+        cartItem.setCart(cartRepository.findById(cartItemDTO.getCartId()).orElse(null));
         cartItemRepository.save(cartItem);
         return ResponseEntity.ok(new ResponseObject("create success",cartItemDTO));
     }
@@ -60,6 +68,8 @@ public class CartItemService {
         CartItem cartItem = cartItemRepository.findById(id).orElseThrow(()->
                 new RuntimeException("Cart Item not found"));
         cartItemMapper.updateCartItemFromDto(cartItemDTO,cartItem);
+        cartItem.setProduct(productRepository.findById(cartItemDTO.getProductId()).orElse(null));
+        cartItem.setCart(cartRepository.findById(cartItemDTO.getCartId()).orElse(null));
         cartItemRepository.save(cartItem);
         return ResponseEntity.ok(new ResponseObject("update success",cartItemDTO));
     }

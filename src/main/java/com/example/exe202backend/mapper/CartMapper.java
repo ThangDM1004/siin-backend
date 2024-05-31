@@ -17,18 +17,11 @@ public interface CartMapper {
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "user", source = "userId", qualifiedByName = "userModelFromId")
+    @Mapping(target = "user", ignore = true)
     Cart toEntity(CartDTO cartDTO);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "user", source = "userId", qualifiedByName = "userModelFromId")
+    @Mapping(target = "user", ignore = true)
     void updateCartFromDto(CartDTO cartDTO, @MappingTarget Cart cart);
-
-    @Named("userModelFromId")
-    default UserModel userModelFromId(long id) {
-        UserModel userModel = new UserModel();
-        userModel.setId(id);
-        return userModel;
-    }
 }

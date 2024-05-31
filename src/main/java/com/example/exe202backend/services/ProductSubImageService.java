@@ -50,6 +50,7 @@ public class ProductSubImageService {
 
     public ResponseEntity<ResponseObject> create(ProductSubImageDTO productSubImageDTO) {
         ProductSubImage productSubImage = productSubImageMapper.toEntity(productSubImageDTO);
+        productSubImage.setProduct(productRepository.findById(productSubImageDTO.getProductId()).orElse(null));
         productSubImageRepository.save(productSubImage);
         return ResponseEntity.ok(new ResponseObject("create success", productSubImageDTO));
     }
@@ -79,7 +80,8 @@ public class ProductSubImageService {
     public ResponseEntity<ResponseObject> update(Long id, ProductSubImageDTO productSubImageDTO) {
         ProductSubImage productSubImage = productSubImageRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Product Sub Image not found"));
-        productSubImageMapper.updateProductSubImageFromDto(productSubImageDTO, productSubImage);
+        productSubImageMapper.updateProductSubImageFromDto(productSubImageDTO,productSubImage);
+        productSubImage.setProduct(productRepository.findById(productSubImageDTO.getProductId()).orElse(null));
         productSubImageRepository.save(productSubImage);
         return ResponseEntity.ok(new ResponseObject("update success", productSubImageDTO));
     }
