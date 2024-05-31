@@ -40,6 +40,9 @@ public class PaymentService {
     public ResponseEntity<ResponseObject> create(PaymentDTO dto) {
         Payment payment = paymentMapper.toEntity(dto);
         paymentRepository.save(payment);
+        Optional<OrderDetail> orderDetail = orderDetailRepository.findById(dto.getOrderDetailId());
+        orderDetail.get().setPayment(payment);
+        orderDetailRepository.save(orderDetail.get());
         return ResponseEntity.ok(new ResponseObject("create success", dto));
     }
 

@@ -14,5 +14,4 @@ public class OrderDetailDTO {
     private boolean status;
     private String phone;
     private long userId;
-    private long paymentId;
 }

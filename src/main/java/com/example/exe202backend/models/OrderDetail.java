@@ -1,5 +1,6 @@
 package com.example.exe202backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -19,10 +20,11 @@ public class OrderDetail extends BaseModel{
     private String phone;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",nullable = true)
     private UserModel userModel;
 
     @OneToOne(mappedBy = "orderDetail")
+    @JsonIgnore
     private Payment payment;
 
     @OneToMany(mappedBy = "orderDetail", cascade = CascadeType.ALL, orphanRemoval = true)
