@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("/api/v1/accessory")
@@ -46,6 +50,16 @@ public class AccessoryController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseObject> deleteAccessory(@PathVariable long id) {
         return accessoryService.delete(id);
+    }
+
+    @PostMapping("/create-image/{accessoryId}")
+    public ResponseEntity<ResponseObject> createImage(@PathVariable long accessoryId, @RequestParam("file") MultipartFile file) {
+        return accessoryService.createImage(file,accessoryId);
+    }
+
+    @PutMapping("/update-image/{accessoryId}")
+    public ResponseEntity<ResponseObject> updateImage(@PathVariable long accessoryId, @RequestParam("file") MultipartFile file) throws IOException, URISyntaxException {
+        return accessoryService.updateImage(file,accessoryId);
     }
 }
 
