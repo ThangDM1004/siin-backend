@@ -8,6 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/product-sub-image")
@@ -34,21 +39,20 @@ public class ProductSubImageController {
     public ResponseEntity<ResponseObject> getById(@PathVariable long id) {
         return productSubImageService.getById(id);
     }
-    @PostMapping
-    public ResponseEntity<ResponseObject> create(@RequestBody ProductSubImageDTO productSubImageDTO) {
-        return productSubImageService.create(productSubImageDTO);
+    @PostMapping("/{productId}")
+    public ResponseEntity<ResponseObject> create(@RequestParam("file") List<MultipartFile> multipartFile,@PathVariable Long productId) {
+        return productSubImageService.createSubImage(multipartFile, productId);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestBody ProductSubImageDTO productSubImageDTO) {
-        return productSubImageService.update(id,productSubImageDTO);
-    }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseObject> delete(@PathVariable long id) {
-        return productSubImageService.delete(id);
+    public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestParam("file") MultipartFile multipartFile) throws IOException, URISyntaxException {
+        return productSubImageService.updateImage(multipartFile,id);
     }
     @GetMapping("/productId")
     public ResponseEntity<ResponseObject> getByProductId(@RequestParam long productId) {
        return productSubImageService.getByProductId(productId);
     }
-
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<ResponseObject> deleteImage(@RequestParam long productId) throws IOException, URISyntaxException {
+        return productSubImageService.deleteImage(productId);
+    }
 }

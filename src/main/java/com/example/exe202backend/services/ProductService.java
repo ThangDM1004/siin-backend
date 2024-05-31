@@ -52,7 +52,7 @@ public class ProductService {
     @Autowired
     private ProductMaterialRepository productMaterialRepository;
 
-    public List<ProductDTO> get(){
+    public List<ProductDTO> get() {
         return productRepository.findAll().stream().map(productMapper::toDto).collect(Collectors.toList());
     }
 
@@ -62,29 +62,32 @@ public class ProductService {
         product.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).orElse(null));
         product.setAccessory(accessoryRepository.findById(productDTO.getAccessoryId()).orElse(null));
         productRepository.save(product);
-        return ResponseEntity.ok(new ResponseObject("create success",productDTO));
-    }
-    public Page<ProductDTO> getAll(int currentPage, int pageSize, String field){
-        Page<Product> accessories = productRepository.findAll(
-                PageRequest.of(currentPage-1,pageSize, Sort.by(Sort.Direction.ASC,field)));
-        return accessories.map(productMapper::toDto);
-    }
-    public ResponseEntity<ResponseObject> getById(long id){
-        Product product = productRepository.findById(id).orElseThrow(()->
-                new RuntimeException("Product not found"));
-        return ResponseEntity.ok(new ResponseObject("get success",productMapper.toDto(product)));
+        return ResponseEntity.ok(new ResponseObject("create success", productDTO));
     }
 
-    public ResponseEntity<ResponseObject> delete(long id){
+    public Page<ProductDTO> getAll(int currentPage, int pageSize, String field) {
+        Page<Product> accessories = productRepository.findAll(
+                PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.ASC, field)));
+        return accessories.map(productMapper::toDto);
+    }
+
+    public ResponseEntity<ResponseObject> getById(long id) {
+        Product product = productRepository.findById(id).orElseThrow(() ->
+                new RuntimeException("Product not found"));
+        return ResponseEntity.ok(new ResponseObject("get success", productMapper.toDto(product)));
+    }
+
+    public ResponseEntity<ResponseObject> delete(long id) {
         Optional<Product> product = productRepository.findById(id);
-        if(product.isPresent()){
+        if (product.isPresent()) {
             product.get().setStatus(false);
             productRepository.save(product.get());
-            return ResponseEntity.ok(new ResponseObject("delete success",productMapper.toDto(product.get())));
+            return ResponseEntity.ok(new ResponseObject("delete success", productMapper.toDto(product.get())));
         }
-        return ResponseEntity.badRequest().body(new ResponseObject("Product not found",null));
+        return ResponseEntity.badRequest().body(new ResponseObject("Product not found", null));
     }
-    public ResponseEntity<ResponseObject> update(Long id,ProductDTO productDTO){
+
+    public ResponseEntity<ResponseObject> update(Long id, ProductDTO productDTO) {
         Product existingProduct = productRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Product not found"));
         productMapper.updateProductFromDto(productDTO,existingProduct);
@@ -92,7 +95,7 @@ public class ProductService {
         existingProduct.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).get());
         existingProduct.setAccessory(accessoryRepository.findById(productDTO.getAccessoryId()).get());
         productRepository.save(existingProduct);
-        return ResponseEntity.ok(new ResponseObject("update success",existingProduct));
+        return ResponseEntity.ok(new ResponseObject("update success", productDTO));
     }
 
     public ResponseEntity<ResponseObject> createCoverImage(MultipartFile multipartFile, Long id) {
@@ -102,13 +105,14 @@ public class ProductService {
                 String imageUrl = this.upload(multipartFile);
                 product.get().setCoverImage(imageUrl);
                 productRepository.save(product.get());
-                return ResponseEntity.ok(new ResponseObject("Create successful",productMapper.toDto(product.get())));
+                return ResponseEntity.ok(new ResponseObject("Create successful", productMapper.toDto(product.get())));
             } else {
-                return ResponseEntity.ok(new ResponseObject("Image object is null",""));
+                return ResponseEntity.ok(new ResponseObject("Image object is null", ""));
             }
         }
-        return ResponseEntity.ok(new ResponseObject("Product is not exist",""));
+        return ResponseEntity.ok(new ResponseObject("Product is not exist", ""));
     }
+
     public ResponseEntity<ResponseObject> updateCoverImage(MultipartFile multipartFile, Long id) throws IOException, URISyntaxException {
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
@@ -117,16 +121,31 @@ public class ProductService {
                 String imageUrl = this.upload(multipartFile);
                 product.get().setCoverImage(imageUrl);
                 productRepository.save(product.get());
-                return ResponseEntity.ok(new ResponseObject("Update image successful",productMapper.toDto(product.get())));
+                return ResponseEntity.ok(new ResponseObject("Update image successful", productMapper.toDto(product.get())));
             } else {
-                return ResponseEntity.ok(new ResponseObject("Image is null",""));
+                return ResponseEntity.ok(new ResponseObject("Image is null", ""));
             }
         }
-        return ResponseEntity.ok(new ResponseObject("Product is not exist",""));
+        return ResponseEntity.ok(new ResponseObject("Product is not exist", ""));
     }
-    public Product isExist(long accessoryId, String size, String colorName){
-        Long materialId = productMaterialService.getMaterialIdBySizeAndColorName(size,colorName);
-        if(materialId == null){ return null;}
+
+    public ResponseEntity<ResponseObject> deleteCoverImage(Long id) throws IOException, URISyntaxException {
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent()) {
+            this.deleteImage(product.get().getCoverImage());
+            String imageUrl = null;
+            product.get().setCoverImage(imageUrl);
+            productRepository.save(product.get());
+            return ResponseEntity.ok(new ResponseObject("Delete image successful", productMapper.toDto(product.get())));
+        }
+        return ResponseEntity.ok(new ResponseObject("Product is not exist", ""));
+    }
+
+    public Product isExist(long accessoryId, String size, String colorName) {
+        Long materialId = productMaterialService.getMaterialIdBySizeAndColorName(size, colorName);
+        if (materialId == null) {
+            return null;
+        }
         List<Product> allProducts = productRepository.findAll();
 
         List<Product> filteredProducts = allProducts.stream()
@@ -157,6 +176,7 @@ public class ProductService {
         String DOWNLOAD_URL = "https://firebasestorage.googleapis.com/v0/b/siin-image.appspot.com/o/%s?alt=media";
         return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
     }
+
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf("."));
     }
@@ -176,7 +196,7 @@ public class ProductService {
         }
     }
 
-    public void deleteImage(String filePath) throws IOException, URISyntaxException {
+    private void deleteImage(String filePath) throws IOException, URISyntaxException {
         String fileName = getFileNameFromFirebaseStorageUrl(filePath);
         BlobId blobId = BlobId.of("siin-image.appspot.com", fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build(); // Không cần set content type "media" ở đây
@@ -189,6 +209,7 @@ public class ProductService {
         storage.delete(blobIds);
 
     }
+
     public static String getFileNameFromFirebaseStorageUrl(String url) throws URISyntaxException {
         String[] segments = url.split("/");
         String lastSegment = segments[segments.length - 1];
