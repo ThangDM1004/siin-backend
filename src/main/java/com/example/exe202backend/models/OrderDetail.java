@@ -17,7 +17,14 @@ import java.util.List;
 public class OrderDetail extends BaseModel{
     private double total;
     private String orderStatus;
+    private String nameCustomer;
     private String phone;
+    private String province;
+    private String district;
+    private String ward;
+    private String address;
+    private String email;
+    private String note;
 
     @ManyToOne
     @JoinColumn(name = "user_id",nullable = true)
