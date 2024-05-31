@@ -22,9 +22,6 @@ public interface ProductMapper {
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "category", ignore = true)
-    @Mapping(target = "accessory", ignore = true)
-    @Mapping(target = "productMaterial", ignore = true)
     void updateProductFromDto(ProductDTO productDTO, @MappingTarget Product product);
 
     @Mapping(target = "status", source = "status")
