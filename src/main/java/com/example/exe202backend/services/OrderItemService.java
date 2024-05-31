@@ -3,7 +3,9 @@ package com.example.exe202backend.services;
 import com.example.exe202backend.dto.OrderItemDTO;
 import com.example.exe202backend.mapper.OrderItemMapper;
 import com.example.exe202backend.models.OrderItem;
+import com.example.exe202backend.repositories.OrderDetailRepository;
 import com.example.exe202backend.repositories.OrderItemRepository;
+import com.example.exe202backend.repositories.ProductRepository;
 import com.example.exe202backend.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,10 @@ public class OrderItemService {
     private OrderItemRepository orderItemRepository;
     @Autowired
     private OrderItemMapper orderItemMapper;
+    @Autowired
+    private OrderDetailRepository orderDetailRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     public List<OrderItemDTO> get(){
         return orderItemRepository.findAll().stream().map(orderItemMapper::toDto).collect(Collectors.toList());
@@ -29,6 +35,8 @@ public class OrderItemService {
 
     public ResponseEntity<ResponseObject> create(OrderItemDTO orderItemDTO) {
         OrderItem orderItem = orderItemMapper.toEntity(orderItemDTO);
+        orderItem.setOrderDetail(orderDetailRepository.findById(orderItemDTO.getOrderDetailId()).orElse(null));
+        orderItem.setProduct(productRepository.findById(orderItemDTO.getProductId()).orElse(null));
         orderItemRepository.save(orderItem);
         return ResponseEntity.ok(new ResponseObject("create success",orderItemDTO));
     }
@@ -58,6 +66,8 @@ public class OrderItemService {
         OrderItem orderItem = orderItemRepository.findById(id).orElseThrow(()->
                 new RuntimeException("Order Item not found"));
         orderItemMapper.updateOrderItemFromDto(orderItemDTO,orderItem);
+        orderItem.setOrderDetail(orderDetailRepository.findById(orderItemDTO.getOrderDetailId()).orElse(null));
+        orderItem.setProduct(productRepository.findById(orderItemDTO.getProductId()).orElse(null));
         orderItemRepository.save(orderItem);
         return ResponseEntity.ok(new ResponseObject("update success",orderItemDTO));
     }

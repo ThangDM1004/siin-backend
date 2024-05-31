@@ -14,18 +14,11 @@ public interface UserAddressMapper {
     @Mapping(target = "id", source = "id")
     UserAddressDTO toDto(UserAddress userAddress);
 
-    @Mapping(target = "userModel", source = "userId", qualifiedByName = "userModelFromId")
+    @Mapping(target = "userModel",ignore = true)
     @Mapping(target = "id", source = "id")
     UserAddress toEntity(UserAddressDTO userAddressDTO);
 
-    @Mapping(target = "userModel", source = "userId", qualifiedByName = "userModelFromId")
+    @Mapping(target = "userModel", ignore = true)
     @Mapping(target = "id", source = "id")
     void updateUserAddressFromDto(UserAddressDTO userAddressDTO, @MappingTarget UserAddress userAddress);
-
-    @Named("userModelFromId")
-    default UserModel userModelFromId(long id) {
-        UserModel userModel = new UserModel();
-        userModel.setId(id);
-        return userModel;
-    }
 }

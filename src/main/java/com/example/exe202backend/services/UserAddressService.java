@@ -4,6 +4,7 @@ import com.example.exe202backend.dto.UserAddressDTO;
 import com.example.exe202backend.mapper.UserAddressMapper;
 import com.example.exe202backend.models.UserAddress;
 import com.example.exe202backend.repositories.UserAddressRepository;
+import com.example.exe202backend.repositories.UserRepository;
 import com.example.exe202backend.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,8 @@ public class UserAddressService {
     private UserAddressRepository userAddressRepository;
     @Autowired
     private UserAddressMapper userAddressMapper;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<UserAddressDTO> get(){
         return userAddressRepository.findAll().stream().map(userAddressMapper::toDto).collect(Collectors.toList());
@@ -29,6 +32,7 @@ public class UserAddressService {
 
     public ResponseEntity<ResponseObject> create(UserAddressDTO dto) {
         UserAddress address = userAddressMapper.toEntity(dto);
+        address.setUserModel(userRepository.findById(dto.getId()).orElse(null));
         userAddressRepository.save(address);
         return ResponseEntity.ok(new ResponseObject("create success",dto));
     }
@@ -56,6 +60,7 @@ public class UserAddressService {
         UserAddress address = userAddressRepository.findById(id).orElseThrow(()->
                 new RuntimeException("Product Sub Image not found"));
         userAddressMapper.updateUserAddressFromDto(dto,address);
+        address.setUserModel(userRepository.findById(dto.getId()).orElse(null));
         userAddressRepository.save(address);
         return ResponseEntity.ok(new ResponseObject("update success",dto));
     }

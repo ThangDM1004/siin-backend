@@ -4,6 +4,7 @@ import com.example.exe202backend.dto.OrderDetailDTO;
 import com.example.exe202backend.mapper.OrderDetailMapper;
 import com.example.exe202backend.models.OrderDetail;
 import com.example.exe202backend.repositories.OrderDetailRepository;
+import com.example.exe202backend.repositories.UserRepository;
 import com.example.exe202backend.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,8 @@ public class OrderDetailService {
     private OrderDetailRepository orderDetailRepository;
     @Autowired
     private OrderDetailMapper orderDetailMapper;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<OrderDetailDTO> get(){
         return orderDetailRepository.findAll().stream().map(orderDetailMapper::toDto).collect(Collectors.toList());
@@ -32,6 +35,7 @@ public class OrderDetailService {
         if(orderDetailDTO.getUserId() == 0){
             orderDetail.setUserModel(null);
         }
+        orderDetail.setUserModel(userRepository.findById(orderDetailDTO.getUserId()).orElse(null));
         orderDetailRepository.save(orderDetail);
         return ResponseEntity.ok(new ResponseObject("create success",orderDetailDTO));
     }
@@ -59,6 +63,7 @@ public class OrderDetailService {
         OrderDetail existingOrderDetail = orderDetailRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Order detail not found"));
         orderDetailMapper.updateOrderDetailFromDto(orderDetailDTO,existingOrderDetail);
+        existingOrderDetail.setUserModel(userRepository.findById(orderDetailDTO.getUserId()).orElse(null));
         orderDetailRepository.save(existingOrderDetail);
         return ResponseEntity.ok(new ResponseObject("update success",orderDetailDTO));
     }

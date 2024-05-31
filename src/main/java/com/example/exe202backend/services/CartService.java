@@ -22,6 +22,8 @@ public class CartService {
     private CartRepository cartRepository;
     @Autowired
     private CartMapper cartMapper;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<CartDTO> get(){
         return cartRepository.findAll().stream().map(cartMapper::toDto).collect(Collectors.toList());
@@ -29,6 +31,7 @@ public class CartService {
 
     public ResponseEntity<ResponseObject> create(CartDTO cartDTO) {
         Cart cart = cartMapper.toEntity(cartDTO);
+        cart.setUser(userRepository.findById(cartDTO.getUserId()).orElse(null));
         cartRepository.save(cart);
         return ResponseEntity.ok(new ResponseObject("create success",cartDTO));
     }
@@ -56,6 +59,7 @@ public class CartService {
         Cart existingCart = cartRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Cart not found"));
         cartMapper.updateCartFromDto(cartDTO,existingCart);
+        existingCart.setUser(userRepository.findById(cartDTO.getUserId()).orElse(null));
         cartRepository.save(existingCart);
         return ResponseEntity.ok(new ResponseObject("update success",cartDTO));
     }

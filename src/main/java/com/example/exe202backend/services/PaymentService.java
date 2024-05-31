@@ -39,6 +39,7 @@ public class PaymentService {
 
     public ResponseEntity<ResponseObject> create(PaymentDTO dto) {
         Payment payment = paymentMapper.toEntity(dto);
+        payment.setOrderDetail(orderDetailRepository.findById(dto.getOrderDetailId()).orElse(null));
         paymentRepository.save(payment);
         Optional<OrderDetail> orderDetail = orderDetailRepository.findById(dto.getOrderDetailId());
         orderDetail.get().setPayment(payment);
@@ -72,6 +73,7 @@ public class PaymentService {
         Payment existingPayment = paymentRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Product not found"));
         paymentMapper.updatePaymentFromDto(dto, existingPayment);
+        existingPayment.setOrderDetail(orderDetailRepository.findById(dto.getOrderDetailId()).orElse(null));
         paymentRepository.save(existingPayment);
         return ResponseEntity.ok(new ResponseObject("update success", dto));
     }

@@ -3,6 +3,7 @@ package com.example.exe202backend.services;
 import com.example.exe202backend.dto.ProductSubImageDTO;
 import com.example.exe202backend.mapper.ProductSubImageMapper;
 import com.example.exe202backend.models.ProductSubImage;
+import com.example.exe202backend.repositories.ProductRepository;
 import com.example.exe202backend.repositories.ProductSubImageRepository;
 import com.example.exe202backend.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class ProductSubImageService {
     private ProductSubImageRepository productSubImageRepository;
     @Autowired
     private ProductSubImageMapper productSubImageMapper;
+    @Autowired
+    private ProductRepository productRepository;
 
     public List<ProductSubImageDTO> get(){
         return productSubImageRepository.findAll().stream().map(productSubImageMapper::toDto).collect(Collectors.toList());
@@ -30,6 +33,7 @@ public class ProductSubImageService {
 
     public ResponseEntity<ResponseObject> create(ProductSubImageDTO productSubImageDTO) {
         ProductSubImage productSubImage = productSubImageMapper.toEntity(productSubImageDTO);
+        productSubImage.setProduct(productRepository.findById(productSubImageDTO.getProductId()).orElse(null));
         productSubImageRepository.save(productSubImage);
         return ResponseEntity.ok(new ResponseObject("create success",productSubImageDTO));
     }
@@ -57,6 +61,7 @@ public class ProductSubImageService {
         ProductSubImage productSubImage = productSubImageRepository.findById(id).orElseThrow(()->
                 new RuntimeException("Product Sub Image not found"));
         productSubImageMapper.updateProductSubImageFromDto(productSubImageDTO,productSubImage);
+        productSubImage.setProduct(productRepository.findById(productSubImageDTO.getProductId()).orElse(null));
         productSubImageRepository.save(productSubImage);
         return ResponseEntity.ok(new ResponseObject("update success",productSubImageDTO));
     }
