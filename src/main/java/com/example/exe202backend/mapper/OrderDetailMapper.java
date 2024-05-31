@@ -14,19 +14,16 @@ public interface OrderDetailMapper {
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
     @Mapping(target = "userId", source = "userModel.id")
-    @Mapping(target = "paymentId", source = "payment.id")
     OrderDetailDTO toDto(OrderDetail orderDetail);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
     @Mapping(target = "userModel", source = "userId", qualifiedByName = "userModelFromId")
-    @Mapping(target = "payment", source = "paymentId", qualifiedByName = "paymentFromId")
     OrderDetail toEntity(OrderDetailDTO orderDetailDTO);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
     @Mapping(target = "userModel", source = "userId", qualifiedByName = "userModelFromId")
-    @Mapping(target = "payment", source = "paymentId", qualifiedByName = "paymentFromId")
     void updateOrderDetailFromDto(OrderDetailDTO orderDetailDTO, @MappingTarget OrderDetail orderDetail);
 
     @Named("userModelFromId")
@@ -36,10 +33,4 @@ public interface OrderDetailMapper {
         return userModel;
     }
 
-    @Named("paymentFromId")
-    default Payment paymentFromId(long id) {
-        Payment payment = new Payment();
-        payment.setId(id);
-        return payment;
-    }
 }

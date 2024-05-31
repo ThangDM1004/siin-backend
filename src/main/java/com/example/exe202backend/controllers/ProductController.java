@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("/api/v1/product")
@@ -48,5 +52,16 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseObject> delete(@PathVariable long id) {
         return productService.delete(id);
+    }
+
+    @PostMapping("/upload-image/{productId}")
+    public ResponseEntity<ResponseObject> uploadImage(@RequestParam("file") MultipartFile multipartFile,
+                                                          @PathVariable Long productId ) {
+        return productService.createCoverImage(multipartFile, productId);
+    }
+    @PutMapping("/update-image/{productId}")
+    public ResponseEntity<ResponseObject> updateImage(@RequestParam("file") MultipartFile multipartFile,
+                                                          @PathVariable Long productId ) throws IOException, URISyntaxException {
+        return productService.updateCoverImage(multipartFile, productId);
     }
 }

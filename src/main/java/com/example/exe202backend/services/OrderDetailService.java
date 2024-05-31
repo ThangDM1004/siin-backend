@@ -29,6 +29,9 @@ public class OrderDetailService {
 
     public ResponseEntity<ResponseObject> create(OrderDetailDTO orderDetailDTO) {
         OrderDetail orderDetail = orderDetailMapper.toEntity(orderDetailDTO);
+        if(orderDetailDTO.getUserId() == 0){
+            orderDetail.setUserModel(null);
+        }
         orderDetailRepository.save(orderDetail);
         return ResponseEntity.ok(new ResponseObject("create success",orderDetailDTO));
     }
