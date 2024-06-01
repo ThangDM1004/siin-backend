@@ -36,8 +36,8 @@ public class OrderDetailService {
             orderDetail.setUserModel(null);
         }
         orderDetail.setUserModel(userRepository.findById(orderDetailDTO.getUserId()).orElse(null));
-        orderDetailRepository.save(orderDetail);
-        return ResponseEntity.ok(new ResponseObject("create success",orderDetailDTO));
+        OrderDetail savedOrderDetail = orderDetailRepository.save(orderDetail);
+        return ResponseEntity.ok(new ResponseObject("create success",savedOrderDetail));
     }
     public Page<OrderDetailDTO> getAll(int currentPage, int pageSize, String field){
         Page<OrderDetail> orderDetails = orderDetailRepository.findAll(
