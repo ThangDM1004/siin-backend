@@ -2,11 +2,8 @@ package com.example.exe202backend.services;
 
 import com.example.exe202backend.dto.CartItemDTO;
 import com.example.exe202backend.mapper.CartItemMapper;
-import com.example.exe202backend.models.Cart;
-import com.example.exe202backend.models.CartItem;
-import com.example.exe202backend.repositories.CartItemRepository;
-import com.example.exe202backend.repositories.CartRepository;
-import com.example.exe202backend.repositories.ProductRepository;
+import com.example.exe202backend.models.*;
+import com.example.exe202backend.repositories.*;
 import com.example.exe202backend.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,6 +28,14 @@ public class CartItemService {
     private ProductRepository productRepository;
     @Autowired
     private CartRepository cartRepository;
+    @Autowired
+    private ProductMaterialService productMaterialService;
+    @Autowired
+    private ProductMaterialRepository productMaterialRepository;
+    @Autowired
+    private AccessoryRepository accessoryRepository;
+    @Autowired
+    private ProductService productService;
 
     public List<CartItemDTO> get(){
         return cartItemRepository.findAll().stream().map(cartItemMapper::toDto).collect(Collectors.toList());
@@ -92,5 +97,21 @@ public class CartItemService {
                 .stream().map(cartItemMapper::toDto).toList();
         if(cartItems.isEmpty()){return ResponseEntity.ok(new ResponseObject("Not found",cartItems));}
         return ResponseEntity.ok(new ResponseObject("get success",cartItems));
+    }
+
+    public CartItem fromProductToCartIteṃ̣̣̣(Long accessoryId, String color, String size, int quantity){
+        Product product = productService.isExist(accessoryId,color,size);
+        if(product == null){
+            ProductMaterial material = productMaterialRepository.
+                    findById(productMaterialService.getMaterialIdBySizeAndColorName(color,size)).get();
+            Accessory accessory = accessoryRepository.findById(accessoryId).get();
+            product = Product.builder()
+                    .name(accessory.getName()+"-"+material.getColorName()+"-"+material.getSize())
+                    .price(accessory.getPrice()+material.getPrice())
+                    .quantity(quantity)
+
+                    .build();
+        }
+        return null;
     }
 }
