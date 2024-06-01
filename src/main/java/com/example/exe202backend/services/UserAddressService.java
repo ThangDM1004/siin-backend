@@ -43,7 +43,7 @@ public class UserAddressService {
     }
     public ResponseEntity<ResponseObject> getById(long id){
         UserAddress address = userAddressRepository.findById(id).orElseThrow(()->
-                new RuntimeException("Product Sub Image not found"));
+                new RuntimeException("User address not found"));
         return ResponseEntity.ok(new ResponseObject("get success",userAddressMapper.toDto(address)));
     }
 
