@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,6 +37,10 @@ public class CartItemService {
     private AccessoryRepository accessoryRepository;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private ProductCategoryRepository productCategoryRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<CartItemDTO> get(){
         return cartItemRepository.findAll().stream().map(cartItemMapper::toDto).collect(Collectors.toList());
@@ -99,19 +104,47 @@ public class CartItemService {
         return ResponseEntity.ok(new ResponseObject("get success",cartItems));
     }
 
-    public CartItem fromProductToCartIteṃ̣̣̣(Long accessoryId, String color, String size, int quantity){
-        Product product = productService.isExist(accessoryId,color,size);
-        if(product == null){
-            ProductMaterial material = productMaterialRepository.
-                    findById(productMaterialService.getMaterialIdBySizeAndColorName(color,size)).get();
-            Accessory accessory = accessoryRepository.findById(accessoryId).get();
-            product = Product.builder()
-                    .name(accessory.getName()+"-"+material.getColorName()+"-"+material.getSize())
-                    .price(accessory.getPrice()+material.getPrice())
-                    .quantity(quantity)
+    public ResponseEntity<ResponseObject> fromProductToCartItem(Long accessoryId, String color, String size, int quantity, Long userId) {
+        Product product = productService.isExist(accessoryId, color, size);
+        ProductMaterial material = productMaterialRepository.findById(productMaterialService.getMaterialIdBySizeAndColorName(color, size)).get();
+        Accessory accessory = accessoryRepository.findById(accessoryId).get();
+        product = Product.builder()
+                .name(accessory.getName() + "-" + material.getColorName() + "-" + material.getSize())
+                .price(accessory.getPrice() + material.getPrice())
+                .quantity(0)
+                .category(productCategoryRepository.findById(1L).get())
+                .accessory(accessory)
+                .productMaterial(material)
+                .build();
 
+        product.setQuantity(quantity);
+        productRepository.save(product);
+
+        CartItem cartItem = CartItem.builder()
+                .product(product)
+                .quantity(quantity)
+                .build();
+
+        if (userId == null) {
+            return ResponseEntity.ok(new ResponseObject("add success", cartItemMapper.toDto(cartItem)));
+        }
+
+        Cart cart = cartRepository.findByUserId(userId);
+        if (cart == null) {
+            cart = Cart.builder()
+                    .total(0)
+                    .cartItems(new ArrayList<>())
+                    .user(userRepository.findById(userId).get())
                     .build();
         }
-        return null;
+
+        cart.getCartItems().add(cartItem);
+        cart.setTotal(cart.getTotal() + product.getPrice() * quantity);
+        cartItem.setCart(cart);
+
+        cartRepository.save(cart);
+        cartItemRepository.save(cartItem);
+
+        return ResponseEntity.ok(new ResponseObject("add success", cartItemMapper.toDto(cartItem)));
     }
 }
