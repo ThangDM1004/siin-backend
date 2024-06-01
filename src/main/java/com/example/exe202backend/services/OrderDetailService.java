@@ -62,6 +62,20 @@ public class OrderDetailService {
     public ResponseEntity<ResponseObject> update(Long id,OrderDetailDTO orderDetailDTO){
         OrderDetail existingOrderDetail = orderDetailRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Order detail not found"));
+
+        orderDetailDTO.setOrderStatus(orderDetailDTO.getOrderStatus() != null ? orderDetailDTO.getOrderStatus() : existingOrderDetail.getOrderStatus());
+        orderDetailDTO.setUserId(orderDetailDTO.getUserId() != 0 ? orderDetailDTO.getUserId() : existingOrderDetail.getUserModel().getId());
+        orderDetailDTO.setEmail(orderDetailDTO.getEmail() != null ? orderDetailDTO.getEmail() : existingOrderDetail.getEmail());
+        orderDetailDTO.setPhone(orderDetailDTO.getPhone() != null ? orderDetailDTO.getPhone() : existingOrderDetail.getPhone());
+        orderDetailDTO.setAddress(orderDetailDTO.getAddress() != null ? orderDetailDTO.getAddress() : existingOrderDetail.getAddress());
+        orderDetailDTO.setDistrict(orderDetailDTO.getDistrict() != null ? orderDetailDTO.getDistrict() : existingOrderDetail.getDistrict());
+        orderDetailDTO.setProvince(orderDetailDTO.getProvince() != null ? orderDetailDTO.getProvince() : existingOrderDetail.getProvince());
+        orderDetailDTO.setWard(orderDetailDTO.getWard() != null ? orderDetailDTO.getWard() : existingOrderDetail.getWard());
+        orderDetailDTO.setNameCustomer(orderDetailDTO.getNameCustomer() != null ? orderDetailDTO.getNameCustomer() : existingOrderDetail.getNameCustomer());
+        orderDetailDTO.setNote(orderDetailDTO.getNote() != null ? orderDetailDTO.getNote() : existingOrderDetail.getNote());
+        orderDetailDTO.setTotal(orderDetailDTO.getTotal() != 0 ? orderDetailDTO.getTotal() : existingOrderDetail.getTotal());
+
+        orderDetailDTO.setStatus(existingOrderDetail.getStatus());
         orderDetailMapper.updateOrderDetailFromDto(orderDetailDTO,existingOrderDetail);
         existingOrderDetail.setUserModel(userRepository.findById(orderDetailDTO.getUserId()).orElse(null));
         orderDetailRepository.save(existingOrderDetail);

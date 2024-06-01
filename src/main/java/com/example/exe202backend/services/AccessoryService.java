@@ -79,6 +79,11 @@ public class AccessoryService {
     public ResponseEntity<ResponseObject> update(Long id,AccessoryDTO accessoryDto){
         Accessory existingAccessory = accessoryRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Accessory not found"));
+        accessoryDto.setImage(accessoryDto.getImage() != null ? accessoryDto.getImage() : existingAccessory.getImage());
+        accessoryDto.setName(accessoryDto.getName() != null ? accessoryDto.getName() : existingAccessory.getName());
+        accessoryDto.setPrice(accessoryDto.getPrice() != 0 ? accessoryDto.getPrice() : existingAccessory.getPrice());
+        accessoryDto.setQuantity(accessoryDto.getQuantity() != 0 ? accessoryDto.getQuantity() : existingAccessory.getQuantity());
+        accessoryDto.setStatus(existingAccessory.getStatus());
         accessoryMapper.updateAccessoryFromDto(accessoryDto,existingAccessory);
         accessoryRepository.save(existingAccessory);
         return ResponseEntity.ok(new ResponseObject("update success",accessoryDto));

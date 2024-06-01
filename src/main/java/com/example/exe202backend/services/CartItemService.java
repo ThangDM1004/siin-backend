@@ -67,6 +67,16 @@ public class CartItemService {
     public ResponseEntity<ResponseObject> update(Long id,CartItemDTO cartItemDTO){
         CartItem cartItem = cartItemRepository.findById(id).orElseThrow(()->
                 new RuntimeException("Cart Item not found"));
+        if(cartItemDTO.getCartId() == 0){
+            cartItemDTO.setCartId(cartItem.getCart().getId());
+        }
+        if(cartItemDTO.getProductId() == 0){
+            cartItemDTO.setProductId(cartItem.getProduct().getId());
+        }
+        if(cartItemDTO.getQuantity() == 0){
+            cartItemDTO.setQuantity(cartItem.getQuantity());
+        }
+        cartItemDTO.setStatus(cartItem.getStatus());
         cartItemMapper.updateCartItemFromDto(cartItemDTO,cartItem);
         cartItem.setProduct(productRepository.findById(cartItemDTO.getProductId()).orElse(null));
         cartItem.setCart(cartRepository.findById(cartItemDTO.getCartId()).orElse(null));

@@ -65,6 +65,19 @@ public class OrderItemService {
     public ResponseEntity<ResponseObject> update(Long id,OrderItemDTO orderItemDTO){
         OrderItem orderItem = orderItemRepository.findById(id).orElseThrow(()->
                 new RuntimeException("Order Item not found"));
+        if(orderItemDTO.getPrice() == 0){
+            orderItem.setPrice(orderItemDTO.getPrice());
+        }
+        if(orderItemDTO.getQuantity() == 0){
+            orderItem.setQuantity(orderItemDTO.getQuantity());
+        }
+        if(orderItemDTO.getProductId() == 0){
+            orderItemDTO.setProductId(orderItem.getProduct().getId());
+        }
+        if(orderItemDTO.getOrderDetailId() == 0){
+            orderItemDTO.setOrderDetailId(orderItem.getOrderDetail().getId());
+        }
+        orderItemDTO.setStatus(orderItem.getStatus());
         orderItemMapper.updateOrderItemFromDto(orderItemDTO,orderItem);
         orderItem.setOrderDetail(orderDetailRepository.findById(orderItemDTO.getOrderDetailId()).orElse(null));
         orderItem.setProduct(productRepository.findById(orderItemDTO.getProductId()).orElse(null));

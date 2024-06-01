@@ -90,6 +90,28 @@ public class ProductService {
     public ResponseEntity<ResponseObject> update(Long id, ProductDTO productDTO) {
         Product existingProduct = productRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Product not found"));
+        if(productDTO.getName() == null){
+            productDTO.setName(existingProduct.getName());
+        }
+        if(productDTO.getCoverImage() == null){
+            productDTO.setCoverImage(existingProduct.getCoverImage());
+        }
+        if(productDTO.getPrice() == 0){
+            productDTO.setPrice(existingProduct.getPrice());
+        }
+        if(productDTO.getQuantity() == 0){
+            productDTO.setQuantity(existingProduct.getQuantity());
+        }
+        if(productDTO.getAccessoryId() == 0){
+            productDTO.setAccessoryId(existingProduct.getAccessory().getId());
+        }
+        if(productDTO.getCategoryId() == 0){
+            productDTO.setCategoryId(existingProduct.getCategory().getId());
+        }
+        if(productDTO.getMaterialId() == 0){
+            productDTO.setMaterialId(existingProduct.getProductMaterial().getId());
+        }
+        productDTO.setStatus(existingProduct.getStatus());
         productMapper.updateProductFromDto(productDTO,existingProduct);
         existingProduct.setProductMaterial(productMaterialRepository.findById(productDTO.getMaterialId()).get());
         existingProduct.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).get());

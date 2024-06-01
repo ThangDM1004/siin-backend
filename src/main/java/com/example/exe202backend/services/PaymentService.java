@@ -72,6 +72,16 @@ public class PaymentService {
     public ResponseEntity<ResponseObject> update(Long id, PaymentDTO dto) {
         Payment existingPayment = paymentRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Product not found"));
+        if(dto.getOrderDetailId() == 0){
+            dto.setOrderDetailId(existingPayment.getOrderDetail().getId());
+        }
+        if(dto.getTypePayment() == null){
+            dto.setTypePayment(existingPayment.getTypePayment());
+        }
+        if(dto.getTotal() == 0){
+            dto.setTotal(existingPayment.getTotal());
+        }
+        dto.setStatus(existingPayment.getStatus());
         paymentMapper.updatePaymentFromDto(dto, existingPayment);
         existingPayment.setOrderDetail(orderDetailRepository.findById(dto.getOrderDetailId()).orElse(null));
         paymentRepository.save(existingPayment);
