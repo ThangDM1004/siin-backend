@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Bean;
                 )
         ),
         servers = {
-                @Server(url = "http://172.188.64.221:8080/", description = "Default Server URL"),
+                @Server(url = "http://172.171.207.227:8080/", description = "Default Server URL"),
                 @Server(url = "http://localhost:8080/", description = "Default Server URL")
         }
 )
