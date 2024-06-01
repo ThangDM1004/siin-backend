@@ -58,6 +58,13 @@ public class CartService {
     public ResponseEntity<ResponseObject> update(Long id,CartDTO cartDTO){
         Cart existingCart = cartRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Cart not found"));
+        if(cartDTO.getTotal() == 0){
+            cartDTO.setTotal(existingCart.getTotal());
+        }
+        if(cartDTO.getUserId() == 0){
+            cartDTO.setUserId(existingCart.getUser().getId());
+        }
+        cartDTO.setStatus(existingCart.getStatus());
         cartMapper.updateCartFromDto(cartDTO,existingCart);
         existingCart.setUser(userRepository.findById(cartDTO.getUserId()).orElse(null));
         cartRepository.save(existingCart);

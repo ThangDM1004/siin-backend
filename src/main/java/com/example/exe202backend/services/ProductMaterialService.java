@@ -76,6 +76,22 @@ public class ProductMaterialService {
     public ResponseEntity<ResponseObject> update(Long id, ProductMaterialDTO productMaterialDTO){
         ProductMaterial existingProductMaterial = productMaterialRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Product material not found"));
+        if(productMaterialDTO.getColorName() == null){
+            productMaterialDTO.setColorName(existingProductMaterial.getColorName());
+        }
+        if(productMaterialDTO.getSize() == null){
+            productMaterialDTO.setSize(existingProductMaterial.getSize());
+        }
+        if(productMaterialDTO.getQuantity() == 0){
+            productMaterialDTO.setQuantity(existingProductMaterial.getQuantity());
+        }
+        if(productMaterialDTO.getImage() == null){
+            productMaterialDTO.setImage(existingProductMaterial.getImage());
+        }
+        if(productMaterialDTO.getPrice() == 0){
+            productMaterialDTO.setPrice(existingProductMaterial.getPrice());
+        }
+        productMaterialDTO.setStatus(existingProductMaterial.getStatus());
         productMaterialMapper.updateProductMaterialFromDto(productMaterialDTO,existingProductMaterial);
         productMaterialRepository.save(existingProductMaterial);
         return ResponseEntity.ok(new ResponseObject("update success",productMaterialDTO));

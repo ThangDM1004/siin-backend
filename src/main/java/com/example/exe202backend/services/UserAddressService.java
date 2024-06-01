@@ -59,6 +59,21 @@ public class UserAddressService {
     public ResponseEntity<ResponseObject> update(Long id,UserAddressDTO dto){
         UserAddress address = userAddressRepository.findById(id).orElseThrow(()->
                 new RuntimeException("Product Sub Image not found"));
+        if(dto.getUserId() == 0){
+            dto.setUserId(address.getUserModel().getId());
+        }
+        if(dto.getAddress() == null){
+            dto.setAddress(address.getAddress());
+        }
+        if(dto.getWard() == null){
+            dto.setWard(address.getWard());
+        }
+        if(dto.getProvince() == null){
+            dto.setProvince(address.getProvince());
+        }
+        if(dto.getDistrict() == null){
+            dto.setDistrict(address.getDistrict());
+        }
         userAddressMapper.updateUserAddressFromDto(dto,address);
         address.setUserModel(userRepository.findById(dto.getId()).orElse(null));
         userAddressRepository.save(address);
