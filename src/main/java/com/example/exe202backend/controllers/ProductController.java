@@ -41,6 +41,7 @@ public class ProductController {
     public ResponseEntity<ResponseObject> getById(@PathVariable long id) {
         return productService.getById(id);
     }
+
     @PostMapping
     public ResponseEntity<ResponseObject> create(@RequestBody ProductDTO productDTO) {
         return productService.create(productDTO);
