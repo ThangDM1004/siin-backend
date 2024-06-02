@@ -52,4 +52,4 @@ jobs:
             docker rm backend-app || true
             docker images --filter=reference='hieu15402/exe201' --format '{{.ID}} {{.Tag}}' | grep '<none>' | awk '{print $1}' | xargs -I {} docker rmi -f {}
             docker pull hieu15402/exe201
-            docker run -d -p 8080:8080 --name backend-app hieu15402/exe201
+            docker run -d -p 8080:8080 --name backend-app --restart always hieu15402/exe201
