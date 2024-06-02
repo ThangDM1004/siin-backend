@@ -139,9 +139,7 @@ public class ProductSubImageService {
         Optional<ProductSubImage> productSubImage = productSubImageRepository.findById(id);
         if (productSubImage.isPresent()) {
             this.deleteImage(productSubImage.get().getUrl());
-            String imageUrl = null;
-            productSubImage.get().setUrl(imageUrl);
-            productSubImageRepository.save(productSubImage.get());
+            productSubImageRepository.delete(productSubImage.get());
             return ResponseEntity.ok(new ResponseObject("Delete image successful", productSubImageMapper.toDto(productSubImage.get())));
         }
         return ResponseEntity.ok(new ResponseObject("Product image is not exist", ""));

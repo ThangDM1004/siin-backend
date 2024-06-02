@@ -51,8 +51,8 @@ public class ProductSubImageController {
     public ResponseEntity<ResponseObject> getByProductId(@RequestParam long productId) {
        return productSubImageService.getByProductId(productId);
     }
-    @DeleteMapping("/{productId}")
-    public ResponseEntity<ResponseObject> deleteImage(@RequestParam long productId) throws IOException, URISyntaxException {
-        return productSubImageService.deleteImage(productId);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseObject> deleteImage(@RequestParam long id) throws IOException, URISyntaxException {
+        return productSubImageService.deleteImage(id);
     }
 }
