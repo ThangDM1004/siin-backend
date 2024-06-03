@@ -16,9 +16,7 @@ import java.util.List;
 @SuperBuilder
 public class Accessory extends BaseModel{
     private String name;
-    private int quantity;
     private String image;
-    private double price;
 
     @OneToMany(mappedBy = "accessory", cascade = CascadeType.ALL)
     @JsonIgnore

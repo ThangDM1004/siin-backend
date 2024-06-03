@@ -18,7 +18,7 @@ public class CartItem extends BaseModel{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     @JsonIgnore
-    private Product product;
+    private ProductMaterial productMaterial;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")

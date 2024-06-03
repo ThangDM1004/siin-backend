@@ -13,19 +13,19 @@ import org.mapstruct.Named;
 public interface OrderItemMapper {
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "productId", source = "product.id")
+    @Mapping(target = "productMaterialId", source = "productMaterial.id")
     @Mapping(target = "orderDetailId", source = "orderDetail.id")
     OrderItemDTO toDto(OrderItem orderItem);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "productMaterial", ignore = true)
     @Mapping(target = "orderDetail", ignore = true)
     OrderItem toEntity(OrderItemDTO orderItemDTO);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "productMaterial", ignore = true)
     @Mapping(target = "orderDetail", ignore = true)
     void updateOrderItemFromDto(OrderItemDTO orderItemDTO, @MappingTarget OrderItem orderItem);
 }

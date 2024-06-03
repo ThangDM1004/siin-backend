@@ -10,7 +10,7 @@ import lombok.*;
 public class CartItemDTO {
     private long id;
     private int quantity;
-    private long productId;
+    private long productMaterialId;
     private long cartId;
     private boolean status;
 }

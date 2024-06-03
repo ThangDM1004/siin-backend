@@ -12,16 +12,35 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "product_material", uniqueConstraints = {@UniqueConstraint(columnNames = {"colorName", "size"})})
+@Table(name = "product_material",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"color_id", "size_id"})
+        })
 @SuperBuilder
 public class ProductMaterial extends BaseModel{
-    private String colorName;
-    private String size;
     private int quantity;
     private String image;
     private double price;
+    private String coverImage;
 
-    @OneToMany(mappedBy = "productMaterial", cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "product_id")
     @JsonIgnore
-    private List<Product> products;
+    private Product product;
+
+    @ManyToOne
+    @JoinColumn(name = "size_id")
+    private Size size;
+
+    @ManyToOne
+    @JoinColumn(name = "color_id")
+    private Color color;
+
+    @OneToMany(mappedBy = "productMaterial", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<CartItem> cartItems;
+
+    @OneToMany(mappedBy = "productMaterial", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<OrderItem>  orderItems;
 }

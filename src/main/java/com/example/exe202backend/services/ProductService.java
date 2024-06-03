@@ -44,13 +44,7 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
     @Autowired
-    private ProductMaterialService productMaterialService;
-    @Autowired
-    private ProductCategoryRepository productCategoryRepository;
-    @Autowired
     private AccessoryRepository accessoryRepository;
-    @Autowired
-    private ProductMaterialRepository productMaterialRepository;
 
     public List<ProductDTO> get() {
         return productRepository.findAll().stream().map(productMapper::toDto).collect(Collectors.toList());
@@ -58,9 +52,7 @@ public class ProductService {
 
     public ResponseEntity<ResponseObject> create(ProductDTO productDTO) {
         Product product = productMapper.toEntity(productDTO);
-        product.setProductMaterial(productMaterialRepository.findById(productDTO.getMaterialId()).orElse(null));
-        product.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).orElse(null));
-        product.setAccessory(accessoryRepository.findById(productDTO.getAccessoryId()).orElse(null));
+        product.setAccessory(accessoryRepository.findById(product.getAccessory().getId()).orElse(null));
         productRepository.save(product);
         return ResponseEntity.ok(new ResponseObject("create success", productDTO));
     }
@@ -72,9 +64,9 @@ public class ProductService {
     }
 
     public ResponseEntity<ResponseObject> getById(long id) {
-        Product product = productRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Product not found"));
-        return ResponseEntity.ok(new ResponseObject("get success", productMapper.toDto(product)));
+        Optional<Product> product = productRepository.findById(id);
+        return product.map(value -> ResponseEntity.ok(new ResponseObject("get success", productMapper.toDto(value))))
+                .orElseGet(() -> ResponseEntity.ok(new ResponseObject("get success", null)));
     }
 
     public ResponseEntity<ResponseObject> delete(long id) {
@@ -99,22 +91,11 @@ public class ProductService {
         if(productDTO.getPrice() == 0){
             productDTO.setPrice(existingProduct.getPrice());
         }
-        if(productDTO.getQuantity() == 0){
-            productDTO.setQuantity(existingProduct.getQuantity());
-        }
         if(productDTO.getAccessoryId() == 0){
             productDTO.setAccessoryId(existingProduct.getAccessory().getId());
         }
-        if(productDTO.getCategoryId() == 0){
-            productDTO.setCategoryId(existingProduct.getCategory().getId());
-        }
-        if(productDTO.getMaterialId() == 0){
-            productDTO.setMaterialId(existingProduct.getProductMaterial().getId());
-        }
         productDTO.setStatus(existingProduct.getStatus());
         productMapper.updateProductFromDto(productDTO,existingProduct);
-        existingProduct.setProductMaterial(productMaterialRepository.findById(productDTO.getMaterialId()).get());
-        existingProduct.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).get());
         existingProduct.setAccessory(accessoryRepository.findById(productDTO.getAccessoryId()).get());
         productRepository.save(existingProduct);
         return ResponseEntity.ok(new ResponseObject("update success", productDTO));
@@ -163,22 +144,22 @@ public class ProductService {
         return ResponseEntity.ok(new ResponseObject("Product is not exist", ""));
     }
 
-    public Product isExist(long accessoryId, String size, String colorName) {
-        Long materialId = productMaterialService.getMaterialIdBySizeAndColorName(size, colorName);
-        if (materialId == null) {
-            return null;
-        }
-        List<Product> allProducts = productRepository.findAll();
-
-        List<Product> filteredProducts = allProducts.stream()
-                .filter(product -> product.getAccessory() != null && product.getAccessory().getId() == accessoryId
-                        && product.getProductMaterial() != null && product.getProductMaterial().getId() == materialId)
-                .toList();
-        if (!filteredProducts.isEmpty()) {
-            return filteredProducts.get(0);
-        }
-        return null;
-    }
+//    public Product isExist(long accessoryId, String size, String colorName) {
+//        Long materialId = productMaterialService.getMaterialIdBySizeAndColorName(size, colorName);
+//        if (materialId == null) {
+//            return null;
+//        }
+//        List<Product> allProducts = productRepository.findAll();
+//
+//        List<Product> filteredProducts = allProducts.stream()
+//                .filter(product -> product.getAccessory() != null && product.getAccessory().getId() == accessoryId
+//                        && product.getProductMaterial() != null && product.getProductMaterial().getId() == materialId)
+//                .toList();
+//        if (!filteredProducts.isEmpty()) {
+//            return filteredProducts.get(0);
+//        }
+//        return null;
+//    }
 
     private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
         File tempFile = new File(fileName);

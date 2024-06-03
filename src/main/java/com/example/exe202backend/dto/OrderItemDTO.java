@@ -11,7 +11,7 @@ public class OrderItemDTO {
     private long id;
     private int quantity;
     private double price;
-    private long productId;
+    private long productMaterialId;
     private long orderDetailId;
     private boolean status;
 }

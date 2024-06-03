@@ -2,7 +2,6 @@ package com.example.exe202backend.services;
 
 import com.example.exe202backend.dto.ProductMaterialDTO;
 import com.example.exe202backend.mapper.ProductMaterialMapper;
-import com.example.exe202backend.models.Accessory;
 import com.example.exe202backend.models.ProductMaterial;
 import com.example.exe202backend.repositories.ProductMaterialRepository;
 import com.example.exe202backend.response.ResponseObject;
@@ -28,10 +27,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,9 +53,9 @@ public class ProductMaterialService {
     }
 
     public ResponseEntity<ResponseObject> getById(long id){
-        ProductMaterial productMaterial = productMaterialRepository.findById(id).orElseThrow(()
-                -> new RuntimeException("Product material not found"));
-        return ResponseEntity.ok(new ResponseObject("get success",productMaterialMapper.toDto(productMaterial)));
+        Optional<ProductMaterial> productMaterial = productMaterialRepository.findById(id);
+        return productMaterial.map(material -> ResponseEntity.ok(new ResponseObject("get success", productMaterialMapper.toDto(material))))
+                .orElseGet(() -> ResponseEntity.ok(new ResponseObject("get success", null)));
     }
 
     public ResponseEntity<ResponseObject> delete(long id){
@@ -76,11 +72,11 @@ public class ProductMaterialService {
     public ResponseEntity<ResponseObject> update(Long id, ProductMaterialDTO productMaterialDTO){
         ProductMaterial existingProductMaterial = productMaterialRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Product material not found"));
-        if(productMaterialDTO.getColorName() == null){
-            productMaterialDTO.setColorName(existingProductMaterial.getColorName());
+        if(productMaterialDTO.getColorId() == null){
+            productMaterialDTO.setColorId(existingProductMaterial.getColor().getId());
         }
-        if(productMaterialDTO.getSize() == null){
-            productMaterialDTO.setSize(existingProductMaterial.getSize());
+        if(productMaterialDTO.getSizeId() == null){
+            productMaterialDTO.setSizeId(existingProductMaterial.getSize().getId());
         }
         if(productMaterialDTO.getQuantity() == 0){
             productMaterialDTO.setQuantity(existingProductMaterial.getQuantity());
@@ -97,12 +93,11 @@ public class ProductMaterialService {
         return ResponseEntity.ok(new ResponseObject("update success",productMaterialDTO));
     }
 
-    public Long getMaterialIdBySizeAndColorName(String size, String colorName) {
+    public Long getMaterialIdBySizeAndColorName(Long sizeId, Long colorId) {
         List<ProductMaterial> list = productMaterialRepository.findAll();
         List<ProductMaterial> filteredList = list.stream()
-                .filter(productMaterial -> productMaterial.getColorName().equalsIgnoreCase(colorName)
-                        && productMaterial.getSize().equalsIgnoreCase(size))
-                .toList();
+                .filter(productMaterial -> Objects.equals(productMaterial.getColor().getId(), colorId)
+                        && Objects.equals(productMaterial.getSize().getId(), sizeId)).toList();
         if (filteredList.isEmpty()) {
             return null;
         }

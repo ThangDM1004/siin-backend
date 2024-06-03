@@ -13,19 +13,19 @@ import org.mapstruct.Named;
 public interface CartItemMapper {
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "productId", source = "product.id")
+    @Mapping(target = "productMaterialId", source = "productMaterial.id")
     @Mapping(target = "cartId", source = "cart.id")
     CartItemDTO toDto(CartItem cartItem);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "productMaterial", ignore = true)
     @Mapping(target = "cart", ignore = true)
     CartItem toEntity(CartItemDTO cartItemDTO);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "productMaterial", ignore = true)
     @Mapping(target = "cart", ignore = true)
     void updateCartItemFromDto(CartItemDTO cartItemDTO, @MappingTarget CartItem cartItem);
 }

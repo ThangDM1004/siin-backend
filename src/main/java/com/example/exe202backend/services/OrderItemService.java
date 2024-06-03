@@ -5,7 +5,7 @@ import com.example.exe202backend.mapper.OrderItemMapper;
 import com.example.exe202backend.models.OrderItem;
 import com.example.exe202backend.repositories.OrderDetailRepository;
 import com.example.exe202backend.repositories.OrderItemRepository;
-import com.example.exe202backend.repositories.ProductRepository;
+import com.example.exe202backend.repositories.ProductMaterialRepository;
 import com.example.exe202backend.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,7 @@ public class OrderItemService {
     @Autowired
     private OrderDetailRepository orderDetailRepository;
     @Autowired
-    private ProductRepository productRepository;
+    private ProductMaterialRepository productMaterialRepository;
 
     public List<OrderItemDTO> get(){
         return orderItemRepository.findAll().stream().map(orderItemMapper::toDto).collect(Collectors.toList());
@@ -36,7 +36,7 @@ public class OrderItemService {
     public ResponseEntity<ResponseObject> create(OrderItemDTO orderItemDTO) {
         OrderItem orderItem = orderItemMapper.toEntity(orderItemDTO);
         orderItem.setOrderDetail(orderDetailRepository.findById(orderItemDTO.getOrderDetailId()).orElse(null));
-        orderItem.setProduct(productRepository.findById(orderItemDTO.getProductId()).orElse(null));
+        orderItem.setProductMaterial(productMaterialRepository.findById(orderItemDTO.getProductMaterialId()).orElse(null));
         orderItemRepository.save(orderItem);
         return ResponseEntity.ok(new ResponseObject("create success",orderItemDTO));
     }
@@ -71,8 +71,8 @@ public class OrderItemService {
         if(orderItemDTO.getQuantity() == 0){
             orderItem.setQuantity(orderItemDTO.getQuantity());
         }
-        if(orderItemDTO.getProductId() == 0){
-            orderItemDTO.setProductId(orderItem.getProduct().getId());
+        if(orderItemDTO.getProductMaterialId() == 0){
+            orderItemDTO.setProductMaterialId(orderItem.getProductMaterial().getId());
         }
         if(orderItemDTO.getOrderDetailId() == 0){
             orderItemDTO.setOrderDetailId(orderItem.getOrderDetail().getId());
@@ -80,7 +80,7 @@ public class OrderItemService {
         orderItemDTO.setStatus(orderItem.getStatus());
         orderItemMapper.updateOrderItemFromDto(orderItemDTO,orderItem);
         orderItem.setOrderDetail(orderDetailRepository.findById(orderItemDTO.getOrderDetailId()).orElse(null));
-        orderItem.setProduct(productRepository.findById(orderItemDTO.getProductId()).orElse(null));
+        orderItem.setProductMaterial(productMaterialRepository.findById(orderItemDTO.getProductMaterialId()).orElse(null));
         orderItemRepository.save(orderItem);
         return ResponseEntity.ok(new ResponseObject("update success",orderItemDTO));
     }
