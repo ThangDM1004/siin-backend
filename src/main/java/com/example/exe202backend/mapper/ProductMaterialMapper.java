@@ -10,12 +10,23 @@ import org.mapstruct.MappingTarget;
 public interface ProductMaterialMapper {
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "productId", source = "product.id")
+    @Mapping(target = "colorId", source = "size.id")
+    @Mapping(target = "sizeId", source = "color.id")
     ProductMaterialDTO toDto(ProductMaterial productMaterial);
+
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "color", ignore = true)
+    @Mapping(target = "size", ignore = true)
     ProductMaterial toEntity(ProductMaterialDTO productMaterialDTO);
+
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "color", ignore = true)
+    @Mapping(target = "size", ignore = true)
     void updateProductMaterialFromDto(ProductMaterialDTO productMaterialDTO,
                                       @MappingTarget ProductMaterial productMaterial);
 }

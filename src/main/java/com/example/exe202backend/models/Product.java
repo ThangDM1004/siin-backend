@@ -32,15 +32,6 @@ public class Product extends BaseModel{
     @JoinColumn(name = "accessory_id")
     private Accessory accessory;
 
-    @ManyToOne
-    @JoinColumn(name = "productMaterial_id")
-    private ProductMaterial productMaterial;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<CartItem> cartItems;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<OrderItem>  orderItems;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<ProductMaterial> productMaterials;
 }

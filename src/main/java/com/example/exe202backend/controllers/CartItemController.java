@@ -43,16 +43,16 @@ public class CartItemController {
     public ResponseEntity<ResponseObject> create(@RequestBody CartItemDTO cartItemDTO) {
         return cartItemService.create(cartItemDTO);
     }
-    @PostMapping("/add-to-cart")
-    public ResponseEntity<ResponseObject> addToCart(
-            @RequestParam Long accessoryId,
-            @RequestParam String color,
-            @RequestParam String size,
-            @RequestParam int quantity,
-            @RequestParam(required = false) Long userId
-    ) {
-        return cartItemService.fromProductToCartItem(accessoryId, color, size, quantity, userId);
-    }
+//    @PostMapping("/add-to-cart")
+//    public ResponseEntity<ResponseObject> addToCart(
+//            @RequestParam Long accessoryId,
+//            @RequestParam String color,
+//            @RequestParam String size,
+//            @RequestParam int quantity,
+//            @RequestParam(required = false) Long userId
+//    ) {
+//        return cartItemService.fromProductToCartItem(accessoryId, color, size, quantity, userId);
+//    }
     @PutMapping("/{id}")
     public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestBody CartItemDTO cartItemDTO) {
         return cartItemService.update(id,cartItemDTO);

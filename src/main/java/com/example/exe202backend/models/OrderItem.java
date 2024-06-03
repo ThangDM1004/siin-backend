@@ -17,9 +17,9 @@ public class OrderItem extends BaseModel{
     private double price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @JoinColumn(name = "product_material_id")
     @JsonIgnore
-    private Product product;
+    private ProductMaterial productMaterial;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_detail_id")
