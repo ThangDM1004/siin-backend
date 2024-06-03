@@ -1,10 +1,13 @@
 package com.example.exe202backend.services;
 
 import com.example.exe202backend.dto.OrderDetailDTO;
+import com.example.exe202backend.dto.OrderDetailRequestDTO;
 import com.example.exe202backend.mapper.OrderDetailMapper;
+import com.example.exe202backend.models.Cart;
+import com.example.exe202backend.models.CartItem;
 import com.example.exe202backend.models.OrderDetail;
-import com.example.exe202backend.repositories.OrderDetailRepository;
-import com.example.exe202backend.repositories.UserRepository;
+import com.example.exe202backend.models.OrderItem;
+import com.example.exe202backend.repositories.*;
 import com.example.exe202backend.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,30 +28,50 @@ public class OrderDetailService {
     private OrderDetailMapper orderDetailMapper;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private OrderItemRepository orderItemRepository;
+    @Autowired
+    private CartRepository cartRepository;
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     public List<OrderDetailDTO> get(){
         return orderDetailRepository.findAll().stream().map(orderDetailMapper::toDto).collect(Collectors.toList());
     }
 
-    public ResponseEntity<ResponseObject> create(OrderDetailDTO orderDetailDTO) {
-        OrderDetail orderDetail = orderDetailMapper.toEntity(orderDetailDTO);
-        if(orderDetailDTO.getUserId() == 0){
-            orderDetail.setUserModel(null);
+    public ResponseEntity<ResponseObject> create(Long userId, List<Long> cartItemIds, OrderDetailRequestDTO orderDetailRequestDTO) {
+        OrderDetailDTO orderDetailDTO = null;
+        if (userId != null && cartItemIds == null) {
+            Cart cart = cartRepository.findByUserId(userId);
+            if (cart != null) {
+                orderDetailDTO = processOrder(cart,orderDetailRequestDTO);
+            } else {
+                throw new RuntimeException("Cart can not found");
+            }
         }
-        orderDetail.setUserModel(userRepository.findById(orderDetailDTO.getUserId()).orElse(null));
-        OrderDetail savedOrderDetail = orderDetailRepository.save(orderDetail);
-        return ResponseEntity.ok(new ResponseObject("create success",savedOrderDetail));
+        else if (userId == null && cartItemIds != null) {
+            List<CartItem> cartItems = cartItemRepository.findAllById(cartItemIds);
+            if (!cartItems.isEmpty()) {
+                orderDetailDTO= processOrderForGuest(cartItems, orderDetailRequestDTO);
+            } else {
+                throw new RuntimeException("List cart item can not found");
+            }
+        }
+        return ResponseEntity.ok(new ResponseObject("", orderDetailDTO));
     }
+
     public Page<OrderDetailDTO> getAll(int currentPage, int pageSize, String field){
         Page<OrderDetail> orderDetails = orderDetailRepository.findAll(
                 PageRequest.of(currentPage-1,pageSize, Sort.by(Sort.Direction.ASC,field)));
         return orderDetails.map(orderDetailMapper::toDto);
     }
+
     public ResponseEntity<ResponseObject> getById(long id){
         OrderDetail orderDetail = orderDetailRepository.findById(id).orElseThrow(()->
                 new RuntimeException("Order detail not found"));
         return ResponseEntity.ok(new ResponseObject("get success",orderDetailMapper.toDto(orderDetail)));
     }
+
     public ResponseEntity<ResponseObject> delete(long id){
         Optional<OrderDetail> orderDetail = orderDetailRepository.findById(id);
         if(orderDetail.isPresent()){
@@ -80,5 +103,44 @@ public class OrderDetailService {
         existingOrderDetail.setUserModel(userRepository.findById(orderDetailDTO.getUserId()).orElse(null));
         orderDetailRepository.save(existingOrderDetail);
         return ResponseEntity.ok(new ResponseObject("update success",orderDetailDTO));
+    }
+
+    private OrderDetailDTO processOrder(Cart cart, OrderDetailRequestDTO orderDetailRequestDTO) {
+        OrderDetail orderDetail = orderDetailMapper.toEntity(orderDetailRequestDTO);
+        orderDetail.setUserModel(cart.getUser());
+        orderDetail.setTotal(cart.getTotal());
+        orderDetail.setOrderStatus("Pending");
+
+        orderDetailRepository.save(orderDetail);
+
+        for (CartItem cartItem : cart.getCartItems()) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setProductMaterial(cartItem.getProductMaterial());
+            orderItem.setOrderDetail(orderDetail);
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setPrice(cartItem.getProductMaterial().getPrice());
+
+            orderItemRepository.save(orderItem);
+        }
+        return orderDetailMapper.toDto(orderDetail);
+    }
+    private OrderDetailDTO processOrderForGuest(List<CartItem> cartItems, OrderDetailRequestDTO orderDetailRequestDTO) {
+        OrderDetail orderDetail = orderDetailMapper.toEntity(orderDetailRequestDTO);
+        orderDetail.setOrderStatus("Pending");
+        double total = 0;
+        for (CartItem cartItem : cartItems) {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setProductMaterial(cartItem.getProductMaterial());
+            orderItem.setOrderDetail(orderDetail);
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItem.setPrice(cartItem.getProductMaterial().getPrice());
+
+            orderItemRepository.save(orderItem);
+
+            total += cartItem.getProductMaterial().getPrice();
+        }
+        orderDetail.setTotal(total);
+        orderDetailRepository.save(orderDetail);
+        return orderDetailMapper.toDto(orderDetail);
     }
 }

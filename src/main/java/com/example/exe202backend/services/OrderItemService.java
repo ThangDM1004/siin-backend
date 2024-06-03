@@ -1,6 +1,7 @@
 package com.example.exe202backend.services;
 
 import com.example.exe202backend.dto.OrderItemDTO;
+import com.example.exe202backend.dto.OrderItemResponseDTO;
 import com.example.exe202backend.mapper.OrderItemMapper;
 import com.example.exe202backend.models.OrderItem;
 import com.example.exe202backend.repositories.OrderDetailRepository;
@@ -29,8 +30,8 @@ public class OrderItemService {
     @Autowired
     private ProductMaterialRepository productMaterialRepository;
 
-    public List<OrderItemDTO> get(){
-        return orderItemRepository.findAll().stream().map(orderItemMapper::toDto).collect(Collectors.toList());
+    public List<OrderItemResponseDTO> get(){
+        return orderItemRepository.findAll().stream().map(orderItemMapper::toOrderItemResponseDTO).collect(Collectors.toList());
     }
 
     public ResponseEntity<ResponseObject> create(OrderItemDTO orderItemDTO) {
@@ -41,23 +42,23 @@ public class OrderItemService {
         return ResponseEntity.ok(new ResponseObject("create success",orderItemDTO));
     }
 
-    public Page<OrderItemDTO> getAll(int currentPage, int pageSize, String field){
+    public Page<OrderItemResponseDTO> getAll(int currentPage, int pageSize, String field){
         Page<OrderItem> orderItems = orderItemRepository.findAll(
                 PageRequest.of(currentPage-1,pageSize, Sort.by(Sort.Direction.ASC,field)));
-        return orderItems.map(orderItemMapper::toDto);
+        return orderItems.map(orderItemMapper::toOrderItemResponseDTO);
     }
 
     public ResponseEntity<ResponseObject> getById(long id){
         OrderItem orderItem = orderItemRepository.findById(id).orElseThrow(()->
                 new RuntimeException("Order Item not found"));
-        return ResponseEntity.ok(new ResponseObject("get success",orderItemMapper.toDto(orderItem)));
+        return ResponseEntity.ok(new ResponseObject("get success",orderItemMapper.toOrderItemResponseDTO(orderItem)));
     }
     public ResponseEntity<ResponseObject> delete(long id){
         Optional<OrderItem> orderItem = orderItemRepository.findById(id);
         if(orderItem.isPresent()){
             orderItem.get().setStatus(false);
             orderItemRepository.save(orderItem.get());
-            return ResponseEntity.ok(new ResponseObject("delete success",orderItemMapper.toDto(orderItem.get())));
+            return ResponseEntity.ok(new ResponseObject("delete success",orderItemMapper.toOrderItemResponseDTO(orderItem.get())));
         }
         return ResponseEntity.badRequest().body(new ResponseObject("Order Item not found",null));
     }
@@ -89,9 +90,9 @@ public class OrderItemService {
         if(orderItems.isEmpty()){
             return ResponseEntity.ok(new ResponseObject("Order Item not found",null));
         }
-        return ResponseEntity.ok(new ResponseObject("Order Item not found",orderItems
+        return ResponseEntity.ok(new ResponseObject("Get success",orderItems
                 .stream()
-                .map(orderItemMapper::toDto)
+                .map(orderItemMapper::toOrderItemResponseDTO)
                 .toList()));
     }
 }

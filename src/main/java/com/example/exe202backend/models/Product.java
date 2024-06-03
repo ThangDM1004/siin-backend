@@ -28,10 +28,6 @@ public class Product extends BaseModel{
     @JsonIgnore
     private List<ProductSubImage> productSubImages;
 
-    @ManyToOne
-    @JoinColumn(name = "accessory_id")
-    private Accessory accessory;
-
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductMaterial> productMaterials;
 }

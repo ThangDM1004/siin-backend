@@ -17,8 +17,9 @@ import java.util.List;
 public class Accessory extends BaseModel{
     private String name;
     private String image;
+    private double price;
 
     @OneToMany(mappedBy = "accessory", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Product> products;
+    private List<ProductMaterial> productMaterials;
 }

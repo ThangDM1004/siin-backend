@@ -9,15 +9,16 @@ public interface ProductMapper {
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    ProductDTO toDto(Product accessory);
+    @Mapping(target = "categoryId", source = "category.id")
+    ProductDTO toDto(Product product);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "accessory", ignore = true)
+    @Mapping(target = "category", ignore = true)
     void updateProductFromDto(ProductDTO productDTO, @MappingTarget Product product);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
-    @Mapping(target = "accessory", ignore = true)
+    @Mapping(target = "category", ignore = true)
     Product toEntity(ProductDTO productDTO);
 }

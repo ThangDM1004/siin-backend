@@ -20,6 +20,7 @@ public interface ProductMaterialMapper {
     @Mapping(target = "product", ignore = true)
     @Mapping(target = "color", ignore = true)
     @Mapping(target = "size", ignore = true)
+    @Mapping(target = "accessory", ignore = true)
     ProductMaterial toEntity(ProductMaterialDTO productMaterialDTO);
 
     @Mapping(target = "status", source = "status")
@@ -27,6 +28,7 @@ public interface ProductMaterialMapper {
     @Mapping(target = "product", ignore = true)
     @Mapping(target = "color", ignore = true)
     @Mapping(target = "size", ignore = true)
+    @Mapping(target = "accessory", ignore = true)
     void updateProductMaterialFromDto(ProductMaterialDTO productMaterialDTO,
                                       @MappingTarget ProductMaterial productMaterial);
 }

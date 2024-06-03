@@ -1,6 +1,7 @@
 package com.example.exe202backend.services;
 
 import com.example.exe202backend.dto.CartItemDTO;
+import com.example.exe202backend.dto.CartItemResponseDTO;
 import com.example.exe202backend.mapper.CartItemMapper;
 import com.example.exe202backend.models.*;
 import com.example.exe202backend.repositories.*;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,27 +30,88 @@ public class CartItemService {
     private CartRepository cartRepository;
     @Autowired
     private ProductMaterialRepository productMaterialRepository;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private ColorRepository colorRepository;
+    @Autowired
+    private SizeRepository sizeRepository;
+    @Autowired
+    private ProductMaterialService productMaterialService;
+    @Autowired
+    private AccessoryRepository accessoryRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    public List<CartItemDTO> get(){
-        return cartItemRepository.findAll().stream().map(cartItemMapper::toDto).collect(Collectors.toList());
+    public List<CartItemResponseDTO> get(){
+        return cartItemRepository.findAll().stream().map(cartItemMapper::toResponseDto).collect(Collectors.toList());
     }
-    public ResponseEntity<ResponseObject> create(CartItemDTO cartItemDTO) {
-        CartItem cartItem = cartItemMapper.toEntity(cartItemDTO);
-        cartItem.setProductMaterial(productMaterialRepository.findById(cartItemDTO.getProductMaterialId()).orElse(null));
-        cartItem.setCart(cartRepository.findById(cartItemDTO.getCartId()).orElse(null));
+    public ResponseEntity<ResponseObject> create(Long productId, Long colorId, Long sizeId, Long accessoryId,
+                                                 int quantity, Long userId) {
+        if(productId == null){
+            productId = productRepository.findProductIdsByCategoryName("customize").get(0);
+        }
+        if (productMaterialRepository.findById(
+                productMaterialService.getMaterialIdBySizeAndColorAndProduct(productId,
+                        colorId,
+                        sizeId,
+                        accessoryId)).isEmpty()) {
+            Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+            Color color = colorRepository.findById(colorId).orElseThrow(() -> new RuntimeException("Color not found"));
+            Size size = sizeRepository.findById(sizeId).orElseThrow(() -> new RuntimeException("Size not found"));
+            Accessory accessory = accessoryRepository.findById(accessoryId).orElseThrow(() -> new RuntimeException("Accessory not found"));
+
+            ProductMaterial newProductMaterial = new ProductMaterial();
+            newProductMaterial.setProduct(product);
+            newProductMaterial.setColor(color);
+            newProductMaterial.setSize(size);
+            newProductMaterial.setQuantity(quantity);
+            newProductMaterial.setAccessory(accessory);
+            newProductMaterial.setPrice(product.getPrice()+color.getPrice()+size.getPrice()+accessory.getPrice());
+            newProductMaterial.setStatus(true);
+            productMaterialRepository.save(newProductMaterial);
+        }
+        ProductMaterial productMaterial = productMaterialRepository.findById(
+                productMaterialService.getMaterialIdBySizeAndColorAndProduct(productId, colorId, sizeId, accessoryId)
+        ).get();
+        CartItem cartItem = CartItem.builder()
+                .quantity(quantity)
+                .productMaterial(productMaterial)
+                .build();
+        if (userId == null) {
+            return ResponseEntity.ok(new ResponseObject("add success", cartItemMapper.toResponseDto(cartItem)));
+        }
+
+        Cart cart = cartRepository.findByUserId(userId);
+        if (cart == null) {
+            cart = Cart.builder()
+                    .total(0)
+                    .cartItems(new ArrayList<>())
+                    .user(userRepository.findById(userId).get())
+                    .build();
+        }
+
+        cart.getCartItems().add(cartItem);
+        cart.setTotal(cart.getTotal() + productMaterial.getPrice() * quantity);
+        cartItem.setCart(cart);
+
+        cartRepository.save(cart);
         cartItemRepository.save(cartItem);
-        return ResponseEntity.ok(new ResponseObject("create success",cartItemDTO));
+
+        return ResponseEntity.ok(new ResponseObject("add success", cartItemMapper.toResponseDto(cartItem)));
+
     }
 
-    public Page<CartItemDTO> getAll(int currentPage, int pageSize, String field){
+
+    public Page<CartItemResponseDTO> getAll(int currentPage, int pageSize, String field){
         Page<CartItem> cartItems = cartItemRepository.findAll(
                 PageRequest.of(currentPage-1,pageSize, Sort.by(Sort.Direction.ASC,field)));
-        return cartItems.map(cartItemMapper::toDto);
+        return cartItems.map(cartItemMapper::toResponseDto);
     }
 
     public ResponseEntity<ResponseObject> getById(long id){
         Optional<CartItem> cartItem = cartItemRepository.findById(id);
-        return cartItem.map(item -> ResponseEntity.ok(new ResponseObject("get success", cartItemMapper.toDto(item))))
+        return cartItem.map(item -> ResponseEntity.ok(new ResponseObject("get success", cartItemMapper.toResponseDto(item))))
                 .orElseGet(() -> ResponseEntity.ok(new ResponseObject("get success", null)));
     }
     public ResponseEntity<ResponseObject> delete(long id){
@@ -55,7 +119,7 @@ public class CartItemService {
         if(cartItem.isPresent()){
             cartItem.get().setStatus(false);
             cartItemRepository.save(cartItem.get());
-            return ResponseEntity.ok(new ResponseObject("delete success",cartItemMapper.toDto(cartItem.get())));
+            return ResponseEntity.ok(new ResponseObject("delete success",cartItemMapper.toResponseDto(cartItem.get())));
         }
         return ResponseEntity.ok(new ResponseObject("Cart Item not found",null));
     }
@@ -77,60 +141,16 @@ public class CartItemService {
         cartItem.setProductMaterial(productMaterialRepository.findById(cartItemDTO.getProductMaterialId()).orElse(null));
         cartItem.setCart(cartRepository.findById(cartItemDTO.getCartId()).orElse(null));
         cartItemRepository.save(cartItem);
-        return ResponseEntity.ok(new ResponseObject("update success",cartItemDTO));
+        return ResponseEntity.ok(new ResponseObject("update success",cartItemMapper.toResponseDto(cartItem)));
     }
     public ResponseEntity<ResponseObject> getCartItemsByUserId(Long userId) {
         Cart cart = cartService.getCartByUserId(userId);
         if(cart == null){
             return ResponseEntity.ok(new ResponseObject("Cart not found",null));
         }
-        List<CartItemDTO> cartItems = cartItemRepository.findByCartId(cart.getId())
-                .stream().map(cartItemMapper::toDto).toList();
-        if(cartItems.isEmpty()){return ResponseEntity.ok(new ResponseObject("Not found",cartItems));}
+        List<CartItemResponseDTO> cartItems = cartItemRepository.findByCartId(cart.getId())
+                .stream().map(cartItemMapper::toResponseDto).toList();
+        if(cartItems.isEmpty()){return ResponseEntity.ok(new ResponseObject("Not found",null));}
         return ResponseEntity.ok(new ResponseObject("get success",cartItems));
     }
-
-//    public ResponseEntity<ResponseObject> fromProductToCartItem(Long accessoryId, String color, String size, int quantity, Long userId) {
-//        Product product = productService.isExist(accessoryId, color, size);
-//        ProductMaterial material = productMaterialRepository.findById(productMaterialService.getMaterialIdBySizeAndColorName(color, size)).get();
-//        Accessory accessory = accessoryRepository.findById(accessoryId).get();
-//        product = Product.builder()
-//                .name(accessory.getName() + "-" + material.getColorName() + "-" + material.getSize())
-//                .price(accessory.getPrice() + material.getPrice())
-//                .quantity(0)
-//                .category(productCategoryRepository.findById(1L).get())
-//                .accessory(accessory)
-//                .productMaterial(material)
-//                .build();
-//
-//        product.setQuantity(quantity);
-//        productRepository.save(product);
-//
-//        CartItem cartItem = CartItem.builder()
-//                .product(product)
-//                .quantity(quantity)
-//                .build();
-//
-//        if (userId == null) {
-//            return ResponseEntity.ok(new ResponseObject("add success", cartItemMapper.toDto(cartItem)));
-//        }
-//
-//        Cart cart = cartRepository.findByUserId(userId);
-//        if (cart == null) {
-//            cart = Cart.builder()
-//                    .total(0)
-//                    .cartItems(new ArrayList<>())
-//                    .user(userRepository.findById(userId).get())
-//                    .build();
-//        }
-//
-//        cart.getCartItems().add(cartItem);
-//        cart.setTotal(cart.getTotal() + product.getPrice() * quantity);
-//        cartItem.setCart(cart);
-//
-//        cartRepository.save(cart);
-//        cartItemRepository.save(cartItem);
-//
-//        return ResponseEntity.ok(new ResponseObject("add success", cartItemMapper.toDto(cartItem)));
-//    }
 }

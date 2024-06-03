@@ -3,7 +3,7 @@ package com.example.exe202backend.services;
 import com.example.exe202backend.dto.ProductMaterialDTO;
 import com.example.exe202backend.mapper.ProductMaterialMapper;
 import com.example.exe202backend.models.ProductMaterial;
-import com.example.exe202backend.repositories.ProductMaterialRepository;
+import com.example.exe202backend.repositories.*;
 import com.example.exe202backend.response.ResponseObject;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.GoogleCredentials;
@@ -36,6 +36,14 @@ public class ProductMaterialService {
     private ProductMaterialRepository productMaterialRepository;
     @Autowired
     private ProductMaterialMapper productMaterialMapper;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private ColorRepository colorRepository;
+    @Autowired
+    private SizeRepository sizeRepository;
+    @Autowired
+    private AccessoryRepository accessoryRepository;
 
     public List<ProductMaterialDTO> get(){
         return productMaterialRepository.findAll().stream().map(productMaterialMapper::toDto).collect(Collectors.toList());
@@ -43,6 +51,10 @@ public class ProductMaterialService {
 
     public ResponseEntity<ResponseObject> create(ProductMaterialDTO productMaterialDTO){
         ProductMaterial productMaterial = productMaterialMapper.toEntity(productMaterialDTO);
+        productMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
+        productMaterial.setColor(colorRepository.findById(productMaterialDTO.getColorId()).get());
+        productMaterial.setSize(sizeRepository.findById(productMaterialDTO.getSizeId()).get());
+        productMaterial.setAccessory(accessoryRepository.findById(productMaterialDTO.getAccessoryId()).get());
         productMaterialRepository.save(productMaterial);
         return ResponseEntity.ok(new ResponseObject("create success", productMaterialDTO));
     }
@@ -78,6 +90,12 @@ public class ProductMaterialService {
         if(productMaterialDTO.getSizeId() == null){
             productMaterialDTO.setSizeId(existingProductMaterial.getSize().getId());
         }
+        if(productMaterialDTO.getProductId() == null){
+            productMaterialDTO.setProductId(existingProductMaterial.getProduct().getId());
+        }
+        if(productMaterialDTO.getAccessoryId() == null){
+            productMaterialDTO.setAccessoryId(existingProductMaterial.getAccessory().getId());
+        }
         if(productMaterialDTO.getQuantity() == 0){
             productMaterialDTO.setQuantity(existingProductMaterial.getQuantity());
         }
@@ -89,15 +107,22 @@ public class ProductMaterialService {
         }
         productMaterialDTO.setStatus(existingProductMaterial.getStatus());
         productMaterialMapper.updateProductMaterialFromDto(productMaterialDTO,existingProductMaterial);
+        existingProductMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
+        existingProductMaterial.setColor(colorRepository.findById(productMaterialDTO.getColorId()).get());
+        existingProductMaterial.setSize(sizeRepository.findById(productMaterialDTO.getSizeId()).get());
+        existingProductMaterial.setAccessory(accessoryRepository.findById(productMaterialDTO.getAccessoryId()).get());
         productMaterialRepository.save(existingProductMaterial);
         return ResponseEntity.ok(new ResponseObject("update success",productMaterialDTO));
     }
 
-    public Long getMaterialIdBySizeAndColorName(Long sizeId, Long colorId) {
+    public Long getMaterialIdBySizeAndColorAndProduct(Long productId, Long colorId, Long sizeId, Long accessoryId) {
         List<ProductMaterial> list = productMaterialRepository.findAll();
         List<ProductMaterial> filteredList = list.stream()
                 .filter(productMaterial -> Objects.equals(productMaterial.getColor().getId(), colorId)
-                        && Objects.equals(productMaterial.getSize().getId(), sizeId)).toList();
+                        && Objects.equals(productMaterial.getSize().getId(), sizeId)
+                        && ( productId == null || Objects.equals(productMaterial.getProduct().getId(), productId))
+                        && ( accessoryId == null || Objects.equals(productMaterial.getAccessory().getId(), accessoryId)))
+                .toList();
         if (filteredList.isEmpty()) {
             return null;
         }

@@ -1,6 +1,7 @@
 package com.example.exe202backend.mapper;
 
 import com.example.exe202backend.dto.OrderDetailDTO;
+import com.example.exe202backend.dto.OrderDetailRequestDTO;
 import com.example.exe202backend.models.OrderDetail;
 import com.example.exe202backend.models.Payment;
 import com.example.exe202backend.models.UserModel;
@@ -20,6 +21,9 @@ public interface OrderDetailMapper {
     @Mapping(target = "id", source = "id")
     @Mapping(target = "userModel", ignore = true)
     OrderDetail toEntity(OrderDetailDTO orderDetailDTO);
+
+    @Mapping(target = "userModel", ignore = true)
+    OrderDetail toEntity(OrderDetailRequestDTO orderDetailDTO);
 
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")

@@ -12,6 +12,7 @@ public class ProductMaterialDTO {
     private Long colorId;
     private Long sizeId;
     private Long productId;
+    private Long accessoryId;
     private int quantity;
     private String image;
     private double price;
