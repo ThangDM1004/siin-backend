@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "product_material",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"color_id", "size_id"})
+                @UniqueConstraint(columnNames = {"color_id", "size_id","product_id"})
         })
 @SuperBuilder
 public class ProductMaterial extends BaseModel{
