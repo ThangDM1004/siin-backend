@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "product_material",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"color_id", "size_id","product_id"})
+                @UniqueConstraint(columnNames = {"color_id", "size_id","product_id", "accessory_id"})
         })
 @SuperBuilder
 public class ProductMaterial extends BaseModel{
@@ -35,6 +35,10 @@ public class ProductMaterial extends BaseModel{
     @ManyToOne
     @JoinColumn(name = "color_id")
     private Color color;
+
+    @ManyToOne
+    @JoinColumn(name = "accessory_id")
+    private Accessory accessory;
 
     @OneToMany(mappedBy = "productMaterial", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

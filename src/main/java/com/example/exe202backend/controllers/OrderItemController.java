@@ -1,6 +1,7 @@
 package com.example.exe202backend.controllers;
 
 import com.example.exe202backend.dto.OrderItemDTO;
+import com.example.exe202backend.dto.OrderItemResponseDTO;
 import com.example.exe202backend.dto.PageList;
 import com.example.exe202backend.response.ResponseObject;
 import com.example.exe202backend.services.OrderItemService;
@@ -23,8 +24,8 @@ public class OrderItemController {
         if(currentPage < 1 || pageSize < 1 || currentPage > pageSize){
             return ResponseEntity.ok(new ResponseObject("get success", orderItemService.get()));
         }
-        Page<OrderItemDTO> orderItemDTOS = orderItemService.getAll(currentPage, pageSize, field);
-        var pageList = PageList.<OrderItemDTO>builder()
+        Page<OrderItemResponseDTO> orderItemDTOS = orderItemService.getAll(currentPage, pageSize, field);
+        var pageList = PageList.<OrderItemResponseDTO>builder()
                 .totalPage(orderItemDTOS.getTotalPages())
                 .currentPage(currentPage)
                 .listResult(orderItemDTOS.getContent())

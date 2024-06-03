@@ -1,6 +1,7 @@
 package com.example.exe202backend.controllers;
 
 import com.example.exe202backend.dto.OrderDetailDTO;
+import com.example.exe202backend.dto.OrderDetailRequestDTO;
 import com.example.exe202backend.dto.PageList;
 import com.example.exe202backend.response.ResponseObject;
 import com.example.exe202backend.services.OrderDetailService;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/order-detail")
@@ -36,8 +39,10 @@ public class OrderDetailController {
         return orderDetailService.getById(id);
     }
     @PostMapping
-    public ResponseEntity<ResponseObject> create(@RequestBody OrderDetailDTO orderDetailDTO) {
-        return orderDetailService.create(orderDetailDTO);
+    public ResponseEntity<ResponseObject> create(@RequestBody(required = false) Long userId,
+                                                 @RequestBody(required = false) List<Long> cartItemIds,
+                                                 @RequestBody OrderDetailRequestDTO orderDetailRequestDTO) {
+        return orderDetailService.create(userId,cartItemIds, orderDetailRequestDTO);
     }
     @PutMapping("/{id}")
     public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestBody OrderDetailDTO orderDetailDTO) {

@@ -3,9 +3,7 @@ package com.example.exe202backend.services;
 import com.example.exe202backend.dto.ProductDTO;
 import com.example.exe202backend.mapper.ProductMapper;
 import com.example.exe202backend.models.Product;
-import com.example.exe202backend.repositories.AccessoryRepository;
 import com.example.exe202backend.repositories.ProductCategoryRepository;
-import com.example.exe202backend.repositories.ProductMaterialRepository;
 import com.example.exe202backend.repositories.ProductRepository;
 import com.example.exe202backend.response.ResponseObject;
 import com.google.auth.Credentials;
@@ -44,7 +42,7 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
     @Autowired
-    private AccessoryRepository accessoryRepository;
+    private ProductCategoryRepository productCategoryRepository;
 
     public List<ProductDTO> get() {
         return productRepository.findAll().stream().map(productMapper::toDto).collect(Collectors.toList());
@@ -52,7 +50,7 @@ public class ProductService {
 
     public ResponseEntity<ResponseObject> create(ProductDTO productDTO) {
         Product product = productMapper.toEntity(productDTO);
-        product.setAccessory(accessoryRepository.findById(productDTO.getAccessoryId()).orElse(null));
+        product.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).orElse(null));
         Product _product = productRepository.save(product);
         return ResponseEntity.ok(new ResponseObject("create success", _product));
     }
@@ -91,12 +89,12 @@ public class ProductService {
         if(productDTO.getPrice() == 0){
             productDTO.setPrice(existingProduct.getPrice());
         }
-        if(productDTO.getAccessoryId() == 0){
-            productDTO.setAccessoryId(existingProduct.getAccessory().getId());
+        if(productDTO.getCategoryId() == 0){
+            productDTO.setCategoryId(existingProduct.getCategory().getId());
         }
         productDTO.setStatus(existingProduct.getStatus());
         productMapper.updateProductFromDto(productDTO,existingProduct);
-        existingProduct.setAccessory(accessoryRepository.findById(productDTO.getAccessoryId()).get());
+        existingProduct.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).get());
         productRepository.save(existingProduct);
         return ResponseEntity.ok(new ResponseObject("update success", productDTO));
     }

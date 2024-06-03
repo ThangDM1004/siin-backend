@@ -1,6 +1,7 @@
 package com.example.exe202backend.controllers;
 
 import com.example.exe202backend.dto.CartItemDTO;
+import com.example.exe202backend.dto.CartItemResponseDTO;
 import com.example.exe202backend.dto.PageList;
 import com.example.exe202backend.response.ResponseObject;
 import com.example.exe202backend.services.CartItemService;
@@ -23,11 +24,11 @@ public class CartItemController {
         if(currentPage < 1 || pageSize < 1 || currentPage > pageSize){
             return ResponseEntity.ok(new ResponseObject("get success", cartItemService.get()));
         }
-        Page<CartItemDTO> accessories = cartItemService.getAll(currentPage, pageSize, field);
-        var pageList = PageList.<CartItemDTO>builder()
-                .totalPage(accessories.getTotalPages())
+        Page<CartItemResponseDTO> all = cartItemService.getAll(currentPage, pageSize, field);
+        var pageList = PageList.<CartItemResponseDTO>builder()
+                .totalPage(all.getTotalPages())
                 .currentPage(currentPage)
-                .listResult(accessories.getContent())
+                .listResult(all.getContent())
                 .build();
         return ResponseEntity.ok(new ResponseObject("get success", pageList));
     }
@@ -40,8 +41,13 @@ public class CartItemController {
         return cartItemService.getById(id);
     }
     @PostMapping
-    public ResponseEntity<ResponseObject> create(@RequestBody CartItemDTO cartItemDTO) {
-        return cartItemService.create(cartItemDTO);
+    public ResponseEntity<ResponseObject> create(@RequestBody Long productId,
+                                                 @RequestBody Long colorId,
+                                                 @RequestBody Long sizeId,
+                                                 @RequestBody(required = false) Long accessoryId,
+                                                 @RequestBody int quantity,
+                                                 @RequestBody(required = false)  Long userId) {
+        return cartItemService.create(productId, colorId, sizeId,accessoryId, quantity, userId);
     }
 //    @PostMapping("/add-to-cart")
 //    public ResponseEntity<ResponseObject> addToCart(

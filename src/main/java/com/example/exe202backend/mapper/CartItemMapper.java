@@ -1,13 +1,11 @@
 package com.example.exe202backend.mapper;
 
 import com.example.exe202backend.dto.CartItemDTO;
-import com.example.exe202backend.models.Cart;
+import com.example.exe202backend.dto.CartItemResponseDTO;
 import com.example.exe202backend.models.CartItem;
-import com.example.exe202backend.models.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface CartItemMapper {
@@ -28,4 +26,14 @@ public interface CartItemMapper {
     @Mapping(target = "productMaterial", ignore = true)
     @Mapping(target = "cart", ignore = true)
     void updateCartItemFromDto(CartItemDTO cartItemDTO, @MappingTarget CartItem cartItem);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "quantity", source = "quantity")
+    @Mapping(target = "sizeName", source = "productMaterial.size.name")
+    @Mapping(target = "colorName", source = "productMaterial.color.name")
+    @Mapping(target = "accessoryName", source = "productMaterial.accessory.name")
+    @Mapping(target = "productId", source = "productMaterial.product.id")
+    @Mapping(target = "cartId", source = "cart.id")
+    @Mapping(target = "status", source = "status")
+    CartItemResponseDTO toResponseDto(CartItem cartItem);
 }
