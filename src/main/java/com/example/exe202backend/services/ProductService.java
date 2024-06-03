@@ -52,9 +52,9 @@ public class ProductService {
 
     public ResponseEntity<ResponseObject> create(ProductDTO productDTO) {
         Product product = productMapper.toEntity(productDTO);
-        product.setAccessory(accessoryRepository.findById(product.getAccessory().getId()).orElse(null));
-        productRepository.save(product);
-        return ResponseEntity.ok(new ResponseObject("create success", productDTO));
+        product.setAccessory(accessoryRepository.findById(productDTO.getAccessoryId()).orElse(null));
+        Product _product = productRepository.save(product);
+        return ResponseEntity.ok(new ResponseObject("create success", _product));
     }
 
     public Page<ProductDTO> getAll(int currentPage, int pageSize, String field) {
