@@ -21,7 +21,8 @@
 -- values ('Gift', true),
 --        ('Customize', true),
 --        ('Normal', true),
---        ('DIY', true);
+--        ('DIY', true),
+--        ('Customize', true);
 --
 -- -- Cập nhật bảng product
 -- insert into product(name, cover_image, price, quantity, status, category_id)
@@ -34,7 +35,8 @@
 --        ('Hạt chuỗi nâu', null, 300000, 50, true, 4),
 --        ('Chỉ xanh 1m', null, 20000, 50, true, 4),
 --        ('Chỉ hồng 1m', null, 20000, 50, true, 4),
---        ('Charm II', null, 99000, 50, true, 4);
+--        ('Charm II', null, 99000, 50, true, 4),
+--        ('Customize', null, 99000, 50, true, 5);
 -- -- Cập nhật bảng product_material
 -- insert into product_material(image, price, quantity, status, color_id,product_id,size_id,accessory_id)
 -- values (null, 20000, 100, true,1,1,1,1),

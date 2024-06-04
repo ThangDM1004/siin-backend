@@ -145,7 +145,7 @@ public class ProductMaterialService {
                 .filter(productMaterial -> Objects.equals(productMaterial.getColor().getId(), colorId)
                         && Objects.equals(productMaterial.getSize().getId(), sizeId)
                         && (productId == null || Objects.equals(productMaterial.getProduct().getId(), productId))
-                        && (accessoryId == null || Objects.equals(productMaterial.getAccessory().getId(), accessoryId)))
+                        && (accessoryId == null || productMaterial.getAccessory() != null && Objects.equals(productMaterial.getAccessory().getId(), accessoryId)))
                 .toList();
         if (filteredList.isEmpty()) {
             return null;
