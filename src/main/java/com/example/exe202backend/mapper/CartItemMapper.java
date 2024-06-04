@@ -2,6 +2,7 @@ package com.example.exe202backend.mapper;
 
 import com.example.exe202backend.dto.CartItemDTO;
 import com.example.exe202backend.dto.CartItemResponseDTO;
+import com.example.exe202backend.dto.CartItemResponseDTO_2;
 import com.example.exe202backend.models.CartItem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -36,4 +37,11 @@ public interface CartItemMapper {
     @Mapping(target = "cartId", source = "cart.id")
     @Mapping(target = "status", source = "status")
     CartItemResponseDTO toResponseDto(CartItem cartItem);
+
+    @Mapping(target = "quantity", source = "quantity")
+    @Mapping(target = "sizeName", source = "productMaterial.size.name")
+    @Mapping(target = "colorName", source = "productMaterial.color.name")
+    @Mapping(target = "accessoryName", source = "productMaterial.accessory.name")
+    @Mapping(target = "productId", source = "productMaterial.product.id")
+    CartItemResponseDTO_2 toResponseDto_2(CartItem cartItem);
 }

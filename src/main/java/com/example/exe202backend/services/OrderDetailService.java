@@ -1,12 +1,11 @@
 package com.example.exe202backend.services;
 
+import com.example.exe202backend.dto.CartItemResponseDTO;
+import com.example.exe202backend.dto.CartItemResponseDTO_2;
 import com.example.exe202backend.dto.OrderDetailDTO;
 import com.example.exe202backend.dto.OrderDetailRequestDTO;
 import com.example.exe202backend.mapper.OrderDetailMapper;
-import com.example.exe202backend.models.Cart;
-import com.example.exe202backend.models.CartItem;
-import com.example.exe202backend.models.OrderDetail;
-import com.example.exe202backend.models.OrderItem;
+import com.example.exe202backend.models.*;
 import com.example.exe202backend.repositories.*;
 import com.example.exe202backend.response.ResponseObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,15 +33,15 @@ public class OrderDetailService {
     @Autowired
     private CartRepository cartRepository;
     @Autowired
-    private CartItemRepository cartItemRepository;
+    private ProductMaterialRepository productMaterialRepository;
 
     public List<OrderDetailDTO> get(){
         return orderDetailRepository.findAll().stream().map(orderDetailMapper::toDto).collect(Collectors.toList());
     }
 
-    public ResponseEntity<ResponseObject> create(Long userId, List<Long> cartItemIds, OrderDetailRequestDTO orderDetailRequestDTO) {
+    public ResponseEntity<ResponseObject> create(Long userId, List<CartItemResponseDTO_2> cartItemResponseDTOS, OrderDetailRequestDTO orderDetailRequestDTO) {
         OrderDetailDTO orderDetailDTO = null;
-        if (userId != null && cartItemIds == null) {
+        if (userId != null && cartItemResponseDTOS == null) {
             Cart cart = cartRepository.findByUserId(userId);
             if (cart != null) {
                 orderDetailDTO = processOrder(cart,orderDetailRequestDTO);
@@ -49,15 +49,10 @@ public class OrderDetailService {
                 throw new RuntimeException("Cart can not found");
             }
         }
-        else if (userId == null && cartItemIds != null) {
-            List<CartItem> cartItems = cartItemRepository.findAllById(cartItemIds);
-            if (!cartItems.isEmpty()) {
-                orderDetailDTO= processOrderForGuest(cartItems, orderDetailRequestDTO);
-            } else {
-                throw new RuntimeException("List cart item can not found");
-            }
+        else if (userId == null && cartItemResponseDTOS != null) {
+                orderDetailDTO= processOrderForGuest(cartItemResponseDTOS, orderDetailRequestDTO);
         }
-        return ResponseEntity.ok(new ResponseObject("", orderDetailDTO));
+        return ResponseEntity.ok(new ResponseObject("Ok", orderDetailDTO));
     }
 
     public Page<OrderDetailDTO> getAll(int currentPage, int pageSize, String field){
@@ -124,10 +119,18 @@ public class OrderDetailService {
         }
         return orderDetailMapper.toDto(orderDetail);
     }
-    private OrderDetailDTO processOrderForGuest(List<CartItem> cartItems, OrderDetailRequestDTO orderDetailRequestDTO) {
+    private OrderDetailDTO processOrderForGuest(List<CartItemResponseDTO_2> cartItemResponseDTOS, OrderDetailRequestDTO orderDetailRequestDTO) {
         OrderDetail orderDetail = orderDetailMapper.toEntity(orderDetailRequestDTO);
         orderDetail.setOrderStatus("Pending");
         double total = 0;
+        List<CartItem> cartItems = new ArrayList<>();
+        for (CartItemResponseDTO_2 cartItemResponseDTO : cartItemResponseDTOS) {
+            cartItems.add(CartItem.builder()
+                            .quantity(cartItemResponseDTO.getQuantity())
+                            .status(true)
+                            .productMaterial(productMaterialRepository.findById(cartItemResponseDTO.getProductMaterialId()).get())
+                            .build());
+        }
         for (CartItem cartItem : cartItems) {
             OrderItem orderItem = new OrderItem();
             orderItem.setProductMaterial(cartItem.getProductMaterial());

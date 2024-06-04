@@ -1,8 +1,6 @@
 package com.example.exe202backend.controllers;
 
-import com.example.exe202backend.dto.OrderDetailDTO;
-import com.example.exe202backend.dto.OrderDetailRequestDTO;
-import com.example.exe202backend.dto.PageList;
+import com.example.exe202backend.dto.*;
 import com.example.exe202backend.response.ResponseObject;
 import com.example.exe202backend.services.OrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +38,9 @@ public class OrderDetailController {
     }
     @PostMapping
     public ResponseEntity<ResponseObject> create(@RequestBody(required = false) Long userId,
-                                                 @RequestBody(required = false) List<Long> cartItemIds,
+                                                 @RequestBody(required = false) List<CartItemResponseDTO_2> cartItemResponseDTOS,
                                                  @RequestBody OrderDetailRequestDTO orderDetailRequestDTO) {
-        return orderDetailService.create(userId,cartItemIds, orderDetailRequestDTO);
+        return orderDetailService.create(userId,cartItemResponseDTOS, orderDetailRequestDTO);
     }
     @PutMapping("/{id}")
     public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestBody OrderDetailDTO orderDetailDTO) {
