@@ -54,24 +54,28 @@ public class ProductMaterialService {
 
     public ResponseEntity<ResponseObject> create(CreateProductMaterialDTO productMaterialDTO, List<Long> listColor, List<Long> listSize) {
         ProductMaterial productMaterial = productMaterialMapper.CreateDtotoEntity(productMaterialDTO);
-        List<ProductMaterialDTO> list = new ArrayList<>();
-        if (!checkProduct(productMaterialDTO.getProductId())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject(
-                    "Product have exist",
-                    ""
-            ));
-        } else {
-            for (Long color : listColor) {
-                for (Long size : listSize) {
+        List<ProductMaterialDTO> successList = new ArrayList<>();
+        List<ProductMaterialDTO> existedList = new ArrayList<>();
+        for (Long color : listColor) {
+            for (Long size : listSize) {
+                if (!checkProduct(productMaterialDTO.getProductId(), color, size)) {
                     productMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
                     productMaterial.setColor(colorRepository.findById(color).get());
                     productMaterial.setSize(sizeRepository.findById(size).get());
                     ProductMaterial _productMaterial = productMaterialRepository.save(productMaterial);
-                    list.add(productMaterialMapper.toDto(_productMaterial));
+                    successList.add(productMaterialMapper.toDto(_productMaterial));
+                } else {
+                    ProductMaterialDTO existedDTO = productMaterialMapper.toDto(productMaterialRepository.getProductMaterials(productMaterialDTO.getProductId(),size,color));
+                    existedList.add(existedDTO);
                 }
             }
-            return ResponseEntity.ok(new ResponseObject("create success", list));
         }
+
+        Map<String, List<ProductMaterialDTO>> response = new HashMap<>();
+        response.put("success", successList);
+        response.put("existed", existedList);
+
+        return ResponseEntity.ok(new ResponseObject("create success", response));
     }
 
     public Page<ProductMaterialDTO> getAll(int currentPage, int pageSize, String field) {
@@ -86,15 +90,8 @@ public class ProductMaterialService {
                 .orElseGet(() -> ResponseEntity.ok(new ResponseObject("get success", null)));
     }
 
-    private boolean checkProduct(Long id) {
-        boolean valid = false;
-        List<ProductMaterial> list = productMaterialRepository.getProductMaterialsByProductId(id);
-        if (!list.isEmpty()) {
-            valid = false;
-        } else {
-            valid = true;
-        }
-        return valid;
+    private boolean checkProduct(Long productId, Long sizeId, Long colorId) {
+        return productMaterialRepository.getProductMaterials(productId, sizeId, colorId) != null;
     }
 
     public ResponseEntity<ResponseObject> delete(long id) {
