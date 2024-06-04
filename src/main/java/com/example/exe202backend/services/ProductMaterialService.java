@@ -53,13 +53,15 @@ public class ProductMaterialService {
     }
 
     public ResponseEntity<ResponseObject> create(CreateProductMaterialDTO productMaterialDTO, List<Long> listColor, List<Long> listSize) {
-        ProductMaterial productMaterial = productMaterialMapper.CreateDtotoEntity(productMaterialDTO);
+        ProductMaterial productMaterial;
         List<ProductMaterialDTO> successList = new ArrayList<>();
         List<ProductMaterialDTO> existedList = new ArrayList<>();
         ProductMaterial _productMaterial;
         for (Long color : listColor) {
             for (Long size : listSize) {
                 if (!checkProduct(productMaterialDTO.getProductId(), size, color)) {
+                    productMaterial = new ProductMaterial();
+                    productMaterial = productMaterialMapper.CreateDtotoEntity(productMaterialDTO);
                     productMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
                     productMaterial.setColor(colorRepository.findById(color).get());
                     productMaterial.setSize(sizeRepository.findById(size).get());
