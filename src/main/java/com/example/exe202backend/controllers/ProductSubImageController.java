@@ -39,17 +39,17 @@ public class ProductSubImageController {
     public ResponseEntity<ResponseObject> getById(@PathVariable long id) {
         return productSubImageService.getById(id);
     }
-    @PostMapping("/{productId}")
-    public ResponseEntity<ResponseObject> create(@RequestParam("file") List<MultipartFile> multipartFile,@PathVariable Long productId) {
-        return productSubImageService.createSubImage(multipartFile, productId);
+    @PostMapping("/{productMaterialId}")
+    public ResponseEntity<ResponseObject> create(@RequestParam("file") List<MultipartFile> multipartFile,@PathVariable Long productMaterialId) {
+        return productSubImageService.createSubImage(multipartFile, productMaterialId);
     }
     @PutMapping("/{id}")
     public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestParam("file") MultipartFile multipartFile) throws IOException, URISyntaxException {
         return productSubImageService.updateImage(multipartFile,id);
     }
-    @GetMapping("/productId")
-    public ResponseEntity<ResponseObject> getByProductId(@RequestParam long productId) {
-       return productSubImageService.getByProductId(productId);
+    @GetMapping("/productMaterialId")
+    public ResponseEntity<ResponseObject> getByProductId(@RequestParam long productMaterialId) {
+       return productSubImageService.getByProductMaterialId(productMaterialId);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseObject> deleteImage(@RequestParam long id) throws IOException, URISyntaxException {

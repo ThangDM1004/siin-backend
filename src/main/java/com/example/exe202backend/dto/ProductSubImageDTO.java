@@ -11,5 +11,5 @@ public class ProductSubImageDTO {
     private long id;
     private String url;
     private boolean status;
-    private long productId;
+    private long productMaterialsId;
 }

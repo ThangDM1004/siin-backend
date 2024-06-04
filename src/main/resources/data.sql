@@ -54,7 +54,7 @@
 --        (null, 24000, 100, true,1,6,1,1);
 --
 -- -- Cập nhật bảng product_sub_image (không có status)
--- INSERT INTO product_sub_image(url, product_id, status)
+-- INSERT INTO product_sub_image(url, product_material_id , status)
 -- VALUES
 --     ('picture_1.png', 1, true),
 --     ('picture_2.png', 1, true),

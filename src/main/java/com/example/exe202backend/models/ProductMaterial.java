@@ -47,4 +47,8 @@ public class ProductMaterial extends BaseModel{
     @OneToMany(mappedBy = "productMaterial", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<OrderItem>  orderItems;
+
+    @OneToMany(mappedBy = "productMaterial", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ProductSubImage> productSubImages;
 }

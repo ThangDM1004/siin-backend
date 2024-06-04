@@ -25,9 +25,5 @@ public class Product extends BaseModel{
     private ProductCategory category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<ProductSubImage> productSubImages;
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ProductMaterial> productMaterials;
 }
