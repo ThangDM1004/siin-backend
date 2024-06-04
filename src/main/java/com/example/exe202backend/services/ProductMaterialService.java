@@ -1,5 +1,6 @@
 package com.example.exe202backend.services;
 
+import com.example.exe202backend.dto.CreateProductMaterialDTO;
 import com.example.exe202backend.dto.ProductMaterialDTO;
 import com.example.exe202backend.mapper.ProductMaterialMapper;
 import com.example.exe202backend.models.ProductMaterial;
@@ -15,8 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -49,14 +52,19 @@ public class ProductMaterialService {
         return productMaterialRepository.findAll().stream().map(productMaterialMapper::toDto).collect(Collectors.toList());
     }
 
-    public ResponseEntity<ResponseObject> create(ProductMaterialDTO productMaterialDTO){
-        ProductMaterial productMaterial = productMaterialMapper.toEntity(productMaterialDTO);
-        productMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
-        productMaterial.setColor(colorRepository.findById(productMaterialDTO.getColorId()).get());
-        productMaterial.setSize(sizeRepository.findById(productMaterialDTO.getSizeId()).get());
-        productMaterial.setAccessory(accessoryRepository.findById(productMaterialDTO.getAccessoryId()).get());
-        productMaterialRepository.save(productMaterial);
-        return ResponseEntity.ok(new ResponseObject("create success", productMaterialDTO));
+    public ResponseEntity<ResponseObject> create(CreateProductMaterialDTO productMaterialDTO, List<Long> listColor, List<Long> listSize){
+         ProductMaterial productMaterial = productMaterialMapper.CreateDtotoEntity(productMaterialDTO);
+         List<ProductMaterialDTO> list = new ArrayList<>();
+         for(Long color : listColor){
+             for(Long size : listSize){
+                 productMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
+                 productMaterial.setColor(colorRepository.findById(color).get());
+                 productMaterial.setSize(sizeRepository.findById(size).get());
+                 ProductMaterial _productMaterial = productMaterialRepository.save(productMaterial);
+                 list.add(productMaterialMapper.toDto(_productMaterial));
+             }
+         }
+        return ResponseEntity.ok(new ResponseObject("create success", list));
     }
     public Page<ProductMaterialDTO> getAll(int currentPage, int pageSize, String field){
         Page<ProductMaterial> productMaterials = productMaterialRepository.findAll(
@@ -228,5 +236,21 @@ public class ProductMaterialService {
             lastSegment = lastSegment.substring(0, index);
         }
         return lastSegment;
+    }
+
+    public ResponseEntity<ResponseObject> getProductMaterialByProductId(Long productId){
+        List<ProductMaterial> list = productMaterialRepository.getProductMaterialsByProductId(productId);
+        List<ProductMaterialDTO> _list = new ArrayList<>();
+        if(!list.isEmpty()){
+            _list = list.stream().map(productMaterialMapper::toDto).collect(Collectors.toList());
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(
+                    "Get success",
+                    _list
+            ));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject(
+                "Not found product material by id",
+                ""
+        ));
     }
 }

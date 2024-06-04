@@ -1,5 +1,6 @@
 package com.example.exe202backend.controllers;
 
+import com.example.exe202backend.dto.CreateProductMaterialDTO;
 import com.example.exe202backend.dto.PageList;
 import com.example.exe202backend.dto.ProductMaterialDTO;
 import com.example.exe202backend.response.ResponseObject;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/product-material")
@@ -39,8 +41,8 @@ public class ProductMaterialController {
         return productMaterialService.getById(id);
     }
     @PostMapping
-    public ResponseEntity<ResponseObject> create(@RequestBody ProductMaterialDTO productMaterialDTO) {
-        return productMaterialService.create(productMaterialDTO);
+    public ResponseEntity<ResponseObject> create(@RequestBody CreateProductMaterialDTO productMaterialDTO, @RequestParam List<Long> listColor,@RequestParam List<Long> listSize) {
+        return productMaterialService.create(productMaterialDTO,listColor,listSize);
     }
     @PutMapping("/{id}")
     public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestBody ProductMaterialDTO productMaterialDTO) {
@@ -64,5 +66,10 @@ public class ProductMaterialController {
     @DeleteMapping("/delete-image/{productMaterialId}")
     public ResponseEntity<ResponseObject> deleteImage(@PathVariable long productMaterialId) throws IOException, URISyntaxException {
         return productMaterialService.deleteImage(productMaterialId);
+    }
+
+    @GetMapping("/get-by-productId/{productId}")
+    public ResponseEntity<ResponseObject> getByProductId(@PathVariable Long productId){
+        return productMaterialService.getProductMaterialByProductId(productId);
     }
 }

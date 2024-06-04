@@ -1,21 +1,21 @@
 -- -- Cập nhật bảng accessory
--- insert into accessory(name, image, status)
--- values ('Stone', null,  true),
---        ('Metal', null,  true),
---        ('Fabric', null, true);
+-- insert into accessory(name, image, status,price)
+-- values ('Stone', null,  true,10000),
+--        ('Metal', null,  true,20000),
+--        ('Fabric', null, true,30000);
 --
--- insert into color(name,status)
--- values ('Red',true),
---        ('Pink',true),
---        ('Black',true),
---        ('Orange',true),
---        ('Purple',true);
+-- insert into color(name,status,price)
+-- values ('Red',true,5000),
+--        ('Pink',true,4000),
+--        ('Black',true,1000),
+--        ('Orange',true,2000),
+--        ('Purple',true,1200);
 --
--- insert into size(name,status)
--- values ('M',true),
---        ('S',true),
---        ('L',true),
---        ('XL',true);
+-- insert into size(name,status,price)
+-- values ('M',true,2000),
+--        ('S',true,3000),
+--        ('L',true,1000),
+--        ('XL',true,5000);
 --
 -- insert into product_category(name, status)
 -- values ('Gift', true),
@@ -24,34 +24,34 @@
 --        ('DIY', true);
 --
 -- -- Cập nhật bảng product
--- insert into product(name, cover_image, price, quantity, status, category_id, accessory_id)
--- values ('Gold Infinity', null, 110000, 50, true, 3, 1),
---        ('Remar Love', null, 80000, 50, true, 3, 2),
---        ('TOUS Mana', null, 100000, 50, true, 3, 3),
---        ('Charm bạc may mắn', null, 50000, 50, true, 4, 1),
---        ('Hạt chuỗi xanh lục', null, 221000, 50, true, 4, 2),
---        ('Hạt chuỗi tím', null, 211000, 50, true, 4, 3),
---        ('Hạt chuỗi nâu', null, 300000, 50, true, 4, 1),
---        ('Chỉ xanh 1m', null, 20000, 50, true, 4, 2),
---        ('Chỉ hồng 1m', null, 20000, 50, true, 4, 3),
---        ('Charm II', null, 99000, 50, true, 4, 1);
+-- insert into product(name, cover_image, price, quantity, status, category_id)
+-- values ('Gold Infinity', null, 110000, 50, true, 3),
+--        ('Remar Love', null, 80000, 50, true, 3),
+--        ('TOUS Mana', null, 100000, 50, true, 3),
+--        ('Charm bạc may mắn', null, 50000, 50, true, 4),
+--        ('Hạt chuỗi xanh lục', null, 221000, 50, true, 4),
+--        ('Hạt chuỗi tím', null, 211000, 50, true, 4),
+--        ('Hạt chuỗi nâu', null, 300000, 50, true, 4),
+--        ('Chỉ xanh 1m', null, 20000, 50, true, 4),
+--        ('Chỉ hồng 1m', null, 20000, 50, true, 4),
+--        ('Charm II', null, 99000, 50, true, 4);
 -- -- Cập nhật bảng product_material
--- insert into product_material(image, price, quantity, status, color_id,product_id,size_id)
--- values (null, 20000, 100, true,1,1,1),
---        (null, 22000, 100, true,2,1,2),
---        (null, 24000, 100, true,3,1,3),
---        (null, 20000, 100, true,1,2,2),
---        (null, 22000, 100, true,2,2,2),
---        (null, 24000, 100, true,3,3,3),
---        (null, 20000, 100, true,1,4,2),
---        (null, 22000, 100, true,2,4,2),
---        (null, 24000, 100, true,3,4,3),
---        (null, 20000, 100, true,4,4,4),
---        (null, 22000, 100, true,5,5,1),
---        (null, 24000, 100, true,5,5,2),
---        (null, 20000, 100, true,5,5,3),
---        (null, 22000, 100, true,5,5,4),
---        (null, 24000, 100, true,1,6,1);
+-- insert into product_material(image, price, quantity, status, color_id,product_id,size_id,accessory_id)
+-- values (null, 20000, 100, true,1,1,1,1),
+--        (null, 22000, 100, true,2,1,2,1),
+--        (null, 24000, 100, true,3,1,3,1),
+--        (null, 20000, 100, true,1,2,2,1),
+--        (null, 22000, 100, true,2,2,2,1),
+--        (null, 24000, 100, true,3,3,3,1),
+--        (null, 20000, 100, true,1,4,2,1),
+--        (null, 22000, 100, true,2,4,2,1),
+--        (null, 24000, 100, true,3,4,3,1),
+--        (null, 20000, 100, true,4,4,4,1),
+--        (null, 22000, 100, true,5,5,1,1),
+--        (null, 24000, 100, true,5,5,2,1),
+--        (null, 20000, 100, true,5,5,3,1),
+--        (null, 22000, 100, true,5,5,4,1),
+--        (null, 24000, 100, true,1,6,1,1);
 --
 -- -- Cập nhật bảng product_sub_image (không có status)
 -- INSERT INTO product_sub_image(url, product_id, status)

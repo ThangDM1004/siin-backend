@@ -1,5 +1,6 @@
 package com.example.exe202backend.mapper;
 
+import com.example.exe202backend.dto.CreateProductMaterialDTO;
 import com.example.exe202backend.dto.ProductMaterialDTO;
 import com.example.exe202backend.models.ProductMaterial;
 import org.mapstruct.Mapper;
@@ -31,4 +32,8 @@ public interface ProductMaterialMapper {
     @Mapping(target = "accessory", ignore = true)
     void updateProductMaterialFromDto(ProductMaterialDTO productMaterialDTO,
                                       @MappingTarget ProductMaterial productMaterial);
+
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "id", source = "id")
+    ProductMaterial CreateDtotoEntity(CreateProductMaterialDTO productMaterialDTO);
 }
