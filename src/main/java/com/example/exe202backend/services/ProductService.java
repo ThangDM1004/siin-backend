@@ -93,6 +93,7 @@ public class ProductService {
             productDTO.setCategoryId(existingProduct.getCategory().getId());
         }
         productDTO.setStatus(existingProduct.getStatus());
+        productDTO.setStatus(existingProduct.getStatus());
         productMapper.updateProductFromDto(productDTO,existingProduct);
         existingProduct.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).get());
         productRepository.save(existingProduct);
