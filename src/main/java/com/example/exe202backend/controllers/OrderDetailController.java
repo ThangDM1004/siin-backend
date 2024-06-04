@@ -3,11 +3,15 @@ package com.example.exe202backend.controllers;
 import com.example.exe202backend.dto.*;
 import com.example.exe202backend.response.ResponseObject;
 import com.example.exe202backend.services.OrderDetailService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -37,10 +41,10 @@ public class OrderDetailController {
         return orderDetailService.getById(id);
     }
     @PostMapping
-    public ResponseEntity<ResponseObject> create(@RequestBody(required = false) Long userId,
-                                                 @RequestBody(required = false) List<CartItemResponseDTO_2> cartItemResponseDTOS,
-                                                 @RequestBody OrderDetailRequestDTO orderDetailRequestDTO) {
-        return orderDetailService.create(userId,cartItemResponseDTOS, orderDetailRequestDTO);
+    public ResponseEntity<ResponseObject> create(@RequestParam(required = false) Long userId,
+                                                 @RequestBody OrderDetailRequestDTO_2 orderDetailRequestDTO_2) {
+        return orderDetailService.create(userId,orderDetailRequestDTO_2.getCartItems(),
+                orderDetailRequestDTO_2.getOrderDetailRequestDTO());
     }
     @PutMapping("/{id}")
     public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestBody OrderDetailDTO orderDetailDTO) {

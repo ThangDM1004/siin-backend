@@ -1,6 +1,5 @@
 package com.example.exe202backend.services;
 
-import com.example.exe202backend.dto.CartItemResponseDTO;
 import com.example.exe202backend.dto.CartItemResponseDTO_2;
 import com.example.exe202backend.dto.OrderDetailDTO;
 import com.example.exe202backend.dto.OrderDetailRequestDTO;
@@ -52,7 +51,7 @@ public class OrderDetailService {
         else if (userId == null && cartItemResponseDTOS != null) {
                 orderDetailDTO= processOrderForGuest(cartItemResponseDTOS, orderDetailRequestDTO);
         }
-        return ResponseEntity.ok(new ResponseObject("Ok", orderDetailDTO));
+        return ResponseEntity.ok(new ResponseObject("Hello youtube", orderDetailDTO));
     }
 
     public Page<OrderDetailDTO> getAll(int currentPage, int pageSize, String field){
@@ -131,19 +130,19 @@ public class OrderDetailService {
                             .productMaterial(productMaterialRepository.findById(cartItemResponseDTO.getProductMaterialId()).get())
                             .build());
         }
+        List<OrderItem> orderItems = new ArrayList<>();
         for (CartItem cartItem : cartItems) {
             OrderItem orderItem = new OrderItem();
             orderItem.setProductMaterial(cartItem.getProductMaterial());
             orderItem.setOrderDetail(orderDetail);
             orderItem.setQuantity(cartItem.getQuantity());
             orderItem.setPrice(cartItem.getProductMaterial().getPrice());
-
-            orderItemRepository.save(orderItem);
-
+            orderItems.add(orderItem);
             total += cartItem.getProductMaterial().getPrice();
         }
         orderDetail.setTotal(total);
         orderDetailRepository.save(orderDetail);
+        orderItemRepository.saveAll(orderItems);
         return orderDetailMapper.toDto(orderDetail);
     }
 }
