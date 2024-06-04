@@ -56,13 +56,14 @@ public class ProductMaterialService {
         ProductMaterial productMaterial = productMaterialMapper.CreateDtotoEntity(productMaterialDTO);
         List<ProductMaterialDTO> successList = new ArrayList<>();
         List<ProductMaterialDTO> existedList = new ArrayList<>();
+        ProductMaterial _productMaterial;
         for (Long color : listColor) {
             for (Long size : listSize) {
                 if (!checkProduct(productMaterialDTO.getProductId(), size, color)) {
                     productMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
                     productMaterial.setColor(colorRepository.findById(color).get());
                     productMaterial.setSize(sizeRepository.findById(size).get());
-                    ProductMaterial _productMaterial = productMaterialRepository.save(productMaterial);
+                    _productMaterial = productMaterialRepository.save(productMaterial);
                     successList.add(productMaterialMapper.toDto(_productMaterial));
                 } else {
                     ProductMaterialDTO existedDTO = productMaterialMapper.toDto(productMaterialRepository.getProductMaterials(productMaterialDTO.getProductId(),size,color));
