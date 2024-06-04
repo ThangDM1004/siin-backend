@@ -8,5 +8,5 @@ import java.util.ArrayList;
 
 @Repository
 public interface ProductSubImageRepository extends JpaRepository<ProductSubImage, Long> {
-    ArrayList<ProductSubImage> findProductSubImageByProduct_Id(Long id);
+    ArrayList<ProductSubImage> findProductSubImageByProductMaterial_Id(Long id);
 }

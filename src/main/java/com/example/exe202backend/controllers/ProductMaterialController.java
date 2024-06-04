@@ -74,4 +74,9 @@ public class ProductMaterialController {
     public ResponseEntity<ResponseObject> getByProductId(@PathVariable Long productId){
         return productMaterialService.getProductMaterialByProductId(productId);
     }
+
+    @GetMapping("/color-size-name/{productMaterialId}")
+    public ResponseEntity<ResponseObject> getColorAndSizeNameByProductMaterialId(@PathVariable Long productMaterialId){
+        return productMaterialService.getColorAndSizeNameByProductMaterialId(productMaterialId);
+    }
 }

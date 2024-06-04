@@ -3,7 +3,9 @@ package com.example.exe202backend.services;
 import com.example.exe202backend.dto.ProductSubImageDTO;
 import com.example.exe202backend.mapper.ProductSubImageMapper;
 import com.example.exe202backend.models.Product;
+import com.example.exe202backend.models.ProductMaterial;
 import com.example.exe202backend.models.ProductSubImage;
+import com.example.exe202backend.repositories.ProductMaterialRepository;
 import com.example.exe202backend.repositories.ProductRepository;
 import com.example.exe202backend.repositories.ProductSubImageRepository;
 import com.example.exe202backend.response.ResponseObject;
@@ -42,7 +44,7 @@ public class ProductSubImageService {
     @Autowired
     private ProductSubImageMapper productSubImageMapper;
     @Autowired
-    private ProductRepository productRepository;
+    private ProductMaterialRepository productMaterialRepository;
 
     public List<ProductSubImageDTO> get() {
         return productSubImageRepository.findAll().stream().map(productSubImageMapper::toDto).collect(Collectors.toList());
@@ -50,7 +52,7 @@ public class ProductSubImageService {
 
     public ResponseEntity<ResponseObject> create(ProductSubImageDTO productSubImageDTO) {
         ProductSubImage productSubImage = productSubImageMapper.toEntity(productSubImageDTO);
-        productSubImage.setProduct(productRepository.findById(productSubImageDTO.getProductId()).orElse(null));
+        productSubImage.setProductMaterial(productMaterialRepository.findById(productSubImageDTO.getProductMaterialsId()).orElse(null));
         productSubImageRepository.save(productSubImage);
         return ResponseEntity.ok(new ResponseObject("create success", productSubImageDTO));
     }
@@ -81,31 +83,31 @@ public class ProductSubImageService {
         ProductSubImage productSubImage = productSubImageRepository.findById(id).orElseThrow(() ->
                 new RuntimeException("Product Sub Image not found"));
         productSubImageMapper.updateProductSubImageFromDto(productSubImageDTO,productSubImage);
-        productSubImage.setProduct(productRepository.findById(productSubImageDTO.getProductId()).orElse(null));
+        productSubImage.setProductMaterial(productMaterialRepository.findById(productSubImageDTO.getProductMaterialsId()).orElse(null));
         productSubImageRepository.save(productSubImage);
         return ResponseEntity.ok(new ResponseObject("update success", productSubImageDTO));
     }
 
-    public ResponseEntity<ResponseObject> getByProductId(Long productId) {
-        ArrayList<ProductSubImage> list = productSubImageRepository.findProductSubImageByProduct_Id(productId);
+    public ResponseEntity<ResponseObject> getByProductMaterialId(Long productMaterialsId) {
+        ArrayList<ProductSubImage> list = productSubImageRepository.findProductSubImageByProductMaterial_Id(productMaterialsId);
 
         if (list.isEmpty()) {
-            return ResponseEntity.ok(new ResponseObject("Product don't have image", ""));
+            return ResponseEntity.ok(new ResponseObject("Product Material don't have image", ""));
         } else {
             List<ProductSubImageDTO> _list = list.stream().map(productSubImageMapper::toDto).toList();
             return ResponseEntity.ok(new ResponseObject("Get list image success", _list));
         }
     }
 
-    public ResponseEntity<ResponseObject> createSubImage(List<MultipartFile> multipartFile, Long productId) {
-        Optional<Product> product = productRepository.findById(productId);
+    public ResponseEntity<ResponseObject> createSubImage(List<MultipartFile> multipartFile, Long productMaterialsId) {
+        Optional<ProductMaterial> productMaterial = productMaterialRepository.findById(productMaterialsId);
         List<ProductSubImageDTO> list = new ArrayList<>();
-        if (product.isPresent()) {
+        if (productMaterial.isPresent()) {
             if (multipartFile != null) {
                 for (MultipartFile x : multipartFile) {
                     ProductSubImage productSubImage = new ProductSubImage();
                     String imageUrl = this.upload(x);
-                    productSubImage.setProduct(product.get());
+                    productSubImage.setProductMaterial(productMaterial.get());
                     productSubImage.setUrl(imageUrl);
                     productSubImage.setStatus(true);
                     productSubImageRepository.save(productSubImage);

@@ -1,5 +1,6 @@
 package com.example.exe202backend.services;
 
+import com.example.exe202backend.dto.ColorSizeNameDTO;
 import com.example.exe202backend.dto.CreateProductMaterialDTO;
 import com.example.exe202backend.dto.ProductMaterialDTO;
 import com.example.exe202backend.mapper.ProductMaterialMapper;
@@ -58,7 +59,7 @@ public class ProductMaterialService {
         List<ProductMaterialDTO> existedList = new ArrayList<>();
         for (Long color : listColor) {
             for (Long size : listSize) {
-                if (!checkProduct(productMaterialDTO.getProductId(), color, size)) {
+                if (!checkProduct(productMaterialDTO.getProductId(), size, color)) {
                     productMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
                     productMaterial.setColor(colorRepository.findById(color).get());
                     productMaterial.setSize(sizeRepository.findById(size).get());
@@ -270,6 +271,25 @@ public class ProductMaterialService {
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject(
                 "Not found product material by id",
+                ""
+        ));
+    }
+
+    public ResponseEntity<ResponseObject> getColorAndSizeNameByProductMaterialId(Long id) {
+        Optional<ProductMaterial> pm = productMaterialRepository.findById(id);
+        if(pm.isPresent()){
+            String color = colorRepository.findById(pm.get().getColor().getId()).get().getName();
+            String size = sizeRepository.findById(pm.get().getSize().getId()).get().getName();
+            ColorSizeNameDTO csn = new ColorSizeNameDTO();
+            csn.setColorName(color);
+            csn.setSizeName(size);
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(
+                    "Get color and size success",
+                    csn
+            ));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject(
+                "Not found Product Materials",
                 ""
         ));
     }

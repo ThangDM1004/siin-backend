@@ -18,6 +18,6 @@ public class ProductSubImage extends BaseModel{
     private String url;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "product_material_id")
+    private ProductMaterial productMaterial;
 }
