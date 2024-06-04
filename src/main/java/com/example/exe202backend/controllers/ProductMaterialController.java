@@ -41,7 +41,9 @@ public class ProductMaterialController {
         return productMaterialService.getById(id);
     }
     @PostMapping
-    public ResponseEntity<ResponseObject> create(@RequestBody CreateProductMaterialDTO productMaterialDTO, @RequestParam List<Long> listColor,@RequestParam List<Long> listSize) {
+    public ResponseEntity<ResponseObject> create(@RequestBody CreateProductMaterialDTO productMaterialDTO,
+                                                 @RequestParam List<Long> listColor,
+                                                 @RequestParam List<Long> listSize) {
         return productMaterialService.create(productMaterialDTO,listColor,listSize);
     }
     @PutMapping("/{id}")
