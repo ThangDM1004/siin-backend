@@ -48,79 +48,98 @@ public class ProductMaterialService {
     @Autowired
     private AccessoryRepository accessoryRepository;
 
-    public List<ProductMaterialDTO> get(){
+    public List<ProductMaterialDTO> get() {
         return productMaterialRepository.findAll().stream().map(productMaterialMapper::toDto).collect(Collectors.toList());
     }
 
-    public ResponseEntity<ResponseObject> create(CreateProductMaterialDTO productMaterialDTO, List<Long> listColor, List<Long> listSize){
-         ProductMaterial productMaterial = productMaterialMapper.CreateDtotoEntity(productMaterialDTO);
-         List<ProductMaterialDTO> list = new ArrayList<>();
-         for(Long color : listColor){
-             for(Long size : listSize){
-                 productMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
-                 productMaterial.setColor(colorRepository.findById(color).get());
-                 productMaterial.setSize(sizeRepository.findById(size).get());
-                 ProductMaterial _productMaterial = productMaterialRepository.save(productMaterial);
-                 list.add(productMaterialMapper.toDto(_productMaterial));
-             }
-         }
-        return ResponseEntity.ok(new ResponseObject("create success", list));
+    public ResponseEntity<ResponseObject> create(CreateProductMaterialDTO productMaterialDTO, List<Long> listColor, List<Long> listSize) {
+        ProductMaterial productMaterial = productMaterialMapper.CreateDtotoEntity(productMaterialDTO);
+        List<ProductMaterialDTO> list = new ArrayList<>();
+        if (!checkProduct(productMaterialDTO.getProductId())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject(
+                    "Product have exist",
+                    ""
+            ));
+        } else {
+            for (Long color : listColor) {
+                for (Long size : listSize) {
+                    productMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
+                    productMaterial.setColor(colorRepository.findById(color).get());
+                    productMaterial.setSize(sizeRepository.findById(size).get());
+                    ProductMaterial _productMaterial = productMaterialRepository.save(productMaterial);
+                    list.add(productMaterialMapper.toDto(_productMaterial));
+                }
+            }
+            return ResponseEntity.ok(new ResponseObject("create success", list));
+        }
     }
-    public Page<ProductMaterialDTO> getAll(int currentPage, int pageSize, String field){
+
+    public Page<ProductMaterialDTO> getAll(int currentPage, int pageSize, String field) {
         Page<ProductMaterial> productMaterials = productMaterialRepository.findAll(
-                PageRequest.of(currentPage-1,pageSize, Sort.by(Sort.Direction.ASC,field)));
+                PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.ASC, field)));
         return productMaterials.map(productMaterialMapper::toDto);
     }
 
-    public ResponseEntity<ResponseObject> getById(long id){
+    public ResponseEntity<ResponseObject> getById(long id) {
         Optional<ProductMaterial> productMaterial = productMaterialRepository.findById(id);
         return productMaterial.map(material -> ResponseEntity.ok(new ResponseObject("get success", productMaterialMapper.toDto(material))))
                 .orElseGet(() -> ResponseEntity.ok(new ResponseObject("get success", null)));
     }
 
-    public ResponseEntity<ResponseObject> delete(long id){
+    private boolean checkProduct(Long id) {
+        boolean valid = false;
+        List<ProductMaterial> list = productMaterialRepository.getProductMaterialsByProductId(id);
+        if (!list.isEmpty()) {
+            valid = false;
+        } else {
+            valid = true;
+        }
+        return valid;
+    }
+
+    public ResponseEntity<ResponseObject> delete(long id) {
         Optional<ProductMaterial> productMaterial = productMaterialRepository.findById(id);
-        if(productMaterial.isPresent()){
+        if (productMaterial.isPresent()) {
             productMaterial.get().setStatus(false);
             productMaterialRepository.save(productMaterial.get());
             return ResponseEntity.ok(new ResponseObject("delete success",
                     productMaterialMapper.toDto(productMaterial.get())));
         }
-        return ResponseEntity.badRequest().body(new ResponseObject("delete fail",null));
+        return ResponseEntity.badRequest().body(new ResponseObject("delete fail", null));
     }
 
-    public ResponseEntity<ResponseObject> update(Long id, ProductMaterialDTO productMaterialDTO){
+    public ResponseEntity<ResponseObject> update(Long id, ProductMaterialDTO productMaterialDTO) {
         ProductMaterial existingProductMaterial = productMaterialRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Product material not found"));
-        if(productMaterialDTO.getColorId() == null){
+        if (productMaterialDTO.getColorId() == null) {
             productMaterialDTO.setColorId(existingProductMaterial.getColor().getId());
         }
-        if(productMaterialDTO.getSizeId() == null){
+        if (productMaterialDTO.getSizeId() == null) {
             productMaterialDTO.setSizeId(existingProductMaterial.getSize().getId());
         }
-        if(productMaterialDTO.getProductId() == null){
+        if (productMaterialDTO.getProductId() == null) {
             productMaterialDTO.setProductId(existingProductMaterial.getProduct().getId());
         }
-        if(productMaterialDTO.getAccessoryId() == null){
+        if (productMaterialDTO.getAccessoryId() == null) {
             productMaterialDTO.setAccessoryId(existingProductMaterial.getAccessory().getId());
         }
-        if(productMaterialDTO.getQuantity() == 0){
+        if (productMaterialDTO.getQuantity() == 0) {
             productMaterialDTO.setQuantity(existingProductMaterial.getQuantity());
         }
-        if(productMaterialDTO.getImage() == null){
+        if (productMaterialDTO.getImage() == null) {
             productMaterialDTO.setImage(existingProductMaterial.getImage());
         }
-        if(productMaterialDTO.getPrice() == 0){
+        if (productMaterialDTO.getPrice() == 0) {
             productMaterialDTO.setPrice(existingProductMaterial.getPrice());
         }
         productMaterialDTO.setStatus(existingProductMaterial.getStatus());
-        productMaterialMapper.updateProductMaterialFromDto(productMaterialDTO,existingProductMaterial);
+        productMaterialMapper.updateProductMaterialFromDto(productMaterialDTO, existingProductMaterial);
         existingProductMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
         existingProductMaterial.setColor(colorRepository.findById(productMaterialDTO.getColorId()).get());
         existingProductMaterial.setSize(sizeRepository.findById(productMaterialDTO.getSizeId()).get());
         existingProductMaterial.setAccessory(accessoryRepository.findById(productMaterialDTO.getAccessoryId()).get());
         productMaterialRepository.save(existingProductMaterial);
-        return ResponseEntity.ok(new ResponseObject("update success",productMaterialDTO));
+        return ResponseEntity.ok(new ResponseObject("update success", productMaterialDTO));
     }
 
     public Long getMaterialIdBySizeAndColorAndProduct(Long productId, Long colorId, Long sizeId, Long accessoryId) {
@@ -128,8 +147,8 @@ public class ProductMaterialService {
         List<ProductMaterial> filteredList = list.stream()
                 .filter(productMaterial -> Objects.equals(productMaterial.getColor().getId(), colorId)
                         && Objects.equals(productMaterial.getSize().getId(), sizeId)
-                        && ( productId == null || Objects.equals(productMaterial.getProduct().getId(), productId))
-                        && ( accessoryId == null || Objects.equals(productMaterial.getAccessory().getId(), accessoryId)))
+                        && (productId == null || Objects.equals(productMaterial.getProduct().getId(), productId))
+                        && (accessoryId == null || Objects.equals(productMaterial.getAccessory().getId(), accessoryId)))
                 .toList();
         if (filteredList.isEmpty()) {
             return null;
@@ -144,13 +163,14 @@ public class ProductMaterialService {
                 String imageUrl = this.upload(multipartFile);
                 productMaterial.get().setImage(imageUrl);
                 productMaterialRepository.save(productMaterial.get());
-                return ResponseEntity.ok(new ResponseObject("Create successful",productMaterialMapper.toDto(productMaterial.get())));
+                return ResponseEntity.ok(new ResponseObject("Create successful", productMaterialMapper.toDto(productMaterial.get())));
             } else {
-                return ResponseEntity.ok(new ResponseObject("Image object is null",""));
+                return ResponseEntity.ok(new ResponseObject("Image object is null", ""));
             }
         }
-        return ResponseEntity.ok(new ResponseObject("Product Material is not exist",""));
+        return ResponseEntity.ok(new ResponseObject("Product Material is not exist", ""));
     }
+
     public ResponseEntity<ResponseObject> updateImage(MultipartFile multipartFile, Long id) throws IOException, URISyntaxException {
         Optional<ProductMaterial> productMaterial = productMaterialRepository.findById(id);
         if (productMaterial.isPresent()) {
@@ -159,23 +179,24 @@ public class ProductMaterialService {
                 String imageUrl = this.upload(multipartFile);
                 productMaterial.get().setImage(imageUrl);
                 productMaterialRepository.save(productMaterial.get());
-                return ResponseEntity.ok(new ResponseObject("Update successful",productMaterialMapper.toDto(productMaterial.get())));
+                return ResponseEntity.ok(new ResponseObject("Update successful", productMaterialMapper.toDto(productMaterial.get())));
             } else {
-                return ResponseEntity.ok(new ResponseObject("Image is null",""));
+                return ResponseEntity.ok(new ResponseObject("Image is null", ""));
             }
         }
-        return ResponseEntity.ok(new ResponseObject("Product Material is not exist",""));
+        return ResponseEntity.ok(new ResponseObject("Product Material is not exist", ""));
     }
+
     public ResponseEntity<ResponseObject> deleteImage(Long id) throws IOException, URISyntaxException {
         Optional<ProductMaterial> productMaterial = productMaterialRepository.findById(id);
         if (productMaterial.isPresent()) {
             this.deleteImage(productMaterial.get().getImage());
-                String imageUrl = "";
-                productMaterial.get().setImage(imageUrl);
-                productMaterialRepository.save(productMaterial.get());
-                return ResponseEntity.ok(new ResponseObject("Delete successful",productMaterialMapper.toDto(productMaterial.get())));
+            String imageUrl = "";
+            productMaterial.get().setImage(imageUrl);
+            productMaterialRepository.save(productMaterial.get());
+            return ResponseEntity.ok(new ResponseObject("Delete successful", productMaterialMapper.toDto(productMaterial.get())));
         }
-        return ResponseEntity.ok(new ResponseObject("Product Material is not exist",""));
+        return ResponseEntity.ok(new ResponseObject("Product Material is not exist", ""));
     }
 
     private File convertToFile(MultipartFile multipartFile, String fileName) throws IOException {
@@ -196,6 +217,7 @@ public class ProductMaterialService {
         String DOWNLOAD_URL = "https://firebasestorage.googleapis.com/v0/b/siin-image.appspot.com/o/%s?alt=media";
         return String.format(DOWNLOAD_URL, URLEncoder.encode(fileName, StandardCharsets.UTF_8));
     }
+
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf("."));
     }
@@ -228,6 +250,7 @@ public class ProductMaterialService {
         storage.delete(blobIds);
 
     }
+
     public static String getFileNameFromFirebaseStorageUrl(String url) throws URISyntaxException {
         String[] segments = url.split("/");
         String lastSegment = segments[segments.length - 1];
@@ -238,10 +261,10 @@ public class ProductMaterialService {
         return lastSegment;
     }
 
-    public ResponseEntity<ResponseObject> getProductMaterialByProductId(Long productId){
+    public ResponseEntity<ResponseObject> getProductMaterialByProductId(Long productId) {
         List<ProductMaterial> list = productMaterialRepository.getProductMaterialsByProductId(productId);
         List<ProductMaterialDTO> _list = new ArrayList<>();
-        if(!list.isEmpty()){
+        if (!list.isEmpty()) {
             _list = list.stream().map(productMaterialMapper::toDto).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(
                     "Get success",
