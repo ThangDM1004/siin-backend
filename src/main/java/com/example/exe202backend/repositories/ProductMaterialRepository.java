@@ -11,4 +11,5 @@ import java.util.List;
 public interface ProductMaterialRepository extends JpaRepository<ProductMaterial, Long> {
     @Query("SELECT m FROM ProductMaterial m WHERE m.product.id = ?1")
     List<ProductMaterial> getProductMaterialsByProductId(Long productId);
+
 }
