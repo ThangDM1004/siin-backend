@@ -2,6 +2,7 @@ package com.example.exe202backend.services;
 
 import com.example.exe202backend.dto.CartItemDTO;
 import com.example.exe202backend.dto.CartItemResponseDTO;
+import com.example.exe202backend.dto.CartItemResponseDTO_2;
 import com.example.exe202backend.mapper.CartItemMapper;
 import com.example.exe202backend.models.*;
 import com.example.exe202backend.repositories.*;
@@ -80,7 +81,7 @@ public class CartItemService {
                 .status(true)
                 .build();
         if (userId == null) {
-            CartItemResponseDTO cartItemResponseDTO  = cartItemMapper.toResponseDto(cartItem);
+            CartItemResponseDTO_2 cartItemResponseDTO  = cartItemMapper.toResponseDto_2(cartItem);
             cartItemResponseDTO.setProductMaterialId(productMaterial.getId());
             return ResponseEntity.ok(new ResponseObject("add success", cartItemResponseDTO));
         }
