@@ -8,12 +8,13 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartItemResponseDTO {
-    private long id;
+    private Long id;
     private int quantity;
     private String sizeName;
     private String colorName;
     private String accessoryName;
     private Long productId;
-    private long cartId;
+    private Long cartId;
+    private Long productMaterialId;
     private boolean status;
 }

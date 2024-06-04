@@ -51,11 +51,11 @@ public class CartItemService {
         if(productId == null){
             productId = productRepository.findProductIdsByCategoryName("customize").get(0);
         }
-        if (productMaterialRepository.findById(
-                productMaterialService.getMaterialIdBySizeAndColorAndProduct(productId,
-                        colorId,
-                        sizeId,
-                        accessoryId)).isEmpty()) {
+        Long materialId = productMaterialService.getMaterialIdBySizeAndColorAndProduct(productId,
+                colorId,
+                sizeId,
+                accessoryId);
+        if (materialId == null) {
             Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
             Color color = colorRepository.findById(colorId).orElseThrow(() -> new RuntimeException("Color not found"));
             Size size = sizeRepository.findById(sizeId).orElseThrow(() -> new RuntimeException("Size not found"));
@@ -77,9 +77,12 @@ public class CartItemService {
         CartItem cartItem = CartItem.builder()
                 .quantity(quantity)
                 .productMaterial(productMaterial)
+                .status(true)
                 .build();
         if (userId == null) {
-            return ResponseEntity.ok(new ResponseObject("add success", cartItemMapper.toResponseDto(cartItem)));
+            CartItemResponseDTO cartItemResponseDTO  = cartItemMapper.toResponseDto(cartItem);
+            cartItemResponseDTO.setProductMaterialId(productMaterial.getId());
+            return ResponseEntity.ok(new ResponseObject("add success", cartItemResponseDTO));
         }
 
         Cart cart = cartRepository.findByUserId(userId);

@@ -3,6 +3,7 @@ package com.example.exe202backend.controllers;
 import com.example.exe202backend.dto.CreateProductMaterialDTO;
 import com.example.exe202backend.dto.PageList;
 import com.example.exe202backend.dto.ProductMaterialDTO;
+import com.example.exe202backend.repositories.ProductRepository;
 import com.example.exe202backend.response.ResponseObject;
 import com.example.exe202backend.services.ProductMaterialService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ import java.util.List;
 public class ProductMaterialController {
     @Autowired
     private ProductMaterialService productMaterialService;
+    @Autowired
+    private ProductRepository productRepository;
+
     @GetMapping(value = "/get-all/{currentPage}")
     public ResponseEntity<ResponseObject> getAll(@PathVariable int currentPage
             , @RequestParam(defaultValue = "5") int pageSize

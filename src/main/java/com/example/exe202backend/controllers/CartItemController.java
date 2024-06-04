@@ -1,6 +1,7 @@
 package com.example.exe202backend.controllers;
 
 import com.example.exe202backend.dto.CartItemDTO;
+import com.example.exe202backend.dto.CartItemRequest;
 import com.example.exe202backend.dto.CartItemResponseDTO;
 import com.example.exe202backend.dto.PageList;
 import com.example.exe202backend.response.ResponseObject;
@@ -41,24 +42,12 @@ public class CartItemController {
         return cartItemService.getById(id);
     }
     @PostMapping
-    public ResponseEntity<ResponseObject> create(@RequestBody Long productId,
-                                                 @RequestBody Long colorId,
-                                                 @RequestBody Long sizeId,
-                                                 @RequestBody(required = false) Long accessoryId,
-                                                 @RequestBody int quantity,
-                                                 @RequestBody(required = false)  Long userId) {
-        return cartItemService.create(productId, colorId, sizeId,accessoryId, quantity, userId);
+    public ResponseEntity<ResponseObject> create(@RequestParam(required = false) Long productId,
+                                                 @RequestBody CartItemRequest cartItemRequest,
+                                                 @RequestParam(required = false) Long userId) {
+        return cartItemService.create(productId, cartItemRequest.getColorId(),
+                cartItemRequest.getSizeId(),cartItemRequest.getAccessoryId(), cartItemRequest.getQuantity(), userId);
     }
-//    @PostMapping("/add-to-cart")
-//    public ResponseEntity<ResponseObject> addToCart(
-//            @RequestParam Long accessoryId,
-//            @RequestParam String color,
-//            @RequestParam String size,
-//            @RequestParam int quantity,
-//            @RequestParam(required = false) Long userId
-//    ) {
-//        return cartItemService.fromProductToCartItem(accessoryId, color, size, quantity, userId);
-//    }
     @PutMapping("/{id}")
     public ResponseEntity<ResponseObject> update(@PathVariable long id,@RequestBody CartItemDTO cartItemDTO) {
         return cartItemService.update(id,cartItemDTO);
