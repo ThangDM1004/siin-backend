@@ -51,7 +51,7 @@ public class OrderDetailService {
         else if (userId == null && cartItemResponseDTOS != null) {
                 orderDetailDTO= processOrderForGuest(cartItemResponseDTOS, orderDetailRequestDTO);
         }
-        return ResponseEntity.ok(new ResponseObject("Hello youtube", orderDetailDTO));
+        return ResponseEntity.ok(new ResponseObject("Create order detail", orderDetailDTO));
     }
 
     public Page<OrderDetailDTO> getAll(int currentPage, int pageSize, String field){
@@ -81,7 +81,7 @@ public class OrderDetailService {
                 -> new RuntimeException("Order detail not found"));
 
         orderDetailDTO.setOrderStatus(orderDetailDTO.getOrderStatus() != null ? orderDetailDTO.getOrderStatus() : existingOrderDetail.getOrderStatus());
-        orderDetailDTO.setUserId(orderDetailDTO.getUserId() != 0 ? orderDetailDTO.getUserId() : existingOrderDetail.getUserModel().getId());
+        orderDetailDTO.setUserId(orderDetailDTO.getUserId() != 0 ? orderDetailDTO.getUserId() : null);
         orderDetailDTO.setEmail(orderDetailDTO.getEmail() != null ? orderDetailDTO.getEmail() : existingOrderDetail.getEmail());
         orderDetailDTO.setPhone(orderDetailDTO.getPhone() != null ? orderDetailDTO.getPhone() : existingOrderDetail.getPhone());
         orderDetailDTO.setAddress(orderDetailDTO.getAddress() != null ? orderDetailDTO.getAddress() : existingOrderDetail.getAddress());
@@ -137,6 +137,7 @@ public class OrderDetailService {
             orderItem.setOrderDetail(orderDetail);
             orderItem.setQuantity(cartItem.getQuantity());
             orderItem.setPrice(cartItem.getProductMaterial().getPrice());
+            orderItem.setStatus(true);
             orderItems.add(orderItem);
             total += cartItem.getProductMaterial().getPrice();
         }
