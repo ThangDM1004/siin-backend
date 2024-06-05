@@ -79,9 +79,9 @@ public class OrderDetailService {
     public ResponseEntity<ResponseObject> update(Long id,OrderDetailDTO orderDetailDTO){
         OrderDetail existingOrderDetail = orderDetailRepository.findById(id).orElseThrow(()
                 -> new RuntimeException("Order detail not found"));
-
+        existingOrderDetail.setId(id);
+        orderDetailDTO.setId(id);
         orderDetailDTO.setOrderStatus(orderDetailDTO.getOrderStatus() != null ? orderDetailDTO.getOrderStatus() : existingOrderDetail.getOrderStatus());
-        orderDetailDTO.setUserId(orderDetailDTO.getUserId() != 0 ? orderDetailDTO.getUserId() : null);
         orderDetailDTO.setEmail(orderDetailDTO.getEmail() != null ? orderDetailDTO.getEmail() : existingOrderDetail.getEmail());
         orderDetailDTO.setPhone(orderDetailDTO.getPhone() != null ? orderDetailDTO.getPhone() : existingOrderDetail.getPhone());
         orderDetailDTO.setAddress(orderDetailDTO.getAddress() != null ? orderDetailDTO.getAddress() : existingOrderDetail.getAddress());
@@ -92,9 +92,12 @@ public class OrderDetailService {
         orderDetailDTO.setNote(orderDetailDTO.getNote() != null ? orderDetailDTO.getNote() : existingOrderDetail.getNote());
         orderDetailDTO.setTotal(orderDetailDTO.getTotal() != 0 ? orderDetailDTO.getTotal() : existingOrderDetail.getTotal());
 
-        orderDetailDTO.setStatus(existingOrderDetail.getStatus());
         orderDetailMapper.updateOrderDetailFromDto(orderDetailDTO,existingOrderDetail);
-        existingOrderDetail.setUserModel(userRepository.findById(orderDetailDTO.getUserId()).orElse(null));
+        if(orderDetailDTO.getUserId() == 0){
+            existingOrderDetail.setUserModel(null);
+        }else{
+            existingOrderDetail.setUserModel(userRepository.findById(orderDetailDTO.getUserId()).get());
+        }
         orderDetailRepository.save(existingOrderDetail);
         return ResponseEntity.ok(new ResponseObject("update success",orderDetailDTO));
     }
