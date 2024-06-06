@@ -15,6 +15,7 @@ import com.google.cloud.storage.StorageOptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,9 @@ public class ProductService {
     public List<ProductDTO> get() {
         return productRepository.findAll().stream().map(productMapper::toDto).collect(Collectors.toList());
     }
+    public List<ProductDTO> getByCategory(long categoryId) {
+        return productRepository.findAllByCategory_Id(categoryId).stream().map(productMapper::toDto).collect(Collectors.toList());
+    }
 
     public ResponseEntity<ResponseObject> create(ProductDTO productDTO) {
         Product product = productMapper.toEntity(productDTO);
@@ -60,7 +64,11 @@ public class ProductService {
                 PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.ASC, field)));
         return accessories.map(productMapper::toDto);
     }
-
+    public Page<ProductDTO> searchByCategory(int currentPage, int pageSize, String field, long categoryId) {
+        Pageable pageable = PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.ASC, field));
+        Page<Product> products = productRepository.searchByEmail(categoryId, pageable);
+        return products.map(product -> productMapper.toDto(product));
+    }
     public ResponseEntity<ResponseObject> getById(long id) {
         Optional<Product> product = productRepository.findById(id);
         return product.map(value -> ResponseEntity.ok(new ResponseObject("get success", productMapper.toDto(value))))
@@ -220,4 +228,5 @@ public class ProductService {
         }
         return lastSegment;
     }
+
 }
