@@ -12,8 +12,8 @@ public interface ProductMaterialMapper {
     @Mapping(target = "status", source = "status")
     @Mapping(target = "id", source = "id")
     @Mapping(target = "productId", source = "product.id")
-    @Mapping(target = "colorId", source = "size.id")
-    @Mapping(target = "sizeId", source = "color.id")
+    @Mapping(target = "colorId", source = "color.id")
+    @Mapping(target = "sizeId", source = "size.id")
     ProductMaterialDTO toDto(ProductMaterial productMaterial);
 
     @Mapping(target = "status", source = "status")

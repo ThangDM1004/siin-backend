@@ -57,8 +57,8 @@ public class ProductMaterialService {
         List<ProductMaterialDTO> successList = new ArrayList<>();
         List<ProductMaterialDTO> existedList = new ArrayList<>();
         ProductMaterial _productMaterial;
-        for (Long size : listSize) {
-            for (Long color : listColor) {
+        for (Long color : listColor) {
+            for (Long size : listSize) {
                 if (!checkProduct(productMaterialDTO.getProductId(), size, color)) {
                     productMaterial = new ProductMaterial();
                     productMaterial = productMaterialMapper.CreateDtotoEntity(productMaterialDTO);
