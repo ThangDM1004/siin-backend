@@ -27,7 +27,7 @@ public class MailService {
     @Autowired
     private Configuration config;
 
-    public ResponseEntity<ResponseObject> sendMail(MailRequest request, Map<String,Object> model){
+    public ResponseEntity<ResponseObject> sendMailPayment(MailRequest request, Map<String,Object> model){
         MimeMessage message = mail.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message,MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,

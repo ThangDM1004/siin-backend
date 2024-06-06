@@ -66,8 +66,5 @@ public class PaymentController {
         paymentService.paymentSuccess(paymentId);
         return new ModelAndView("success");
     }
-    @PostMapping("/send-mail")
-    public ResponseEntity<ResponseObject> sendMail(@RequestBody MailRequest mailRequest){
-        return paymentService.sendMail(mailRequest);
-    }
+
 }

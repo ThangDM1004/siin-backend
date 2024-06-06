@@ -4,6 +4,7 @@ import com.example.exe202backend.dto.PaymentDTO;
 import com.example.exe202backend.mapper.PaymentMapper;
 import com.example.exe202backend.models.OrderDetail;
 import com.example.exe202backend.models.Payment;
+import com.example.exe202backend.models.UserModel;
 import com.example.exe202backend.repositories.OrderDetailRepository;
 import com.example.exe202backend.repositories.PaymentRepository;
 import com.example.exe202backend.request.MailRequest;
@@ -92,13 +93,22 @@ public class PaymentService {
         Optional<Payment> payment = paymentRepository.findById(paymentId);
         payment.get().setStatus(true);
         paymentRepository.save(payment.get());
+        UserModel user = payment.get().getOrderDetail().getUserModel();
+        if(payment.get().getOrderDetail().getUserModel() != null){
+            MailRequest mailRequest = new MailRequest();
+            mailRequest.setSubject("Payment success");
+            mailRequest.setName("SIIN");
+            mailRequest.setTo(user.getEmail());
+            mailRequest.setFrom("siin.ecommerce.2024@gmail.com");
+            Map<String,Object> model = new HashMap<>();
+            model.put("price",payment.get().getTotal());
+            model.put("name",user.getFullName());
+            sendMail(mailRequest,model);
+        }
     }
 
-    public ResponseEntity<ResponseObject> sendMail(MailRequest mailRequest){
-        Map<String,Object> model = new HashMap<>();
-        model.put("price",10000);
-        model.put("name", "Lãnh chúa Thắng");
-        return mailService.sendMail(mailRequest,model);
+    public ResponseEntity<ResponseObject> sendMail(MailRequest mailRequest, Map<String,Object> model){
+        return mailService.sendMailPayment(mailRequest,model);
     }
 
 }
