@@ -135,10 +135,12 @@ public class ProductMaterialService {
         if (productMaterialDTO.getPrice() == 0) {
             productMaterialDTO.setPrice(existingProductMaterial.getPrice());
         }
+
         Product p = productRepository.findById(productMaterialDTO.getProductId()).get();
         p.setPrice(getMinPrice(productMaterialDTO.getProductId()));
         productRepository.save(p);
         productMaterialDTO.setStatus(existingProductMaterial.getStatus());
+
         productMaterialMapper.updateProductMaterialFromDto(productMaterialDTO, existingProductMaterial);
         existingProductMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
         existingProductMaterial.setColor(colorRepository.findById(productMaterialDTO.getColorId()).get());

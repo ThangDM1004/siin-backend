@@ -100,9 +100,11 @@ public class ProductService {
         if(productDTO.getCategoryId() == 0){
             productDTO.setCategoryId(existingProduct.getCategory().getId());
         }
-        productDTO.setStatus(existingProduct.getStatus());
+        if(productDTO.getStatus() == null){
+            productDTO.setStatus(existingProduct.getStatus());
+        }
         productMapper.updateProductFromDto(productDTO,existingProduct);
-        existingProduct.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).get());
+        existingProduct.setCategory(productCategoryRepository.findById(productDTO.getCategoryId()).orElse(null));
         productRepository.save(existingProduct);
         return ResponseEntity.ok(new ResponseObject("update success", productDTO));
     }

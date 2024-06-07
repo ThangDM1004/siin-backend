@@ -16,5 +16,5 @@ public class ProductMaterialDTO {
     private int quantity;
     private String image;
     private double price;
-    private boolean status;
+    private Boolean status;
 }
