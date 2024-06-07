@@ -4,6 +4,7 @@ import com.example.exe202backend.dto.ColorSizeNameDTO;
 import com.example.exe202backend.dto.CreateProductMaterialDTO;
 import com.example.exe202backend.dto.ProductMaterialDTO;
 import com.example.exe202backend.mapper.ProductMaterialMapper;
+import com.example.exe202backend.models.Product;
 import com.example.exe202backend.models.ProductMaterial;
 import com.example.exe202backend.repositories.*;
 import com.example.exe202backend.response.ResponseObject;
@@ -73,7 +74,9 @@ public class ProductMaterialService {
                 }
             }
         }
-
+        Product p = productRepository.findById(productMaterialDTO.getProductId()).get();
+        p.setPrice(getMinPrice(productMaterialDTO.getProductId()));
+        productRepository.save(p);
         Map<String, List<ProductMaterialDTO>> response = new HashMap<>();
         response.put("success", successList);
         response.put("existed", existedList);
@@ -132,9 +135,12 @@ public class ProductMaterialService {
         if (productMaterialDTO.getPrice() == 0) {
             productMaterialDTO.setPrice(existingProductMaterial.getPrice());
         }
-        if (productMaterialDTO.getStatus() == null) {
-            productMaterialDTO.setStatus(existingProductMaterial.getStatus());
-        }
+
+        Product p = productRepository.findById(productMaterialDTO.getProductId()).get();
+        p.setPrice(getMinPrice(productMaterialDTO.getProductId()));
+        productRepository.save(p);
+        productMaterialDTO.setStatus(existingProductMaterial.getStatus());
+
         productMaterialMapper.updateProductMaterialFromDto(productMaterialDTO, existingProductMaterial);
         existingProductMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
         existingProductMaterial.setColor(colorRepository.findById(productMaterialDTO.getColorId()).get());
@@ -296,5 +302,16 @@ public class ProductMaterialService {
                 "Not found Product Materials",
                 ""
         ));
+    }
+
+    private double getMinPrice(long productId){
+        List<ProductMaterial> pm = productMaterialRepository.getProductMaterialsByProductId(productId);
+        double price = pm.get(0).getPrice();
+        for(ProductMaterial x:pm){
+            if(price > x.getPrice()){
+                price = x.getPrice();
+            }
+        }
+        return price;
     }
 }
