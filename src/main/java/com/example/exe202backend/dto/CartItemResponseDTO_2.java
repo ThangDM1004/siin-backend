@@ -13,5 +13,6 @@ public class CartItemResponseDTO_2 {
     private String colorName;
     private String accessoryName;
     private Long productId;
+    private Long accessoryId;
     private Long productMaterialId;
 }
