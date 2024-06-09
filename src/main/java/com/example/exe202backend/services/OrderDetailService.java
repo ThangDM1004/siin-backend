@@ -142,7 +142,7 @@ public class OrderDetailService {
             orderItem.setPrice(cartItem.getProductMaterial().getPrice());
             orderItem.setStatus(true);
             orderItems.add(orderItem);
-            total += cartItem.getProductMaterial().getPrice();
+            total += cartItem.getProductMaterial().getPrice() * cartItem.getQuantity();
         }
         orderDetail.setTotal(total);
         orderDetailRepository.save(orderDetail);
