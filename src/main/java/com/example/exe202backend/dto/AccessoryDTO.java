@@ -10,6 +10,7 @@ import lombok.Setter;
 public class AccessoryDTO {
     private long id;
     private String name;
+    private double price;
     private String image;
     private boolean status;
 }
