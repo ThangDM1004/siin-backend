@@ -33,6 +33,8 @@ public class OrderDetailService {
     private CartRepository cartRepository;
     @Autowired
     private ProductMaterialRepository productMaterialRepository;
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     public List<OrderDetailDTO> get(){
         return orderDetailRepository.findAll().stream().map(orderDetailMapper::toDto).collect(Collectors.toList());
@@ -116,7 +118,7 @@ public class OrderDetailService {
             orderItem.setOrderDetail(orderDetail);
             orderItem.setQuantity(cartItem.getQuantity());
             orderItem.setPrice(cartItem.getProductMaterial().getPrice());
-
+            cartItemRepository.delete(cartItem);
             orderItemRepository.save(orderItem);
         }
         return orderDetailMapper.toDto(orderDetail);
