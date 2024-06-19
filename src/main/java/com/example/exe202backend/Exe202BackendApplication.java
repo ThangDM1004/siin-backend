@@ -23,8 +23,8 @@ import org.springframework.context.annotation.Bean;
                 )
         ),
         servers = {
-                @Server(url = "http://exe201-backend.click/", description = "Default Server URL"),
-                @Server(url = "http://localhost:8080/", description = "Local Server URL")
+                @Server(url = "http://172.171.207.227:8080/", description = "Default Server URL"),
+                @Server(url = "http://localhost:8080/", description = "Localhost URL")
         }
 )
 public class Exe202BackendApplication {
