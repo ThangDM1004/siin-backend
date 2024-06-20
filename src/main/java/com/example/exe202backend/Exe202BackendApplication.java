@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Bean;
                 )
         ),
         servers = {
-                @Server(url = "https://main.exe201-backend.click/", description = "Default Server URL"),
+                @Server(url = "https://exe201-backend.click/", description = "Default Server URL"),
                 @Server(url = "http://localhost:8080/", description = "Localhost URL")
         }
 )
