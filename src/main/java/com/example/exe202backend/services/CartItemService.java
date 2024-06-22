@@ -50,7 +50,7 @@ public class CartItemService {
     public ResponseEntity<ResponseObject> create(Long productId, Long colorId, Long sizeId, Long accessoryId,
                                                  int quantity, Long userId) {
         if(productId == null){
-            productId = productRepository.findProductIdsByCategoryName("customize").get(0);
+            productId = productRepository.findProductIdsByName("customize").get(0);
         }
         Long materialId = productMaterialService.getMaterialIdBySizeAndColorAndProduct(productId,
                 colorId,
