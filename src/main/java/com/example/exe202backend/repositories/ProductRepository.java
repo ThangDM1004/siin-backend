@@ -12,8 +12,8 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query("SELECT p.id FROM Product p WHERE LOWER(p.category.name) = LOWER(:categoryName)")
-    List<Long> findProductIdsByCategoryName(@Param("categoryName") String categoryName);
+    @Query("SELECT p.id FROM Product p WHERE LOWER(p.name) = LOWER(:productName)")
+    List<Long> findProductIdsByName(@Param("productName") String categoryName);
     @Query("SELECT p FROM Product p WHERE p.category.id = :id")
     Page<Product> searchByEmail(@Param("id") long id, Pageable pageable);
     List<Product> findAllByCategory_Id(long categoryId);
