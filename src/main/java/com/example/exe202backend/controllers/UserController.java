@@ -39,6 +39,10 @@ public class UserController {
     public ResponseEntity<ResponseObject> getById(@PathVariable long id) {
         return service.getUserById(id);
     }
+    @GetMapping("/getUserIdByToken")
+    public ResponseEntity<ResponseObject> getUserIdByToken(@RequestParam String token){
+        return ResponseEntity.ok(new ResponseObject("get success", service.getUserIdByToken(token)));
+    }
     @PutMapping("/{id}")
     public ResponseEntity<ResponseObject> update(@PathVariable long id, @RequestBody UserDTO userDTO) {
         return service.update(id, userDTO);
