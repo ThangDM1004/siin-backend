@@ -12,6 +12,7 @@ public class UserDTO {
     private int id;
     private String email;
     private String fullName;
+    private String password;
     private String phone;
     private String avatar;
     private LocalDate dob;

@@ -1,13 +1,11 @@
 package com.example.exe202backend.services;
 
-import com.example.exe202backend.dto.UserAddressDTO;
 import com.example.exe202backend.dto.UserDTO;
 import com.example.exe202backend.mapper.UserMapper;
-import com.example.exe202backend.models.Product;
-import com.example.exe202backend.models.UserAddress;
 import com.example.exe202backend.models.UserModel;
 import com.example.exe202backend.repositories.UserRepository;
 import com.example.exe202backend.response.ResponseObject;
+import com.example.exe202backend.services.Auth.JwtService;
 import com.google.auth.Credentials;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.BlobId;
@@ -42,6 +40,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private JwtService jwtService;
 
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
@@ -85,6 +85,11 @@ public class UserService {
         userModel.setStatus(false);
         userRepository.save(userModel);
         return ResponseEntity.ok(new ResponseObject("delete success",userMapper.toDto(userModel)));
+    }
+
+    public Long getUserIdByToken(String accessToken){
+        String username = jwtService.extractUsername(accessToken);
+        return userRepository.findByEmail(username).get().getId();
     }
 
     public ResponseEntity<ResponseObject> createAvartar(MultipartFile multipartFile, Long id) {
