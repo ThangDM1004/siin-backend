@@ -48,8 +48,10 @@ public class CartService {
     public ResponseEntity<ResponseObject> delete(long id){
         Optional<Cart> cart = cartRepository.findById(id);
         if(cart.isPresent()){
-            cart.get().setStatus(false);
-            cartRepository.save(cart.get());
+            UserModel user = userRepository.findUserByCartId(id).get();
+            user.setCart(null);
+            userRepository.save(user);
+            cartRepository.delete(cart.get());
             return ResponseEntity.ok(new ResponseObject("delete success",cartMapper.toDto(cart.get())));
         }
         return ResponseEntity.badRequest().body(new ResponseObject("Cart not found",null));
