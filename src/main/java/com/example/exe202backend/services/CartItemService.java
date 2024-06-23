@@ -85,6 +85,20 @@ public class CartItemService {
         ).get();
         Cart cart = cartRepository.findByUserId(userId);
         CartItem cartItem;
+
+        //guest
+        if (userId == null) {
+            cartItem = CartItem.builder()
+                    .quantity(quantity)
+                    .productMaterial(productMaterial)
+                    .status(true)
+                    .build();
+            CartItemResponseDTO_2 cartItemResponseDTO  = cartItemMapper.toResponseDto_2(cartItem);
+            cartItemResponseDTO.setProductMaterialId(productMaterial.getId());
+            return ResponseEntity.ok(new ResponseObject("add success", cartItemResponseDTO));
+        }
+
+        //user
         if (cart == null) {
 
             cart = Cart.builder()
@@ -106,11 +120,7 @@ public class CartItemService {
         }else{
             cartItem.setQuantity(cartItem.getQuantity()+quantity);
         }
-        if (userId == null) {
-            CartItemResponseDTO_2 cartItemResponseDTO  = cartItemMapper.toResponseDto_2(cartItem);
-            cartItemResponseDTO.setProductMaterialId(productMaterial.getId());
-            return ResponseEntity.ok(new ResponseObject("add success", cartItemResponseDTO));
-        }
+
 
 
 
