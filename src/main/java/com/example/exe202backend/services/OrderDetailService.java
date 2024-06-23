@@ -40,7 +40,8 @@ public class OrderDetailService {
         return orderDetailRepository.findAll().stream().map(orderDetailMapper::toDto).collect(Collectors.toList());
     }
 
-    public ResponseEntity<ResponseObject> create(Long userId, List<CartItemResponseDTO_2> cartItemResponseDTOS, OrderDetailRequestDTO orderDetailRequestDTO) {
+    public ResponseEntity<ResponseObject> create(Long userId, List<CartItemResponseDTO_2> cartItemResponseDTOS,
+                                                 OrderDetailRequestDTO orderDetailRequestDTO) {
         OrderDetailDTO orderDetailDTO = null;
         if (userId != null && cartItemResponseDTOS == null) {
             Cart cart = cartRepository.findByUserId(userId);
@@ -108,11 +109,12 @@ public class OrderDetailService {
         OrderDetail orderDetail = orderDetailMapper.toEntity(orderDetailRequestDTO);
         orderDetail.setUserModel(cart.getUser());
         orderDetail.setTotal(cart.getTotal());
+        orderDetail.setStatus(true);
         orderDetail.setOrderStatus("Pending");
 
         orderDetailRepository.save(orderDetail);
 
-        for (CartItem cartItem : cart.getCartItems()) {
+        for (CartItem cartItem : cartItemRepository.findByCartId(cart.getId())) {
             OrderItem orderItem = new OrderItem();
             orderItem.setProductMaterial(cartItem.getProductMaterial());
             orderItem.setOrderDetail(orderDetail);
@@ -121,6 +123,8 @@ public class OrderDetailService {
             cartItemRepository.delete(cartItem);
             orderItemRepository.save(orderItem);
         }
+        cart.setTotal(0);
+        cartRepository.save(cart);
         return orderDetailMapper.toDto(orderDetail);
     }
     private OrderDetailDTO processOrderForGuest(List<CartItemResponseDTO_2> cartItemResponseDTOS, OrderDetailRequestDTO orderDetailRequestDTO) {
