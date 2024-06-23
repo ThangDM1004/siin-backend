@@ -57,50 +57,68 @@ public class CartItemService {
                 sizeId,
                 accessoryId);
         if (materialId == null) {
-            Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
+            Product product = null;
+            Accessory accessory = null;
+
             Color color = colorRepository.findById(colorId).orElseThrow(() -> new RuntimeException("Color not found"));
             Size size = sizeRepository.findById(sizeId).orElseThrow(() -> new RuntimeException("Size not found"));
-            Accessory accessory = accessoryRepository.findById(accessoryId).orElseThrow(() -> new RuntimeException("Accessory not found"));
-
             ProductMaterial newProductMaterial = new ProductMaterial();
-            newProductMaterial.setProduct(product);
             newProductMaterial.setColor(color);
             newProductMaterial.setSize(size);
             newProductMaterial.setQuantity(quantity);
-            newProductMaterial.setAccessory(accessory);
-            newProductMaterial.setPrice(product.getPrice()+color.getPrice()+size.getPrice()+accessory.getPrice());
+
             newProductMaterial.setStatus(true);
+            if(productId != null){
+                product = productRepository.findById(productId).get();
+                newProductMaterial.setProduct(product);
+                newProductMaterial.setPrice(product.getPrice()+color.getPrice()+size.getPrice());
+            }
+            if(accessoryId != null){
+                accessory = accessoryRepository.findById(accessoryId).get();
+                newProductMaterial.setAccessory(accessory);
+                newProductMaterial.setPrice(color.getPrice()+size.getPrice()+accessory.getPrice());
+            }
             productMaterialRepository.save(newProductMaterial);
         }
         ProductMaterial productMaterial = productMaterialRepository.findById(
                 productMaterialService.getMaterialIdBySizeAndColorAndProduct(productId, colorId, sizeId, accessoryId)
         ).get();
-        CartItem cartItem = CartItem.builder()
-                .quantity(quantity)
-                .productMaterial(productMaterial)
-                .status(true)
-                .build();
+        Cart cart = cartRepository.findByUserId(userId);
+        CartItem cartItem;
+        if (cart == null) {
+
+            cart = Cart.builder()
+                    .total(0)
+                    .cartItems(new ArrayList<>())
+                    .user(userRepository.findById(userId).get())
+                    .build();
+            cartRepository.save(cart);
+        }
+        cartItem = cartItemRepository.findByCartIdAndMaterialId(cartRepository.findByUserId(userId).getId(),
+                productMaterial.getId());
+
+        if(cartItem == null){
+            cartItem = CartItem.builder()
+                    .quantity(quantity)
+                    .productMaterial(productMaterial)
+                    .status(true)
+                    .build();
+        }else{
+            cartItem.setQuantity(cartItem.getQuantity()+quantity);
+        }
         if (userId == null) {
             CartItemResponseDTO_2 cartItemResponseDTO  = cartItemMapper.toResponseDto_2(cartItem);
             cartItemResponseDTO.setProductMaterialId(productMaterial.getId());
             return ResponseEntity.ok(new ResponseObject("add success", cartItemResponseDTO));
         }
 
-        Cart cart = cartRepository.findByUserId(userId);
-        if (cart == null) {
-            cart = Cart.builder()
-                    .total(0)
-                    .cartItems(new ArrayList<>())
-                    .user(userRepository.findById(userId).get())
-                    .build();
-        }
+
 
         cart.getCartItems().add(cartItem);
         cart.setTotal(cart.getTotal() + productMaterial.getPrice() * quantity);
         cartItem.setCart(cart);
 
         cartRepository.save(cart);
-        cartItemRepository.save(cartItem);
 
         return ResponseEntity.ok(new ResponseObject("add success", cartItemMapper.toResponseDto(cartItem)));
 
@@ -121,8 +139,7 @@ public class CartItemService {
     public ResponseEntity<ResponseObject> delete(long id){
         Optional<CartItem> cartItem = cartItemRepository.findById(id);
         if(cartItem.isPresent()){
-            cartItem.get().setStatus(false);
-            cartItemRepository.save(cartItem.get());
+            cartItemRepository.delete(cartItem.get());
             return ResponseEntity.ok(new ResponseObject("delete success",cartItemMapper.toResponseDto(cartItem.get())));
         }
         return ResponseEntity.ok(new ResponseObject("Cart Item not found",null));
