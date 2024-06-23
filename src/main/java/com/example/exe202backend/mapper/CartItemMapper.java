@@ -36,6 +36,7 @@ public interface CartItemMapper {
     @Mapping(target = "productId", source = "productMaterial.product.id")
     @Mapping(target = "cartId", source = "cart.id")
     @Mapping(target = "accessoryId", source = "productMaterial.accessory.id")
+    @Mapping(target = "productMaterialId", source = "productMaterial.id")
     @Mapping(target = "status", source = "status")
     CartItemResponseDTO toResponseDto(CartItem cartItem);
 
