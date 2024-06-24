@@ -64,6 +64,16 @@ public class ProductService {
                 PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.ASC, field)));
         return accessories.map(productMapper::toDto);
     }
+    public List<ProductDTO> getAllExcludingCustomize() {
+        List<Product> accessories = productRepository.findAllExcludingCustomize(
+                productRepository.findAll());
+        return accessories.stream().map(productMapper::toDto).toList();
+    }
+    public Page<ProductDTO> getAllExcludingCustomize(int currentPage, int pageSize, String field) {
+        Page<Product> accessories = productRepository.findAllExcludingCustomize(
+                PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.ASC, field)));
+        return accessories.map(productMapper::toDto);
+    }
     public Page<ProductDTO> searchByCategory(int currentPage, int pageSize, String field, long categoryId) {
         Pageable pageable = PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.ASC, field));
         Page<Product> products = productRepository.searchByEmail(categoryId, pageable);
