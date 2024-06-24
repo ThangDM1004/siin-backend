@@ -3,7 +3,6 @@ package com.example.exe202backend.controllers;
 
 import com.example.exe202backend.dto.PageList;
 import com.example.exe202backend.dto.ProductDTO;
-import com.example.exe202backend.models.Product;
 import com.example.exe202backend.response.ResponseObject;
 import com.example.exe202backend.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +55,40 @@ public class ProductController {
         }
 
     }
+    @GetMapping(value = "/get-all-excluding-customize/{currentPage}")
+    public ResponseEntity<ResponseObject> getAllExcludingCustomize(
+            @RequestParam(defaultValue = "0") int currentPage,
+            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "name") String field,
+            @RequestParam(required = false, defaultValue = "0") long categoryId) {
+        if (categoryId == 0) {
+            if (currentPage < 1 || pageSize < 1 || currentPage > pageSize) {
+                return ResponseEntity.ok(new ResponseObject("get success",
+                        productService.getAllExcludingCustomize()));
+            }
 
+            Page<ProductDTO> accessories = productService.getAllExcludingCustomize(currentPage, pageSize, field);
+            var pageList = PageList.<ProductDTO>builder()
+                    .totalPage(accessories.getTotalPages())
+                    .currentPage(currentPage)
+                    .listResult(accessories.getContent())
+                    .build();
+            return ResponseEntity.ok(new ResponseObject("get success", pageList));
+        }else{
+            if (currentPage < 1 || pageSize < 1 || currentPage > pageSize) {
+                return ResponseEntity.ok(new ResponseObject("get success", productService
+                        .getByCategory(categoryId)));
+            }
+            Page<ProductDTO> accessories = productService.searchByCategory(currentPage, pageSize, field,categoryId);
+            var pageList = PageList.<ProductDTO>builder()
+                    .totalPage(accessories.getTotalPages())
+                    .currentPage(currentPage)
+                    .listResult(accessories.getContent())
+                    .build();
+            return ResponseEntity.ok(new ResponseObject("get success", pageList));
+        }
+
+    }
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getById(@PathVariable long id) {
         return productService.getById(id);
