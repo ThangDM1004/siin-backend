@@ -122,6 +122,12 @@ public class OrderDetailService {
             orderItem.setPrice(cartItem.getProductMaterial().getPrice());
             cartItemRepository.delete(cartItem);
             orderItemRepository.save(orderItem);
+            if(!cartItem.getProductMaterial().getProduct().getName().equalsIgnoreCase("customize")){
+                ProductMaterial productMaterial = productMaterialRepository.findById(
+                        cartItem.getProductMaterial().getId()).get();
+                productMaterial.setQuantity(productMaterial.getQuantity() - cartItem.getQuantity());
+                productMaterialRepository.save(productMaterial);
+            }
         }
         cart.setTotal(0);
         cartRepository.save(cart);
@@ -149,6 +155,12 @@ public class OrderDetailService {
             orderItem.setStatus(true);
             orderItems.add(orderItem);
             total += cartItem.getProductMaterial().getPrice() * cartItem.getQuantity();
+            if(!cartItem.getProductMaterial().getProduct().getName().equalsIgnoreCase("customize")){
+                ProductMaterial productMaterial = productMaterialRepository.findById(
+                        cartItem.getProductMaterial().getId()).get();
+                productMaterial.setQuantity(productMaterial.getQuantity() - cartItem.getQuantity());
+                productMaterialRepository.save(productMaterial);
+            }
         }
         orderDetail.setTotal(total);
         orderDetailRepository.save(orderDetail);
