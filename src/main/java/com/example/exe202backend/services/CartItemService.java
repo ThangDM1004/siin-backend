@@ -83,6 +83,8 @@ public class CartItemService {
         ProductMaterial productMaterial = productMaterialRepository.findById(
                 productMaterialService.getMaterialIdBySizeAndColorAndProduct(productId, colorId, sizeId, accessoryId)
         ).get();
+        if(productMaterial.getQuantity() < quantity) return ResponseEntity.ok(
+                new ResponseObject("Out of quantity",null));
         Cart cart = cartRepository.findByUserId(userId);
         CartItem cartItem;
 
