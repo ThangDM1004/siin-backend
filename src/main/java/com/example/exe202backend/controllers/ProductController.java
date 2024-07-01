@@ -61,6 +61,7 @@ public class ProductController {
             @RequestParam(defaultValue = "5") int pageSize,
             @RequestParam(defaultValue = "name") String field,
             @RequestParam(required = false, defaultValue = "0") long categoryId) {
+        currentPage -= 1;
         if (categoryId == 0) {
             if (currentPage < 1 || pageSize < 1 || currentPage > pageSize) {
                 return ResponseEntity.ok(new ResponseObject("get success",
