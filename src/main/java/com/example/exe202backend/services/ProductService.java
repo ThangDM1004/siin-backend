@@ -79,6 +79,11 @@ public class ProductService {
         Page<Product> products = productRepository.searchByEmail(categoryId, pageable);
         return products.map(product -> productMapper.toDto(product));
     }
+    public Page<ProductDTO> searchByCategoryIdExcludingCustomize(int currentPage, int pageSize, String field, long categoryId) {
+        Pageable pageable = PageRequest.of(currentPage - 1, pageSize, Sort.by(Sort.Direction.ASC, field));
+        Page<Product> products = productRepository.searchByCategoryIdExcludingCustomize(categoryId, pageable);
+        return products.map(product -> productMapper.toDto(product));
+    }
     public ResponseEntity<ResponseObject> getById(long id) {
         Optional<Product> product = productRepository.findById(id);
         return product.map(value -> ResponseEntity.ok(new ResponseObject("get success", productMapper.toDto(value))))

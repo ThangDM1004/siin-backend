@@ -24,7 +24,7 @@ public class AccessoryController {
     public ResponseEntity<ResponseObject> getAllAccessory(@PathVariable int currentPage
             , @RequestParam(defaultValue = "5") int pageSize
             , @RequestParam(defaultValue = "name") String field) {
-        if(currentPage < 1 || pageSize < 1 || currentPage > pageSize){
+        if(currentPage < 1 || pageSize < 1){
             return ResponseEntity.ok(new ResponseObject("get success", accessoryService.get()));
         }
         Page<AccessoryDTO> accessories = accessoryService.getAll(currentPage, pageSize, field);

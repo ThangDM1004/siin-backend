@@ -29,7 +29,7 @@ public class ProductController {
             @RequestParam(defaultValue = "name") String field,
             @RequestParam(required = false, defaultValue = "0") long categoryId) {
         if (categoryId == 0) {
-            if (currentPage < 1 || pageSize < 1 || currentPage > pageSize) {
+            if (currentPage < 1 || pageSize < 1) {
                 return ResponseEntity.ok(new ResponseObject("get success", productService.get()));
             }
 
@@ -41,7 +41,7 @@ public class ProductController {
                     .build();
             return ResponseEntity.ok(new ResponseObject("get success", pageList));
         }else{
-            if (currentPage < 1 || pageSize < 1 || currentPage > pageSize) {
+            if (currentPage < 1 || pageSize < 1) {
                 return ResponseEntity.ok(new ResponseObject("get success", productService.getByCategory(categoryId)));
             }
 
@@ -61,9 +61,8 @@ public class ProductController {
             @RequestParam(defaultValue = "5") int pageSize,
             @RequestParam(defaultValue = "name") String field,
             @RequestParam(required = false, defaultValue = "0") long categoryId) {
-        currentPage -= 1;
         if (categoryId == 0) {
-            if (currentPage < 1 || pageSize < 1 || currentPage > pageSize) {
+            if (currentPage < 1 || pageSize < 1) {
                 return ResponseEntity.ok(new ResponseObject("get success",
                         productService.getAllExcludingCustomize()));
             }
@@ -80,7 +79,7 @@ public class ProductController {
                 return ResponseEntity.ok(new ResponseObject("get success", productService
                         .getByCategory(categoryId)));
             }
-            Page<ProductDTO> accessories = productService.searchByCategory(currentPage, pageSize, field,categoryId);
+            Page<ProductDTO> accessories = productService.searchByCategoryIdExcludingCustomize(currentPage, pageSize, field,categoryId);
             var pageList = PageList.<ProductDTO>builder()
                     .totalPage(accessories.getTotalPages())
                     .currentPage(currentPage)
