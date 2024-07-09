@@ -124,9 +124,6 @@ public class ProductMaterialService {
         if (productMaterialDTO.getProductId() == null) {
             productMaterialDTO.setProductId(existingProductMaterial.getProduct().getId());
         }
-        if (productMaterialDTO.getAccessoryId() == null) {
-            productMaterialDTO.setAccessoryId(existingProductMaterial.getAccessory().getId());
-        }
         if (productMaterialDTO.getQuantity() == 0) {
             productMaterialDTO.setQuantity(existingProductMaterial.getQuantity());
         }
