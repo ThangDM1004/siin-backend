@@ -42,7 +42,7 @@ public class ProductController {
                     .build();
             return ResponseEntity.ok(new ResponseObject("get success", pageList));
         }else{
-            if (currentPage < 1 || pageSize < 1 || currentPage > pageSize) {
+            if (currentPage <= 1 || pageSize < 1 || currentPage > pageSize) {
                 return ResponseEntity.ok(new ResponseObject("get success", productService
                         .getByCategory(categoryId)));
             }
@@ -76,7 +76,7 @@ public class ProductController {
                     .build();
             return ResponseEntity.ok(new ResponseObject("get success", pageList));
         }else{
-            if (currentPage < 1 || pageSize < 1 || currentPage > pageSize) {
+            if (currentPage <= 1 || pageSize < 1 || currentPage > pageSize) {
                 return ResponseEntity.ok(new ResponseObject("get success", productService
                         .getByCategory(categoryId)));
             }
