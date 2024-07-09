@@ -67,7 +67,7 @@ public class ProductController {
                 return ResponseEntity.ok(new ResponseObject("get success",
                         productService.getAllExcludingCustomize()));
             }
-
+//
             Page<ProductDTO> accessories = productService.getAllExcludingCustomize(currentPage, pageSize, field);
             var pageList = PageList.<ProductDTO>builder()
                     .totalPage(accessories.getTotalPages())
