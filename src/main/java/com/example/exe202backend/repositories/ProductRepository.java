@@ -17,7 +17,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.category.id = :id")
     Page<Product> searchByEmail(@Param("id") long id, Pageable pageable);
     List<Product> findAllByCategory_Id(long categoryId);
-    @Query("SELECT p FROM Product p WHERE p.name <> 'customize'")
+    @Query("SELECT p FROM Product p WHERE LOWER(p.name) <> 'customize'")
     Page<Product> findAllExcludingCustomize(Pageable pageable);
     @Query("SELECT p FROM Product p WHERE p.category.id = :id AND  LOWER(p.name) <> 'customize'")
     Page<Product> searchByCategoryIdExcludingCustomize(@Param("id") long id, Pageable pageable);
