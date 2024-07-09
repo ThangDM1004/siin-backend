@@ -143,7 +143,6 @@ public class ProductMaterialService {
         existingProductMaterial.setProduct(productRepository.findById(productMaterialDTO.getProductId()).get());
         existingProductMaterial.setColor(colorRepository.findById(productMaterialDTO.getColorId()).get());
         existingProductMaterial.setSize(sizeRepository.findById(productMaterialDTO.getSizeId()).get());
-        existingProductMaterial.setAccessory(accessoryRepository.findById(productMaterialDTO.getAccessoryId()).get());
         productMaterialRepository.save(existingProductMaterial);
         return ResponseEntity.ok(new ResponseObject("update success", productMaterialDTO));
     }
