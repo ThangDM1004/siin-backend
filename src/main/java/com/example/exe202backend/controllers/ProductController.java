@@ -29,7 +29,7 @@ public class ProductController {
             @RequestParam(defaultValue = "name") String field,
             @RequestParam(required = false, defaultValue = "0") long categoryId) {
          if (categoryId == 0) {
-            if (currentPage < 1 || pageSize < 1) {
+            if (currentPage <= 1 || pageSize < 1) {
                 return ResponseEntity.ok(new ResponseObject("get success",
                         productService.getAllExcludingCustomize()));
             }
@@ -63,7 +63,7 @@ public class ProductController {
             @RequestParam(defaultValue = "name") String field,
             @RequestParam(required = false, defaultValue = "0") long categoryId) {
         if (categoryId == 0) {
-            if (currentPage < 1 || pageSize < 1) {
+            if (currentPage <= 1 || pageSize < 1) {
                 return ResponseEntity.ok(new ResponseObject("get success",
                         productService.getAllExcludingCustomize()));
             }
