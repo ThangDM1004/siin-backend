@@ -28,12 +28,13 @@ public class ProductController {
             @RequestParam(defaultValue = "5") int pageSize,
             @RequestParam(defaultValue = "name") String field,
             @RequestParam(required = false, defaultValue = "0") long categoryId) {
-        if (categoryId == 0) {
+         if (categoryId == 0) {
             if (currentPage < 1 || pageSize < 1) {
-                return ResponseEntity.ok(new ResponseObject("get success", productService.get()));
+                return ResponseEntity.ok(new ResponseObject("get success",
+                        productService.getAllExcludingCustomize()));
             }
 
-            Page<ProductDTO> accessories = productService.getAll(currentPage, pageSize, field);
+            Page<ProductDTO> accessories = productService.getAllExcludingCustomize(currentPage, pageSize, field);
             var pageList = PageList.<ProductDTO>builder()
                     .totalPage(accessories.getTotalPages())
                     .currentPage(currentPage)
@@ -41,11 +42,11 @@ public class ProductController {
                     .build();
             return ResponseEntity.ok(new ResponseObject("get success", pageList));
         }else{
-            if (currentPage < 1 || pageSize < 1) {
-                return ResponseEntity.ok(new ResponseObject("get success", productService.getByCategory(categoryId)));
+            if (currentPage < 1 || pageSize < 1 || currentPage > pageSize) {
+                return ResponseEntity.ok(new ResponseObject("get success", productService
+                        .getByCategory(categoryId)));
             }
-
-            Page<ProductDTO> accessories = productService.searchByCategory(currentPage, pageSize, field,categoryId);
+            Page<ProductDTO> accessories = productService.searchByCategoryIdExcludingCustomize(currentPage, pageSize, field,categoryId);
             var pageList = PageList.<ProductDTO>builder()
                     .totalPage(accessories.getTotalPages())
                     .currentPage(currentPage)
