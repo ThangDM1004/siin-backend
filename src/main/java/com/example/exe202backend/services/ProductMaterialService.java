@@ -120,6 +120,7 @@ public class ProductMaterialService {
         if (productMaterialDTO.getSizeId() == null) {
             productMaterialDTO.setSizeId(existingProductMaterial.getSize().getId());
         }
+        //
         if (productMaterialDTO.getProductId() == null) {
             productMaterialDTO.setProductId(existingProductMaterial.getProduct().getId());
         }
